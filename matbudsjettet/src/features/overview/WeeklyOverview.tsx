@@ -2,6 +2,7 @@ import { Bell, ChevronRight, Clock } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
+import mealImage1 from "../../../assets/meals/meal-1.png";
 
 
 interface WeeklyOverviewProps {
@@ -42,7 +43,6 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
 
         {/* Greeting */}
         <div className="px-4 pt-1">
-          <p className="text-xs text-stone-400">Torsdag 16. april</p>
           <h1 className="text-2xl font-bold text-stone-900 mt-0.5 leading-tight">
             God kveld, André! 👋
           </h1>
@@ -112,15 +112,11 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
               }
             }}
           >
-            {mealImageSrc ? (
-              <img
-                src={mealImageSrc}
-                alt={featuredMeal?.name ?? "Dagens middag"}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-stone-400 to-stone-700" />
-            )}
+            <img
+              src={mealImageSrc ?? mealImage1}
+              alt={featuredMeal?.name ?? "Dagens middag"}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
             {/* Top label */}
             <div className="absolute top-3 left-3 z-10">
