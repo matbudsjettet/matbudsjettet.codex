@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { CalendarDays, ReceiptText, Wallet } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Card } from "@/components/ui/Card";
 import { sectionVariants, pageTransition } from "@/lib/design/animations";
@@ -18,6 +19,8 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
   const { budgetComparison } = plan.summary;
   const budgetIsOver = budgetComparison.status === "over";
   const budgetDeltaNok = Math.abs(budgetComparison.differenceNok);
+  const spentRatio = preference.weeklyBudgetNok > 0 ? plan.summary.weeklyTotalNok / preference.weeklyBudgetNok : 0;
+  const remainingPercent = Math.max(0, Math.min(100, Math.round((1 - spentRatio) * 100)));
   const store = stores.find((item) => item.id === preference.preferredStore);
 
   return (
@@ -32,6 +35,7 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         budgetDeltaNok={budgetDeltaNok}
         budgetIsOver={budgetIsOver}
         householdSize={preference.householdSize}
+        remainingPercent={remainingPercent}
         weeklyBudgetNok={preference.weeklyBudgetNok}
         perDayCostNok={plan.summary.perDayCostNok}
         storeName={store?.name ?? preference.preferredStore}
@@ -65,6 +69,7 @@ function WeeklyHeroCard({
   budgetDeltaNok,
   budgetIsOver,
   householdSize,
+  remainingPercent,
   weeklyBudgetNok,
   perDayCostNok,
   storeName,
@@ -73,48 +78,111 @@ function WeeklyHeroCard({
   budgetDeltaNok: number;
   budgetIsOver: boolean;
   householdSize: number;
+  remainingPercent: number;
   weeklyBudgetNok: number;
   perDayCostNok: number;
   storeName: string;
   weeklyTotalNok: number;
 }) {
+  const progressWidth = Math.max(10, Math.min(100, 100 - remainingPercent));
+  const statusLabel = budgetIsOver ? "Du ligger over budsjettet" : "Du ligger under budsjettet!";
+  const amountColorClass = budgetIsOver ? "text-[#eb6449]" : "text-[#2fc46e]";
+
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white/15 bg-[linear-gradient(135deg,#0B1020_0%,#111A33_55%,#0A1730_100%)] p-app-6 text-white shadow-app">
-      <div className="relative">
-        <p className="text-caption uppercase tracking-[0.08em] text-white/65">Denne uken</p>
-        <p className="mt-app-4 text-body-sm font-semibold text-white/72">
-          {budgetIsOver ? "Planen ligger over valgt budsjett" : "Under budsjett denne uken"}
-        </p>
-        <p className={cn("mt-app-1 text-[2.7rem] font-black leading-none tracking-tight", budgetIsOver ? "text-danger" : "text-saving")}>
-          <AnimatedNumber className={budgetIsOver ? "text-danger" : "text-saving"} pulse={false} value={budgetDeltaNok} />
-        </p>
-        <p className="mt-app-2 text-body-sm text-white/72">
-          Planlagt: {formatCompactNok(weeklyTotalNok)} av {formatCompactNok(weeklyBudgetNok)} budsjett
-        </p>
-
-        <div className="mt-app-6 rounded-2xl border border-white/15 bg-white/[0.06] p-app-5">
-          <div className="grid grid-cols-2 gap-x-app-4 gap-y-app-5">
-            <div>
-              <p className="text-caption text-white/65">Vanlig budsjett</p>
-              <p className="mt-app-1 text-headline text-white">{formatCompactNok(weeklyBudgetNok)}</p>
-            </div>
-            <div>
-              <p className="text-caption text-white/65">Planlagt</p>
-              <p className="mt-app-1 text-headline text-white">{formatCompactNok(weeklyTotalNok)}</p>
-            </div>
-          </div>
-
-          <div className="mt-app-5 flex items-center justify-between gap-app-4 border-t border-white/10 pt-app-4">
-            <div>
-              <p className="text-caption text-white/65">Per dag</p>
-              <p className="mt-app-1 text-body-sm font-black text-white">{formatCompactNok(perDayCostNok)}</p>
-            </div>
-            <p className="text-right text-caption text-white/65">
-              {householdSize} {householdSize === 1 ? "person" : "personer"} · {storeName}
+    <div className="space-y-app-4">
+      <Card className="overflow-hidden rounded-[30px] border-[#f1e8dc] bg-white px-4 pb-5 pt-4 shadow-[0_14px_34px_rgba(42,31,16,0.08)] sm:px-5" variant="quiet">
+        <div className="grid grid-cols-[minmax(0,1fr)_128px] items-start gap-3">
+          <div className="min-w-0 pt-1">
+            <p className="text-[1.05rem] font-black text-text-primary">Du har</p>
+            <p className={cn("mt-3 text-[4rem] font-black leading-[0.95] tracking-tight", amountColorClass)}>
+              <AnimatedNumber className={amountColorClass} pulse={false} value={budgetDeltaNok} /> kr
             </p>
+            <p className="mt-3 text-[1.15rem] font-bold text-text-secondary">igjen av matbudsjettet</p>
           </div>
+          <BudgetIllustration />
         </div>
+
+        <div className="mt-4 inline-flex items-center rounded-full bg-[#e7f7ea] px-3 py-2 text-[0.95rem] font-black text-[#2cad61]">
+          <span aria-hidden="true" className="mr-2 text-base leading-none">
+            {budgetIsOver ? "!" : "🎉"}
+          </span>
+          {statusLabel}
+        </div>
+
+        <div className="mt-5 flex items-center gap-3">
+          <div className="h-4 flex-1 overflow-hidden rounded-full bg-[#f2efe8]">
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${progressWidth}%`,
+                background: "linear-gradient(90deg, #2fc46e 0%, #7cd54c 28%, #ffcf2b 60%, #ff982f 100%)"
+              }}
+            />
+          </div>
+          <span className="text-[1.05rem] font-black text-[#2fc46e]">{remainingPercent} %</span>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3 text-[0.98rem] font-semibold text-text-tertiary">
+          <p>Du har brukt {formatCompactNok(weeklyTotalNok)} av {formatCompactNok(weeklyBudgetNok)}</p>
+          <p className="shrink-0 text-right">
+            {householdSize} {householdSize === 1 ? "person" : "personer"} · {storeName}
+          </p>
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-3 gap-3">
+        <StatCard icon={<Wallet size={18} strokeWidth={2.2} />} iconClassName="bg-[#e5f7ea] text-[#28b765]" label="Budsjett" value={formatCompactNok(weeklyBudgetNok)} />
+        <StatCard
+          icon={<ReceiptText size={18} strokeWidth={2.2} />}
+          iconClassName="bg-[#e8f3ff] text-[#2891ff]"
+          label="Brukt så langt"
+          value={formatCompactNok(weeklyTotalNok)}
+        />
+        <StatCard
+          icon={<CalendarDays size={18} strokeWidth={2.2} />}
+          iconClassName="bg-[#fff0df] text-[#ff9f2f]"
+          label="Per dag"
+          value={formatCompactNok(perDayCostNok)}
+        />
       </div>
+    </div>
+  );
+}
+
+function StatCard({
+  icon,
+  iconClassName,
+  label,
+  value
+}: {
+  icon: ReactNode;
+  iconClassName: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <Card className="rounded-[24px] border-[#f1e8dc] bg-white p-4 shadow-[0_12px_28px_rgba(42,31,16,0.07)]" variant="quiet">
+      <div className={cn("grid h-12 w-12 place-items-center rounded-full", iconClassName)}>{icon}</div>
+      <p className="mt-6 text-[0.92rem] font-bold leading-snug text-text-secondary">{label}</p>
+      <p className="mt-2 text-[1.35rem] font-black leading-tight text-text-primary">{value}</p>
+    </Card>
+  );
+}
+
+function BudgetIllustration() {
+  return (
+    <div className="relative flex h-[152px] w-full items-center justify-center self-center">
+      <div className="absolute inset-x-1 bottom-4 top-5 rounded-full bg-[radial-gradient(circle_at_30%_40%,rgba(225,247,233,0.95),rgba(225,247,233,0.78)_58%,rgba(225,247,233,0)_76%)]" />
+      <div className="absolute -right-1 top-6 h-20 w-20 rounded-full bg-[radial-gradient(circle,rgba(255,230,195,0.85),rgba(255,230,195,0.08)_72%)]" />
+      <span className="absolute left-3 top-4 text-xs text-[#2fc46e]">✦</span>
+      <span className="absolute right-6 top-1 text-sm text-[#2fc46e]">✦</span>
+      <span className="absolute right-4 top-12 text-xs text-[#2fc46e]">✦</span>
+      <div className="relative h-[92px] w-[116px] rounded-b-[999px] rounded-t-[48px] bg-[linear-gradient(180deg,#fff6e5_0%,#f6e4c1_70%,#e0bb87_100%)] shadow-[inset_0_-10px_18px_rgba(189,139,78,0.18),0_18px_24px_rgba(178,140,90,0.24)]">
+        <div className="absolute left-2 top-[-34px] text-[2.8rem]">🥦</div>
+        <div className="absolute left-[36px] top-[-24px] text-[2.6rem]">🫑</div>
+        <div className="absolute right-[8px] top-[-20px] text-[2.4rem]">🥒</div>
+      </div>
+      <div className="absolute bottom-3 h-3 w-24 rounded-full bg-[#eae3d8]" />
     </div>
   );
 }
