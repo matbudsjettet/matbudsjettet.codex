@@ -72,12 +72,12 @@ export function AppShell({
   return (
     <div className="min-h-screen text-text-primary">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
-        <header className="safe-top px-app-5 pb-app-4">
+        <header className="safe-top px-app-5 pb-6">
           {isOverview ? (
-            <div className="flex items-start justify-between gap-4 pt-app-2">
+            <div className="flex items-start justify-between gap-4 pt-3">
               <div className="min-w-0">
                 <h1 className="text-[2.3rem] font-black leading-[1.04] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
-                <p className="mt-2 text-body font-semibold text-text-secondary">Du sparer bra denne uka</p>
+                <p className="mt-3 text-body font-semibold text-text-secondary">Du sparer bra denne uka</p>
               </div>
               <motion.button
                 aria-label="Varsler"
@@ -124,7 +124,7 @@ export function AppShell({
           )}
         </header>
 
-        <main className="flex-1 space-y-app-10 px-app-5 pb-32" ref={mainRef}>
+        <main className="flex-1 space-y-11 px-app-5 pb-32" ref={mainRef}>
           {children}
         </main>
 
