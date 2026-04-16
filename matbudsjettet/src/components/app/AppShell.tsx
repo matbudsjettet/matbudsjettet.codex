@@ -5,8 +5,6 @@ import { Tabs } from "@/components/ui/Tabs";
 import { buttonTap } from "@/lib/design/animations";
 import type { AppView } from "@/types/navigation";
 
-const NON_BACK_VIEWS: AppView[] = ["overview", "meals", "shopping", "tips", "premium"];
-
 const NOW = new Date();
 const DATE_LABEL = NOW.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
 

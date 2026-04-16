@@ -34,7 +34,7 @@ export function WeeklyOverview({
 }: {
   plan: WeeklyPlan;
   preference: BudgetPreference;
-  onAction: any;
+  onAction: (action: "meals" | "shopping" | "tips" | "swap") => void;
 }) {
   const spent = plan.summary.weeklyTotalNok;
   const budget = preference.weeklyBudgetNok;

@@ -35,7 +35,7 @@ import type { BudgetPreference, HouseholdSize, MealSwapAlternative, PlanMode, Pl
 import type { AppView } from "@/types/navigation";
 
 const viewTitles: Record<AppView, string> = {
-  overview: "Uken din TEST",
+  overview: "Uken din",
   meals: "Ukeplan",
   "meal-detail": "Bytt rett",
   shopping: "Handleliste",
