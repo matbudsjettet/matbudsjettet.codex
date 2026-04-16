@@ -1,14 +1,23 @@
-
 import { Bell, ChevronRight, Clock } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
 
 
 interface WeeklyOverviewProps {
+  plan: WeeklyPlan;
+  preference: BudgetPreference;
+  onAction: (action: "meals" | "shopping" | "tips" | "swap") => void;
   mealImageSrc?: string;
 }
 
-const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
+const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, preference, onAction }) => {
+  const spent = plan.summary.weeklyTotalNok;
+  const budget = preference.weeklyBudgetNok;
+  const remaining = Math.max(0, budget - spent);
+  const percent = budget > 0 ? Math.max(0, Math.min(100, Math.round((remaining / budget) * 100))) : 0;
+  const featuredMeal = plan.meals[0];
+
   return (
     <div className="min-h-screen w-full" style={{ backgroundColor: "#F5F0E8" }}>
       <div className="max-w-md mx-auto flex flex-col gap-3 pb-28">
@@ -50,19 +59,19 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
             </p>
             <div className="flex items-end gap-2 mb-3">
               <span className="text-3xl font-extrabold text-stone-900 leading-none">
-                1 240 kr
+                {remaining.toLocaleString("nb-NO")} kr
               </span>
               <span className="text-sm text-stone-400 mb-0.5">
-                igjen av 2 000 kr
+                igjen av {budget.toLocaleString("nb-NO")} kr
               </span>
             </div>
             <div className="w-full h-2.5 rounded-full bg-stone-100">
               <div
                 className="h-2.5 rounded-full bg-green-700"
-                style={{ width: "62%" }}
+                style={{ width: `${percent}%` }}
               />
             </div>
-            <p className="text-xs text-stone-400 mt-1.5">62 %</p>
+            <p className="text-xs text-stone-400 mt-1.5">{percent} %</p>
           </Card>
         </div>
 
@@ -75,10 +84,11 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
                   Uken din
                 </p>
                 <p className="text-base font-semibold text-stone-900">
-                  4 av 7 middager planlagt
+                  {plan.meals.length} av 7 middager planlagt
                 </p>
               </div>
               <Button
+                onClick={() => onAction("meals")}
                 variant="secondary"
                 className="rounded-xl bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100 font-semibold text-sm whitespace-nowrap border-0 shadow-none"
               >
@@ -90,11 +100,22 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
 
         {/* Featured meal card */}
         <div className="px-4">
-          <div className="rounded-2xl overflow-hidden shadow-sm relative min-h-[200px] bg-stone-600">
+          <div
+            className="relative min-h-[200px] w-full overflow-hidden rounded-2xl bg-stone-600 text-left shadow-sm"
+            onClick={() => onAction("meals")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onAction("meals");
+              }
+            }}
+          >
             {mealImageSrc ? (
               <img
                 src={mealImageSrc}
-                alt="Ovnsbakt laks med poteter og grønnsaker"
+                alt={featuredMeal?.name ?? "Dagens middag"}
                 className="absolute inset-0 w-full h-full object-cover"
               />
             ) : (
@@ -112,6 +133,8 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
             <button
               aria-label="Se oppskrift"
               className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              onClick={() => onAction("meals")}
+              type="button"
             >
               <ChevronRight size={18} strokeWidth={2.2} />
             </button>
@@ -119,13 +142,15 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
             {/* Bottom overlay */}
             <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 pt-14 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
               <h2 className="text-xl font-bold text-white leading-tight">
-                Ovnsbakt laks
+                {featuredMeal?.name ?? "Dagens middag"}
               </h2>
-              <p className="text-sm text-white/80">med poteter og grønnsaker</p>
+              <p className="text-sm text-white/80">
+                {featuredMeal?.savingsNote ?? "Ukens anbefalte middag"}
+              </p>
               <div className="flex items-center gap-2 mt-2">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white bg-white/20 backdrop-blur-sm">
                   <Clock size={11} />
-                  25 min
+                  {featuredMeal?.prepTimeMinutes ?? 25} min
                 </span>
               </div>
             </div>
@@ -142,7 +167,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
                 </p>
                 <p className="text-sm text-green-800/80 mt-0.5">
                   Du har spart{" "}
-                  <span className="font-bold text-green-700">320 kr</span>{" "}
+                  <span className="font-bold text-green-700">{remaining.toLocaleString("nb-NO")} kr</span>{" "}
                   så langt denne uken
                 </p>
               </div>
