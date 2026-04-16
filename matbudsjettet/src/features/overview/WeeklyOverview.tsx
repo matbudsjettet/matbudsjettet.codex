@@ -81,17 +81,18 @@ function WeeklyHeroCard({
   const progressWidth = Math.max(10, Math.min(100, 100 - remainingPercent));
   const statusLabel = budgetIsOver ? "Du ligger over budsjettet" : "Du ligger under budsjettet!";
   const amountColorClass = budgetIsOver ? "text-[#eb6449]" : "text-[#2fc46e]";
+  const formatPlainNumber = (value: number) => value.toLocaleString("nb-NO", { maximumFractionDigits: 0 });
 
   return (
     <div className="space-y-4">
-      <Card className="overflow-hidden rounded-[30px] border-0 bg-white px-6 pb-7 pt-7 shadow-[0_18px_42px_rgba(42,31,16,0.07)] sm:px-7" variant="quiet">
-        <div className="grid grid-cols-[minmax(0,1fr)_138px] items-start gap-7">
+      <Card className="overflow-hidden rounded-[30px] border-0 bg-white px-6 pb-7 pt-7 shadow-[0_16px_36px_rgba(42,31,16,0.06)] sm:px-7" variant="quiet">
+        <div className="grid grid-cols-[minmax(0,1fr)_136px] items-start gap-8">
           <div className="min-w-0 pt-1.5">
             <p className="text-[0.95rem] font-black text-text-primary">Du har</p>
             <p className={cn("mt-5 whitespace-nowrap text-[2.95rem] font-black leading-[0.98] tracking-tight", amountColorClass)}>
-              <AnimatedNumber className={amountColorClass} pulse={false} value={budgetDeltaNok} /> kr
+              <AnimatedNumber className={amountColorClass} formatter={formatPlainNumber} pulse={false} value={budgetDeltaNok} /> kr
             </p>
-            <p className="mt-5 text-[0.98rem] font-medium text-[#7d776e]">igjen av matbudsjettet</p>
+            <p className="mt-5 max-w-[13rem] text-[0.98rem] font-medium leading-[1.35] text-[#7d776e]">igjen av matbudsjettet</p>
           </div>
           <BudgetIllustration />
         </div>
@@ -155,7 +156,7 @@ function StatCard({
   value: string;
 }) {
   return (
-    <Card className="rounded-[26px] border-0 bg-white px-[1.15rem] pb-[1.15rem] pt-[1.2rem] shadow-[0_10px_26px_rgba(42,31,16,0.055)]" variant="quiet">
+    <Card className="rounded-[26px] border-0 bg-white px-[1.2rem] pb-[1.2rem] pt-[1.25rem] shadow-[0_8px_22px_rgba(42,31,16,0.05)]" variant="quiet">
       <div className={cn("grid h-12 w-12 place-items-center rounded-full", iconClassName)}>{icon}</div>
       <p className="mt-6 text-[0.82rem] font-semibold leading-snug text-[#736d65]">{label}</p>
       <p className="mt-2.5 whitespace-nowrap text-[1.26rem] font-black leading-tight text-text-primary">{value}</p>
@@ -165,7 +166,7 @@ function StatCard({
 
 function BudgetIllustration() {
   return (
-    <div className="relative flex h-[168px] w-full items-center justify-center self-center pr-1">
+    <div className="relative flex h-[168px] w-full items-start justify-end self-start pl-2 pt-1">
       <div className="absolute inset-x-0 bottom-0 top-2 rounded-full bg-[radial-gradient(circle_at_42%_38%,rgba(231,247,236,0.92),rgba(231,247,236,0.52)_56%,rgba(231,247,236,0)_76%)] blur-[0.5px]" />
       <div className="absolute right-2 top-6 h-[88px] w-[88px] rounded-full bg-[radial-gradient(circle,rgba(255,238,215,0.8),rgba(255,238,215,0.08)_70%)]" />
       <span className="absolute left-5 top-9 h-2 w-2 rounded-full bg-[#49cd75]/80 shadow-[0_0_10px_rgba(73,205,117,0.2)]" />
