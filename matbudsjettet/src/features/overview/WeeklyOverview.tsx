@@ -80,11 +80,11 @@ function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel:
       <div className="relative h-[6.85rem] overflow-hidden bg-[#f6f0e6]">
         <img
           alt={meal.name}
-          className="h-full w-full object-cover brightness-[0.98] saturate-[0.94] contrast-[0.96]"
+          className="h-full w-full scale-[1.02] object-cover object-center brightness-[0.94] saturate-[0.82] contrast-[0.9] sepia-[0.08]"
           loading="lazy"
           src={getMealPhoto(meal)}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,248,239,0.08),rgba(245,224,194,0.14))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,244,229,0.12),rgba(240,206,162,0.2))]" />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-2">
           <span className="rounded-full bg-[#ff9d2f] px-2 py-[0.28rem] text-[0.62rem] font-black text-white shadow-[0_6px_12px_rgba(255,157,47,0.24)]">
             {weekdayLabel}
@@ -289,10 +289,10 @@ const mealPhotoFallbacks: Record<string, string> = {
   "pasta-med-tomatsaus": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "kylling-med-ris-og-gronnsaker": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "laksefilet-med-poteter": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "tomatsuppe-med-egg": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "chili-sin-carne": "https://images.pexels.com/photos/5737247/pexels-photo-5737247.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "fiskekaker-med-rakost": "https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "fiskekaker-med-rakost": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "taco-fredag": "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "pytt-i-panne": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "ovnsbakt-laks": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -303,7 +303,7 @@ const mealPhotoFallbacks: Record<string, string> = {
   "kyllingform-med-potet-og-gulrot": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "pastafrittata-med-brokkoli": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "potetsuppe-med-brod": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "egg-og-brod-med-rakost": "https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "egg-og-brod-med-rakost": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
   default: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200"
 };
 
