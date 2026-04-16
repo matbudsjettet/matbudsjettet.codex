@@ -27,7 +27,6 @@ import { buildShoppingList } from "@/lib/engines/shoppingListEngine";
 import { usePersistentState } from "@/lib/hooks/usePersistentState";
 import {
   createWeeklyHistoryEntry,
-  defaultWeeklyRoutineState,
   loadWeeklyRoutineState,
   saveWeeklyRoutineState
 } from "@/lib/storage/weeklyRoutineStorage";
@@ -273,31 +272,6 @@ export function App() {
     saveCurrentPreference({ ...preference, weeklyBudgetNok: nextBudgetNok });
   };
 
-  const toggleMealId = (mealId: string, key: keyof typeof defaultWeeklyRoutineState.mealPreferences) => {
-    setRoutine((current) => {
-      const currentIds = current.mealPreferences[key];
-      const nextIds = currentIds.includes(mealId) ? currentIds.filter((id) => id !== mealId) : [...currentIds, mealId];
-      const nextMealPreferences = {
-        ...current.mealPreferences,
-        [key]: nextIds
-      };
-
-      if (key === "favoriteMealIds" && nextIds.includes(mealId)) {
-        nextMealPreferences.dislikedMealIds = nextMealPreferences.dislikedMealIds.filter((id) => id !== mealId);
-      }
-
-      if (key === "dislikedMealIds" && nextIds.includes(mealId)) {
-        nextMealPreferences.favoriteMealIds = nextMealPreferences.favoriteMealIds.filter((id) => id !== mealId);
-        nextMealPreferences.repeatCheapMealIds = nextMealPreferences.repeatCheapMealIds.filter((id) => id !== mealId);
-      }
-
-      return {
-        ...current,
-        mealPreferences: nextMealPreferences
-      };
-    });
-  };
-
   const handleRefreshWeek = () => {
     const refreshedPlan = refreshWeeklyPlan(meals, ingredients, preference, routine.mealPreferences);
 
@@ -381,15 +355,7 @@ export function App() {
   };
 
   const renderMealPlan = () => (
-    <MealPlan
-      mealPreferences={routine.mealPreferences}
-      meals={weeklyPlan.meals}
-      onOpenRecipe={openRecipe}
-      onSwapMeal={openMealDetail}
-      onToggleDislikedMeal={(mealId) => toggleMealId(mealId, "dislikedMealIds")}
-      onToggleFavoriteMeal={(mealId) => toggleMealId(mealId, "favoriteMealIds")}
-      onToggleRepeatCheapMeal={(mealId) => toggleMealId(mealId, "repeatCheapMealIds")}
-    />
+    <MealPlan meals={weeklyPlan.meals} onOpenRecipe={openRecipe} />
   );
 
   const renderActiveView = () => {
