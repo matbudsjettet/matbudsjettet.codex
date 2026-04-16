@@ -4,13 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
-import mealImage1 from "../../../assets/meals/meal-1.png";
-import mealImage2 from "../../../assets/meals/meal-2.png";
-import mealImage3 from "../../../assets/meals/meal-3.png";
-import mealImage4 from "../../../assets/meals/meal-4.png";
-import mealImage5 from "../../../assets/meals/meal-5.png";
-import mealImage6 from "../../../assets/meals/meal-6.png";
-import mealImage7 from "../../../assets/meals/meal-7.png";
+import { getMealImage } from "@/lib/design/mealImages";
 
 interface WeeklyOverviewProps {
   plan: WeeklyPlan;
@@ -19,7 +13,6 @@ interface WeeklyOverviewProps {
   mealImageSrc?: string;
 }
 
-const mealImages = [mealImage1, mealImage2, mealImage3, mealImage4, mealImage5, mealImage6, mealImage7];
 const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 const formatNok = (value: number) => `${value.toLocaleString("nb-NO")} kr`;
@@ -30,6 +23,7 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
   const remaining = Math.max(0, budget - spent);
   const percent = budget > 0 ? Math.max(0, Math.min(100, Math.round((remaining / budget) * 100))) : 0;
   const featuredMeal = plan.meals[0];
+  const featuredMealImage = featuredMeal ? getMealImage(featuredMeal.id, 0) : getMealImage("fallback", 0);
   const weekdayName = new Intl.DateTimeFormat("nb-NO", { weekday: "long" }).format(new Date());
 
   return (
@@ -56,44 +50,40 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
         </div>
 
         <div className="px-4">
-          <Card className="overflow-hidden rounded-[1.7rem] border-0 bg-white p-5 shadow-[0_18px_36px_rgba(33,25,16,0.08)]">
-            <div className="grid grid-cols-[minmax(0,1fr)_124px] items-start gap-4">
+          <Card className="overflow-hidden rounded-[1.55rem] border-0 bg-white p-4.5 shadow-[0_14px_28px_rgba(33,25,16,0.07)]">
+            <div className="grid grid-cols-[minmax(0,1fr)_104px] items-start gap-3.5">
               <div>
                 <p className="text-[0.76rem] font-semibold uppercase tracking-[0.12em] text-[#8c8172]">Ukens budsjett</p>
-                <p className="mt-3 text-[2.4rem] font-black leading-none tracking-tight text-[#1c8f55]">{formatNok(remaining)}</p>
-                <p className="mt-2 text-[0.95rem] text-[#7b7367]">igjen etter planlagte middager denne uken</p>
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#ecf8ef] px-3 py-1.5 text-[0.78rem] font-semibold text-[#1f9758]">
+                <p className="mt-2.5 text-[2rem] font-black leading-none tracking-tight text-[#1c7c4d]">{formatNok(remaining)}</p>
+                <p className="mt-1.5 text-[0.9rem] text-[#7b7367]">igjen etter ukens plan</p>
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#edf5ec] px-3 py-1.5 text-[0.75rem] font-semibold text-[#547058]">
                   <Sparkles size={13} strokeWidth={2} />
-                  Du ligger godt an
+                  Lavt svinn og rolig budsjett
                 </div>
               </div>
-              <div className="relative h-[124px]">
-                <div className="absolute inset-4 rounded-full bg-[radial-gradient(circle,rgba(129,201,149,0.24),rgba(129,201,149,0.02)_68%)]" />
-                <img
-                  alt={featuredMeal?.name ?? "Middag"}
-                  className="absolute inset-0 h-full w-full object-contain"
-                  src={mealImageSrc ?? mealImage1}
-                />
+              <div className="relative h-[104px]">
+                <div className="absolute inset-3 rounded-full bg-[radial-gradient(circle,rgba(129,201,149,0.18),rgba(129,201,149,0.02)_68%)]" />
+                <img alt={featuredMeal?.name ?? "Middag"} className="absolute inset-0 h-full w-full object-contain" src={mealImageSrc ?? featuredMealImage} />
               </div>
             </div>
 
-            <div className="mt-5">
-              <div className="mb-2 flex items-center justify-between text-[0.76rem] font-semibold text-[#8a806f]">
+            <div className="mt-4">
+              <div className="mb-2 flex items-center justify-between text-[0.74rem] font-semibold text-[#8a806f]">
                 <span>Brukt {formatNok(spent)}</span>
                 <span>{percent}% igjen</span>
               </div>
-              <div className="h-3.5 w-full rounded-full bg-[#efe9df]">
+              <div className="h-3 w-full rounded-full bg-[#eee6dc]">
                 <div
-                  className="h-3.5 rounded-full"
+                  className="h-3 rounded-full"
                   style={{
                     width: `${percent}%`,
-                    background: "linear-gradient(90deg, #2cb768 0%, #8bcf4a 44%, #ffb347 78%, #ff8b4f 100%)"
+                    background: "linear-gradient(90deg, #2b8a58 0%, #5fa06d 100%)"
                   }}
                 />
               </div>
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-3">
+            <div className="mt-4 grid grid-cols-3 gap-2.5">
               <StatChip icon={<Receipt size={15} strokeWidth={2.1} />} label="Budsjett" value={formatNok(budget)} />
               <StatChip icon={<TrendingUp size={15} strokeWidth={2.1} />} label="Per dag" value={formatNok(plan.summary.perDayCostNok)} />
               <StatChip icon={<ShoppingBag size={15} strokeWidth={2.1} />} label="Handleliste" value={`${plan.shoppingList.totalItemsToBuy} varer`} />
@@ -107,7 +97,7 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
               <p className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-[#8f8475]">Neste måltid</p>
               <h2 className="mt-1 text-[1.5rem] font-black tracking-tight text-[#1d1a16]">Dagens middag</h2>
             </div>
-            <Button className="min-h-[42px] px-4 py-2 text-[0.82rem]" onClick={() => onAction("meals")} variant="secondary">
+            <Button className="min-h-[40px] px-4 py-2 text-[0.8rem]" onClick={() => onAction("meals")} variant="secondary">
               Åpne ukeplan
             </Button>
           </div>
@@ -126,11 +116,7 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
             role="button"
             tabIndex={0}
           >
-            <img
-              alt={featuredMeal?.name ?? "Dagens middag"}
-              className="absolute inset-0 h-full w-full object-cover"
-              src={mealImageSrc ?? mealImage1}
-            />
+            <img alt={featuredMeal?.name ?? "Dagens middag"} className="absolute inset-0 h-full w-full object-cover" src={mealImageSrc ?? featuredMealImage} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
             <div className="absolute left-4 top-4 z-10">
               <Badge tone="warm">Anbefalt i dag</Badge>
@@ -181,7 +167,7 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
                 type="button"
               >
                 <div className="relative h-[7.75rem] overflow-hidden">
-                  <img alt={meal.name} className="h-full w-full object-cover" src={mealImages[index % mealImages.length]} />
+                  <img alt={meal.name} className="h-full w-full object-cover" src={getMealImage(meal.id, index)} />
                   <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[0.68rem] font-semibold text-[#514a42]">
                     {weekdayLabels[index] ?? meal.weekday ?? `Dag ${index + 1}`}
                   </div>
@@ -203,12 +189,12 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
         </div>
 
         <div className="px-4">
-          <Card className="rounded-[1.5rem] border-0 bg-[#edf7ef] p-4.5 shadow-[0_12px_28px_rgba(81,120,89,0.08)]">
+          <Card className="rounded-[1.45rem] border-0 bg-[#eef4eb] p-4 shadow-[0_12px_24px_rgba(81,120,89,0.06)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[1.02rem] font-black text-[#1d1a16]">Du sparer godt denne uka</p>
                 <p className="mt-1 text-[0.92rem] leading-relaxed text-[#5f7a66]">
-                  Planen holder deg pa {formatNok(remaining)} igjen av budsjettet og gir et jevnt prisniva gjennom uka.
+                  Planen holder deg på {formatNok(remaining)} igjen av budsjettet og gir et jevnt prisnivå gjennom uka.
                 </p>
               </div>
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/80 text-[#2aa95f] shadow-[0_8px_18px_rgba(81,120,89,0.08)]">
@@ -232,7 +218,7 @@ const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOver
 
 function StatChip({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-[1.1rem] bg-[#faf7f1] px-3 py-3">
+    <div className="rounded-[1rem] bg-[#faf7f1] px-3 py-2.5">
       <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#238f56] shadow-[0_6px_14px_rgba(33,25,16,0.05)]">
         {icon}
       </div>

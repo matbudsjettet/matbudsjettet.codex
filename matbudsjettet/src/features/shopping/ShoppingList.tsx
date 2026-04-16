@@ -126,7 +126,7 @@ export function ShoppingList({
   return (
     <Section eyebrow="Handleliste" title="Dette må du handle nå">
       {totalCount === 0 ? (
-        <div className="space-y-app-4">
+        <div className="space-y-4">
           <ShoppingListControls
             helperText={activeHelperText}
             displayedTotal={displayedTotal}
@@ -155,7 +155,7 @@ export function ShoppingList({
 
           <PantryEditor pantryIngredientIds={pantryIngredientIds} togglePantryItem={togglePantryItem} />
 
-          <Card className="p-app-5" variant={allChecked ? "saving" : "surface"}>
+          <Card className="p-4" variant={allChecked ? "saving" : "surface"}>
             <div className="flex items-center justify-between gap-app-3">
               <div>
                 <p className="font-black">{allChecked ? "Alt er handlet" : "Klar for butikken"}</p>
@@ -163,17 +163,17 @@ export function ShoppingList({
                   {allChecked ? "Handlelisten er ferdig krysset av." : `${checkedCount} av ${totalCount} varer er krysset av.`}
                 </p>
               </div>
-              <div className="grid h-11 w-11 place-items-center rounded-lg bg-surface text-saving">
+              <div className="grid h-11 w-11 place-items-center rounded-full bg-surface text-saving">
                 {allChecked ? <Check size={20} /> : <ShoppingBasket size={20} />}
               </div>
             </div>
           </Card>
 
-          <div className="space-y-app-4">
+          <div className="space-y-3">
             {groupedForDisplay.map((group) => (
               <Card className="overflow-hidden p-0" key={group.group} variant="surface">
-                <div className="border-b border-border-subtle px-app-4 py-app-3">
-                  <h3 className="text-headline text-text-primary">{group.group}</h3>
+                <div className="border-b border-border-subtle bg-[#fbf8f2] px-4 py-3">
+                  <h3 className="text-[1rem] font-bold text-text-primary">{group.group}</h3>
                 </div>
                 {group.items.map((item, index) => {
                   const store = stores.find((entry) => entry.id === item.bestStore);
@@ -182,7 +182,7 @@ export function ShoppingList({
                   return (
                     <button
                       className={cn(
-                        "flex w-full items-center gap-app-3 p-app-4 text-left transition-[background-color,opacity] duration-200 active:bg-neutral-200",
+                        "flex w-full items-center gap-app-3 px-4 py-3.5 text-left transition-[background-color,opacity] duration-200 active:bg-neutral-200",
                         index === group.items.length - 1 ? "" : "border-b border-border-subtle"
                       )}
                       key={item.ingredientId}
@@ -191,7 +191,7 @@ export function ShoppingList({
                     >
                       <span
                         className={cn(
-                          "grid h-7 w-7 shrink-0 place-items-center rounded-md border",
+                          "grid h-7 w-7 shrink-0 place-items-center rounded-full border",
                           checked ? "border-saving bg-saving text-white" : "border-border bg-surface text-transparent"
                         )}
                       >
@@ -207,7 +207,7 @@ export function ShoppingList({
                           >
                             {item.name}
                           </span>
-                          {item.alreadyHave ? <Badge tone="saving">Har</Badge> : null}
+                          {item.alreadyHave ? <Badge tone="saving">Har hjemme</Badge> : null}
                         </span>
                         <span className="block text-body-sm font-semibold text-text-secondary">
                           {item.displayQuantity} · {item.alreadyHave ? "ligger i skapet" : store?.name}
@@ -250,20 +250,20 @@ function ShoppingListControls({
   sortMode: ShoppingSortMode;
 }) {
   return (
-    <Card className="space-y-app-4 p-app-5" variant="default">
+    <Card className="space-y-4 p-4" variant="default">
       <div>
-        <p className="text-title text-text-primary">{formatCompactNok(displayedTotal)}</p>
-        <p className="mt-1 text-caption text-text-tertiary">
+        <p className="text-[1.55rem] font-black tracking-tight text-text-primary">{formatCompactNok(displayedTotal)}</p>
+        <p className="mt-1 text-[0.75rem] text-text-tertiary">
           Inkluderer hele pakker. Middagskostnaden er {formatCompactNok(planWeeklyTotalNok)}.
         </p>
-        <p className="mt-1 text-body-sm text-text-secondary">
+        <p className="mt-1 text-[0.88rem] text-text-secondary">
           {shoppingList.totalItemsToBuy} av {shoppingList.totalItems} varer må kjøpes
         </p>
         {pantrySavingsNok > 0 ? (
-          <p className="mt-2 text-body-sm text-saving">Du sparer {formatCompactNok(pantrySavingsNok)} fra det du allerede har hjemme</p>
+          <p className="mt-2 text-[0.84rem] font-semibold text-saving">Du sparer {formatCompactNok(pantrySavingsNok)} fra det du allerede har hjemme</p>
         ) : null}
       </div>
-      <div className="space-y-app-2">
+      <div className="space-y-2">
         <SegmentedControl
           items={[
             { label: "Sorter etter kategori", value: "category" },
@@ -272,7 +272,7 @@ function ShoppingListControls({
           onChange={(value) => onSortModeChange(value as ShoppingSortMode)}
           value={sortMode}
         />
-        <p className="text-body-sm text-text-secondary">
+        <p className="text-[0.84rem] text-text-secondary">
           {helperText}
           {sortMode === "flow" ? ` Gjelder typisk handlemønster hos ${getStoreName(selectedStore)}.` : ""}
         </p>
@@ -325,9 +325,9 @@ function PantryEditor({
   togglePantryItem: (id: string) => void;
 }) {
   return (
-    <Card className="p-app-4" variant="surface">
+    <Card className="p-4" variant="surface">
       <div className="flex items-start gap-app-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-surface text-text-secondary">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#faf7f1] text-text-secondary">
           <Home size={18} />
         </div>
         <div className="min-w-0 flex-1">
@@ -337,17 +337,17 @@ function PantryEditor({
           </p>
         </div>
       </div>
-      <div className="mt-app-3 flex flex-wrap gap-app-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         {pantryOptions.map((item) => {
           const selected = pantryIngredientIds.includes(item.id);
 
           return (
             <button
               className={cn(
-                "rounded-md border px-app-3 py-app-2 text-caption font-black transition",
+                "rounded-full border px-3 py-2 text-[0.74rem] font-semibold transition",
                 selected
                   ? "border-saving-border bg-saving-bg text-saving"
-                  : "border-border-subtle bg-surface text-text-secondary"
+                  : "border-border-subtle bg-white text-text-secondary"
               )}
               key={item.id}
               onClick={() => togglePantryItem(item.id)}
@@ -364,8 +364,8 @@ function PantryEditor({
 
 function EmptyShoppingList() {
   return (
-    <Card className="p-app-5 text-center" variant="surface">
-      <div className="mx-auto grid h-12 w-12 place-items-center rounded-lg bg-neutral-200 text-text-secondary">
+    <Card className="p-5 text-center" variant="surface">
+      <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#f3eee6] text-text-secondary">
         <ShoppingBasket size={22} />
       </div>
       <h3 className="mt-app-3 text-headline text-text-primary">Handlekurven er tom</h3>
