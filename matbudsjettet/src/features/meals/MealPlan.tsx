@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
-import { cn } from "@/lib/utils/cn";
 import type { PlannedMeal } from "@/types/domain";
 
 type MealPlanProps = {
