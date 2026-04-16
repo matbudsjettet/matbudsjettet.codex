@@ -1,11 +1,11 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, ChevronRight, Heart, ReceiptText, Wallet } from "lucide-react";
+import veggieBowl from "../../../assets/veggie-bowl.png";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ingredients } from "@/lib/data/ingredients";
-import { homeAssetSlots } from "@/lib/design/homeAssetSlots";
 import { sectionVariants, pageTransition } from "@/lib/design/animations";
 import { formatCompactNok } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
@@ -216,45 +216,22 @@ function StatCard({
 }
 
 function BudgetIllustration() {
-  const [assetFailed, setAssetFailed] = useState(false);
-  const bowlAsset = homeAssetSlots.veggieBowl;
-
   return (
     <div className="relative flex h-[136px] w-full items-start justify-end self-start pl-1 pt-0.5">
-      {assetFailed ? (
-        <>
-          <div className="absolute inset-x-0 bottom-0 top-3 rounded-full bg-[radial-gradient(circle_at_42%_34%,rgba(234,248,237,0.92),rgba(234,248,237,0.45)_54%,rgba(234,248,237,0)_74%)]" />
-          <div className="absolute right-1 top-4 h-[72px] w-[72px] rounded-full bg-[radial-gradient(circle,rgba(255,238,218,0.75),rgba(255,238,218,0.06)_70%)]" />
-          <div className="absolute bottom-3 right-4 h-3.5 w-20 rounded-full bg-[radial-gradient(circle,rgba(188,171,144,0.2),rgba(188,171,144,0.02)_72%)] blur-[2px]" />
-          <div className="relative mt-2 h-[76px] w-[96px] rounded-b-[999px] rounded-t-[36px] bg-[linear-gradient(180deg,#fffaf2_0%,#f6e6ca_60%,#ddb985_100%)] shadow-[inset_0_-8px_14px_rgba(182,135,76,0.14),0_12px_18px_rgba(193,158,110,0.18)]">
-            <div className="absolute inset-x-[10px] top-[8px] h-[8px] rounded-full bg-[linear-gradient(180deg,rgba(255,255,255,0.68),rgba(255,255,255,0.08))]" />
-            <div className="absolute left-[4px] top-[-12px] h-[40px] w-[26px] rounded-[999px_999px_14px_14px] bg-[linear-gradient(180deg,#62c96a_0%,#379a46_68%,#2b7d3b_100%)] rotate-[-14deg] shadow-[inset_0_-6px_8px_rgba(0,0,0,0.1)]" />
-            <div className="absolute left-[18px] top-[-24px] h-[48px] w-[33px] rounded-[999px_999px_18px_18px] bg-[linear-gradient(180deg,#72d06d_0%,#46ab52_60%,#2f8840_100%)] rotate-[5deg] shadow-[inset_0_-6px_10px_rgba(0,0,0,0.1)]" />
-            <div className="absolute left-[42px] top-[-12px] h-[37px] w-[26px] rounded-full bg-[radial-gradient(circle_at_35%_28%,#ff8e77_0%,#f15841_42%,#cb372a_100%)] shadow-[inset_0_-6px_8px_rgba(0,0,0,0.08)]" />
-            <div className="absolute left-[49px] top-[-18px] h-3.5 w-1.5 rounded-full bg-[linear-gradient(180deg,#3ca14c_0%,#247737_100%)]" />
-            <div className="absolute right-[10px] top-[-10px] h-[36px] w-[26px] rounded-[16px_16px_18px_18px] bg-[radial-gradient(circle_at_35%_28%,#ffe28a_0%,#ffc13c_48%,#ec9625_100%)] shadow-[inset_0_-6px_8px_rgba(0,0,0,0.08)]" />
-            <div className="absolute right-[18px] top-[-15px] h-3.5 w-1.5 rounded-full bg-[linear-gradient(180deg,#40a64f_0%,#28803a_100%)]" />
-            <div className="absolute right-[1px] top-[-8px] h-[42px] w-[20px] rounded-[999px_999px_18px_18px] bg-[linear-gradient(180deg,#6aba71_0%,#4c9655_52%,#346f3d_100%)] rotate-[21deg] shadow-[inset_0_-6px_10px_rgba(0,0,0,0.1)]" />
-          </div>
-        </>
-      ) : (
-        <img
-          alt=""
-          className="relative z-[1]"
-          height={bowlAsset.height}
-          onError={() => setAssetFailed(true)}
-          src={bowlAsset.path}
-          style={{
-            height: bowlAsset.height,
-            marginLeft: 12,
-            marginTop: -4,
-            objectFit: bowlAsset.objectFit,
-            objectPosition: bowlAsset.objectPosition,
-            width: bowlAsset.width
-          }}
-          width={bowlAsset.width}
-        />
-      )}
+      <img
+        alt=""
+        className="relative z-[1]"
+        height={90}
+        src={veggieBowl}
+        style={{
+          height: 90,
+          marginLeft: 12,
+          marginTop: -4,
+          objectFit: "contain",
+          width: 90
+        }}
+        width={90}
+      />
     </div>
   );
 }
