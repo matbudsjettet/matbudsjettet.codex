@@ -53,7 +53,7 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         </div>
 
         <div className="relative -mx-app-5 overflow-x-auto px-app-5 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex snap-x snap-proximity gap-3 pr-8">
+          <div className="flex snap-x snap-proximity gap-2 pr-10">
             {plan.meals.map((meal, index) => (
               <MealRailCard key={meal.id} meal={meal} weekdayLabel={getWeekdayLabel(index)} />
             ))}
@@ -73,33 +73,33 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
 
 function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel: string }) {
   return (
-    <Card className="w-[6.95rem] shrink-0 snap-start overflow-hidden rounded-[20px] border-0 bg-white p-0 shadow-[0_10px_24px_rgba(42,31,16,0.065)]" variant="quiet">
-      <div className="relative aspect-[0.9] overflow-hidden bg-[#f6f0e6]">
+    <Card className="w-[6.65rem] shrink-0 snap-start overflow-hidden rounded-[18px] border-0 bg-white p-0 shadow-[0_10px_22px_rgba(42,31,16,0.06)]" variant="quiet">
+      <div className="relative h-[6.45rem] overflow-hidden bg-[#f6f0e6]">
         <img
           alt={meal.name}
-          className="h-full w-full scale-[1.03] object-cover brightness-[0.98] saturate-[0.92] contrast-[0.96]"
+          className="h-full w-full object-cover brightness-[0.97] saturate-[0.9] contrast-[0.95]"
           loading="lazy"
           src={getMealPhoto(meal)}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,247,236,0.06),rgba(244,221,188,0.12))]" />
-        <div className="absolute inset-x-0 top-0 flex items-start justify-between p-2.5">
-          <span className="rounded-full bg-[#ff9d2f] px-2 py-1 text-[0.66rem] font-black text-white shadow-[0_7px_14px_rgba(255,157,47,0.28)]">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,248,239,0.08),rgba(245,224,194,0.14))]" />
+        <div className="absolute inset-x-0 top-0 flex items-start justify-between p-2">
+          <span className="rounded-full bg-[#ff9d2f] px-2 py-[0.28rem] text-[0.62rem] font-black text-white shadow-[0_6px_12px_rgba(255,157,47,0.24)]">
             {weekdayLabel}
           </span>
           <button
             aria-label={`Lagre ${meal.name} som favoritt`}
-            className="grid h-7 w-7 place-items-center rounded-full bg-white/92 text-[#9a9488] shadow-[0_7px_16px_rgba(42,31,16,0.12)] backdrop-blur-sm"
+            className="grid h-6.5 w-6.5 place-items-center rounded-full bg-white/92 text-[#9a9488] shadow-[0_6px_14px_rgba(42,31,16,0.11)] backdrop-blur-sm"
             type="button"
           >
-            <Heart size={13} strokeWidth={2.2} />
+            <Heart size={12} strokeWidth={2.2} />
           </button>
         </div>
       </div>
 
-      <div className="px-2.5 pb-2.5 pt-2.5">
-        <h4 className="line-clamp-2 text-[0.86rem] font-black leading-[1.2] text-text-primary">{meal.name}</h4>
-        <p className="mt-1 line-clamp-2 text-[0.74rem] font-medium leading-[1.25] text-[#7c766d]">{getMealSubtitle(meal)}</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="px-2.5 pb-2.5 pt-2">
+        <h4 className="line-clamp-2 text-[0.83rem] font-black leading-[1.16] text-text-primary">{meal.name}</h4>
+        <p className="mt-1 line-clamp-1 text-[0.72rem] font-medium leading-[1.2] text-[#7c766d]">{getMealSubtitle(meal)}</p>
+        <div className="mt-2 flex flex-wrap gap-1">
           {getMealRailTags(meal).map((tag) => (
             <Badge key={tag.label} tone={tag.tone}>
               {tag.label}
@@ -253,25 +253,25 @@ function QuickActionButton({ children, onClick }: { children: ReactNode; onClick
 const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 const mealPhotoFallbacks: Record<string, string> = {
-  "pasta-med-tomatsaus": "https://images.pexels.com/photos/5317184/pexels-photo-5317184.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kylling-med-ris-og-gronnsaker": "https://images.pexels.com/photos/15978566/pexels-photo-15978566.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "laksefilet-med-poteter": "https://images.pexels.com/photos/20844827/pexels-photo-20844827.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/19615790/pexels-photo-19615790.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "tomatsuppe-med-egg": "https://images.pexels.com/photos/14774700/pexels-photo-14774700.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "chili-sin-carne": "https://images.pexels.com/photos/15881322/pexels-photo-15881322.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "fiskekaker-med-rakost": "https://images.pexels.com/photos/19615790/pexels-photo-19615790.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "taco-fredag": "https://images.pexels.com/photos/6399991/pexels-photo-6399991.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "pytt-i-panne": "https://images.pexels.com/photos/27331092/pexels-photo-27331092.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "ovnsbakt-laks": "https://images.pexels.com/photos/20844827/pexels-photo-20844827.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "omelett-med-gronnsaker": "https://images.pexels.com/photos/27331092/pexels-photo-27331092.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "spaghetti-bolognese": "https://images.pexels.com/photos/21906876/pexels-photo-21906876.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "linsesuppe-med-brod": "https://images.pexels.com/photos/14774700/pexels-photo-14774700.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kyllingwraps-med-spro-kal": "https://images.pexels.com/photos/23106702/pexels-photo-23106702.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kyllingform-med-potet-og-gulrot": "https://images.pexels.com/photos/10277949/pexels-photo-10277949.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "pastafrittata-med-brokkoli": "https://images.pexels.com/photos/10934498/pexels-photo-10934498.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "potetsuppe-med-brod": "https://images.pexels.com/photos/5794/pexels-photo-5794.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "egg-og-brod-med-rakost": "https://images.pexels.com/photos/12662757/pexels-photo-12662757.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  default: "https://images.pexels.com/photos/5317184/pexels-photo-5317184.jpeg?auto=compress&cs=tinysrgb&w=1200"
+  "pasta-med-tomatsaus": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "kylling-med-ris-og-gronnsaker": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "laksefilet-med-poteter": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "tomatsuppe-med-egg": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "chili-sin-carne": "https://images.pexels.com/photos/5737247/pexels-photo-5737247.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "fiskekaker-med-rakost": "https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "taco-fredag": "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "pytt-i-panne": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "ovnsbakt-laks": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "omelett-med-gronnsaker": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "spaghetti-bolognese": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "linsesuppe-med-brod": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "kyllingwraps-med-spro-kal": "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "kyllingform-med-potet-og-gulrot": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "pastafrittata-med-brokkoli": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "potetsuppe-med-brod": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "egg-og-brod-med-rakost": "https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  default: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200"
 };
 
 const ingredientNameById = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient.name]));
