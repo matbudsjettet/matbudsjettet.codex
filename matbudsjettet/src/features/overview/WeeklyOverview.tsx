@@ -217,20 +217,21 @@ function StatCard({
 
 function BudgetIllustration() {
   return (
-    <div className="relative flex h-[136px] w-full items-start justify-end self-start pl-1 pt-0.5">
+    <div className="relative flex h-[148px] w-full items-start justify-end self-start pr-1 pt-1">
       <img
         alt=""
         className="relative z-[1]"
-        height={90}
+        height={140}
         src={veggieBowl}
         style={{
-          height: 90,
+          alignSelf: "flex-start",
+          height: 140,
           marginLeft: 12,
-          marginTop: -4,
+          marginTop: -2,
           objectFit: "contain",
-          width: 90
+          width: 140
         }}
-        width={90}
+        width={140}
       />
     </div>
   );
