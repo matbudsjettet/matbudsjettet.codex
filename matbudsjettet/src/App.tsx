@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppShell } from "@/components/app/AppShell";
+import { SplashScreen } from "@/components/app/SplashScreen";
 import { BudgetSummary } from "@/features/budget/BudgetSummary";
 import { MealDetailScreen } from "@/features/meals/MealDetailScreen";
 import { MealPlan } from "@/features/meals/MealPlan";
@@ -44,7 +45,27 @@ const viewTitles: Record<AppView, string> = {
   settings: "Innstillinger"
 };
 
+const SPLASH_STORAGE_KEY = "matbudsjettet:lastOpenedAt";
+const COLD_OPEN_THRESHOLD_MS = 10 * 60 * 1000;
+const SPLASH_DURATION_MS = 950;
+
+function shouldShowSplashOnColdOpen() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const lastOpenedAt = Number(window.localStorage.getItem(SPLASH_STORAGE_KEY));
+
+  if (!Number.isFinite(lastOpenedAt)) {
+    return true;
+  }
+
+  return Date.now() - lastOpenedAt > COLD_OPEN_THRESHOLD_MS;
+}
+
 export function App() {
+  const [showSplash, setShowSplash] = useState(() => shouldShowSplashOnColdOpen());
+  const [isLoading, setIsLoading] = useState(() => shouldShowSplashOnColdOpen());
   const [routine, setRoutine] = usePersistentState(loadWeeklyRoutineState, saveWeeklyRoutineState);
   const savedPreference = routine.savedPreference;
   const [selectedStore, setSelectedStore] = useState<StoreId>(savedPreference?.preferredStore ?? defaultPreference.preferredStore);
@@ -112,6 +133,22 @@ export function App() {
   }, [preference, routine.mealPreferences, selectedStore, weeklyPlan.summary.weeklyTotalNok]);
 
   const planShapeKey = `${selectedStore}-${householdSize}-${planMode}-${weeklyBudgetNok}`;
+
+  useEffect(() => {
+    window.localStorage.setItem(SPLASH_STORAGE_KEY, String(Date.now()));
+
+    if (!showSplash) {
+      setIsLoading(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowSplash(false);
+      setIsLoading(false);
+    }, SPLASH_DURATION_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [showSplash]);
 
   useEffect(() => {
     pantryIngredientIdsRef.current = pantryIngredientIds;
@@ -410,6 +447,10 @@ export function App() {
         return <SettingsScreen onRestartOnboarding={handleRestartOnboarding} preference={preference} routine={routine} />;
     }
   };
+
+  if (isLoading && showSplash) {
+    return <SplashScreen />;
+  }
 
   if (!onboardingComplete) {
     return (

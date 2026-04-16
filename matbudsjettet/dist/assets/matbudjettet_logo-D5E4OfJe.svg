@@ -1,0 +1,44 @@
+<svg width="100%" viewBox="0 0 680 340" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Matbudjettet logo</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">A modern Scandinavian wordmark logo for Matbudjettet featuring a stylised leaf-coin icon and clean green typography</desc>
+
+  
+
+  <!-- Icon mark: leaf growing from a coin -->
+  <g transform="translate(180, 90)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+
+    <!-- Coin base - flat circle -->
+    <ellipse cx="0" cy="52" rx="38" ry="10" fill="#A8D5B5" opacity="0.5" style="fill:rgb(168, 213, 181);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <circle cx="0" cy="20" r="38" fill="#2E7D4F" style="fill:rgb(46, 125, 79);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <circle cx="0" cy="20" r="30" fill="none" stroke="#A8D5B5" stroke-width="1.5" opacity="0.6" style="fill:none;stroke:rgb(168, 213, 181);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Kr symbol inside coin -->
+    <text x="-10" y="27" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#E8F5EC" text-anchor="middle" style="fill:rgb(232, 245, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, serif;font-size:22px;font-weight:700;text-anchor:middle;dominant-baseline:auto">kr</text>
+
+    <!-- Leaf stem -->
+    <path d="M0 -18 C0 -18 0 -50 0 -68" stroke="#2E7D4F" stroke-width="2.5" fill="none" stroke-linecap="round" style="fill:none;stroke:rgb(46, 125, 79);color:rgb(255, 255, 255);stroke-width:2.5px;stroke-linecap:round;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Leaf left -->
+    <path d="M0 -44 C-22 -58 -32 -40 -12 -30 C-6 -27 0 -30 0 -36" fill="#4CAF78" opacity="0.9" style="fill:rgb(76, 175, 120);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.9;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Leaf right -->
+    <path d="M0 -54 C20 -70 32 -52 14 -40 C8 -37 0 -40 0 -46" fill="#2E7D4F" style="fill:rgb(46, 125, 79);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Leaf vein right -->
+    <path d="M0 -54 C8 -50 12 -44 14 -40" stroke="#A8D5B5" stroke-width="0.8" fill="none" opacity="0.7" style="fill:none;stroke:rgb(168, 213, 181);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- Leaf vein left -->
+    <path d="M0 -44 C-6 -40 -10 -36 -12 -30" stroke="#A8D5B5" stroke-width="0.8" fill="none" opacity="0.7" style="fill:none;stroke:rgb(168, 213, 181);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="258" y="152" style="fill:rgb(212, 237, 218);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:42px;font-weight:700;text-anchor:start;dominant-baseline:auto">mat</text>
+  <text x="333" y="152" style="fill:rgb(129, 201, 149);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:42px;font-weight:400;text-anchor:start;dominant-baseline:auto">budjettet</text>
+
+  <!-- Decorative underline — two-tone bar -->
+  <rect x="258" y="162" width="75" height="2.5" rx="1.25" fill="#1C3A28" style="fill:rgb(28, 58, 40);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect x="333" y="162" width="183" height="2.5" rx="1.25" fill="#2E7D4F" opacity="0.45" style="fill:rgb(46, 125, 79);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.45;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Tagline -->
+  <text x="259" y="186" style="fill:rgb(107, 143, 114);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:11px;font-weight:400;text-anchor:start;dominant-baseline:auto">SMART MIDDAGSPLANLEGGING</text>
+
+</svg>
