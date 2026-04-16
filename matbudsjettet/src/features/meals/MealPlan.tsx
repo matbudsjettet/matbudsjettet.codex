@@ -1,7 +1,30 @@
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
+import mealImage1 from "../../../assets/meals/meal-1.png";
+import mealImage2 from "../../../assets/meals/meal-2.png";
+import mealImage3 from "../../../assets/meals/meal-3.png";
+import mealImage4 from "../../../assets/meals/meal-4.png";
+import mealImage5 from "../../../assets/meals/meal-5.png";
+import mealImage6 from "../../../assets/meals/meal-6.png";
+import mealImage7 from "../../../assets/meals/meal-7.png";
+import mealImage8 from "../../../assets/meals/meal-8.png";
+import mealImage9 from "../../../assets/meals/meal-9.png";
+import mealImage10 from "../../../assets/meals/meal-10.png";
 import type { PlannedMeal } from "@/types/domain";
+
+const mealImages = [
+  mealImage1,
+  mealImage2,
+  mealImage3,
+  mealImage4,
+  mealImage5,
+  mealImage6,
+  mealImage7,
+  mealImage8,
+  mealImage9,
+  mealImage10
+];
 
 type MealPlanProps = {
   meals: PlannedMeal[];
@@ -25,7 +48,7 @@ export function MealPlan({ meals, onOpenRecipe }: MealPlanProps) {
             {/* IMAGE */}
             <div className="h-[150px] w-full overflow-hidden">
               <img
-                src={`/assets/meals/meal-${index + 1}.png`}
+                src={mealImages[index % mealImages.length]}
                 className="h-full w-full object-cover"
               />
             </div>
