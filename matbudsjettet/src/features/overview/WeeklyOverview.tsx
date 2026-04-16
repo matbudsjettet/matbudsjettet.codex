@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, ChevronRight, Heart, ReceiptText, Wallet } from "lucide-react";
+import { CalendarDays, ChevronRight, Heart, ReceiptText, TrendingUp, Wallet } from "lucide-react";
 import veggieBowl from "../../../assets/veggie-bowl.png";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Card } from "@/components/ui/Card";
@@ -24,10 +24,11 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
   const budgetDeltaNok = Math.abs(budgetComparison.differenceNok);
   const spentRatio = preference.weeklyBudgetNok > 0 ? plan.summary.weeklyTotalNok / preference.weeklyBudgetNok : 0;
   const remainingPercent = Math.max(0, Math.min(100, Math.round((1 - spentRatio) * 100)));
+  const savedSharePercent = preference.weeklyBudgetNok > 0 ? Math.max(0, Math.round((budgetDeltaNok / preference.weeklyBudgetNok) * 100)) : 0;
   const store = stores.find((item) => item.id === preference.preferredStore);
 
   return (
-    <motion.section animate="animate" className="relative space-y-9" initial="initial" transition={pageTransition} variants={sectionVariants}>
+    <motion.section animate="animate" className="relative space-y-7" initial="initial" transition={pageTransition} variants={sectionVariants}>
       <WeeklyHeroCard
         budgetDeltaNok={budgetDeltaNok}
         budgetIsOver={budgetIsOver}
@@ -53,7 +54,7 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         </div>
 
         <div className="relative -mx-app-5 overflow-x-auto px-app-5 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex snap-x snap-proximity gap-2 pr-10">
+          <div className="flex snap-x snap-proximity gap-2.5 pr-10">
             {plan.meals.map((meal, index) => (
               <MealRailCard key={meal.id} meal={meal} weekdayLabel={getWeekdayLabel(index)} />
             ))}
@@ -61,7 +62,9 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         </div>
       </section>
 
-      <div className="grid grid-cols-4 gap-app-2 rounded-[22px] bg-bg-elevated p-1.5">
+      <CelebrationBanner budgetDeltaNok={budgetDeltaNok} savedSharePercent={savedSharePercent} />
+
+      <div className="mt-2 grid grid-cols-4 gap-app-2 rounded-[22px] bg-bg-elevated p-1.5">
         <QuickActionButton onClick={() => onAction("meals")}>Ukeplan</QuickActionButton>
         <QuickActionButton onClick={() => onAction("shopping")}>Handleliste</QuickActionButton>
         <QuickActionButton onClick={() => onAction("tips")}>Spartips</QuickActionButton>
@@ -73,11 +76,11 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
 
 function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel: string }) {
   return (
-    <Card className="w-[6.65rem] shrink-0 snap-start overflow-hidden rounded-[18px] border-0 bg-white p-0 shadow-[0_10px_22px_rgba(42,31,16,0.06)]" variant="quiet">
-      <div className="relative h-[6.45rem] overflow-hidden bg-[#f6f0e6]">
+    <Card className="w-[6.9rem] shrink-0 snap-start overflow-hidden rounded-[18px] border-0 bg-white p-0 shadow-[0_10px_22px_rgba(42,31,16,0.06)]" variant="quiet">
+      <div className="relative h-[6.85rem] overflow-hidden bg-[#f6f0e6]">
         <img
           alt={meal.name}
-          className="h-full w-full object-cover brightness-[0.97] saturate-[0.9] contrast-[0.95]"
+          className="h-full w-full object-cover brightness-[0.98] saturate-[0.94] contrast-[0.96]"
           loading="lazy"
           src={getMealPhoto(meal)}
         />
@@ -97,7 +100,7 @@ function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel:
       </div>
 
       <div className="px-2.5 pb-2.5 pt-2">
-        <h4 className="line-clamp-2 text-[0.83rem] font-black leading-[1.16] text-text-primary">{meal.name}</h4>
+        <h4 className="line-clamp-2 text-[0.84rem] font-black leading-[1.16] text-text-primary">{meal.name}</h4>
         <p className="mt-1 line-clamp-1 text-[0.72rem] font-medium leading-[1.2] text-[#7c766d]">{getMealSubtitle(meal)}</p>
         <div className="mt-2 flex flex-wrap gap-1">
           {getMealRailTags(meal).map((tag) => (
@@ -136,27 +139,27 @@ function WeeklyHeroCard({
   const formatPlainNumber = (value: number) => value.toLocaleString("nb-NO", { maximumFractionDigits: 0 });
 
   return (
-    <div className="space-y-3.5">
-      <Card className="overflow-hidden rounded-[28px] border-0 bg-white px-5 pb-5 pt-5 shadow-[0_12px_30px_rgba(42,31,16,0.055)] sm:px-6" variant="quiet">
-        <div className="grid grid-cols-[minmax(0,1fr)_118px] items-start gap-5">
+    <div className="space-y-3">
+      <Card className="overflow-hidden rounded-[28px] border-0 bg-white px-5 pb-4.5 pt-4.5 shadow-[0_12px_30px_rgba(42,31,16,0.055)] sm:px-6" variant="quiet">
+        <div className="grid grid-cols-[minmax(0,1fr)_132px] items-start gap-4">
           <div className="min-w-0 pt-0.5">
             <p className="text-[0.84rem] font-black text-text-primary">Du har</p>
-            <p className={cn("mt-3.5 whitespace-nowrap text-[2.55rem] font-black leading-[0.98] tracking-tight", amountColorClass)}>
+            <p className={cn("mt-2.5 whitespace-nowrap text-[2.6rem] font-black leading-[0.98] tracking-tight", amountColorClass)}>
               <AnimatedNumber className={amountColorClass} formatter={formatPlainNumber} pulse={false} value={budgetDeltaNok} /> kr
             </p>
-            <p className="mt-3.5 max-w-[11rem] text-[0.9rem] font-medium leading-[1.3] text-[#7d776e]">igjen av matbudsjettet</p>
+            <p className="mt-2.5 max-w-[11rem] text-[0.9rem] font-medium leading-[1.3] text-[#7d776e]">igjen av matbudsjettet</p>
           </div>
           <BudgetIllustration />
         </div>
 
-        <div className="mt-5 inline-flex items-center rounded-full bg-[#e7f7ea] px-3 py-1.5 text-[0.78rem] font-bold text-[#2cad61]">
+        <div className="mt-4 inline-flex items-center rounded-full bg-[#e7f7ea] px-3 py-1.5 text-[0.78rem] font-bold text-[#2cad61]">
           <span aria-hidden="true" className="mr-1.5 text-[0.86rem] leading-none">
             {budgetIsOver ? "!" : "🎉"}
           </span>
           {statusLabel}
         </div>
 
-        <div className="mt-5 flex items-center gap-2.5">
+        <div className="mt-4.5 flex items-center gap-2.5">
           <div className="h-3.5 flex-1 overflow-hidden rounded-full bg-[#f2efe8]">
             <div
               className="h-full rounded-full"
@@ -169,7 +172,7 @@ function WeeklyHeroCard({
           <span className="min-w-[2.9rem] text-right text-[0.88rem] font-black leading-none text-[#2fc46e]">{remainingPercent} %</span>
         </div>
 
-        <div className="mt-3.5 flex items-center justify-between gap-3 text-[0.76rem] font-medium text-[#8b857b]">
+        <div className="mt-2.5 flex items-center justify-between gap-3 text-[0.74rem] font-medium text-[#8b857b]">
           <p>Du har brukt {formatCompactNok(weeklyTotalNok)} av {formatCompactNok(weeklyBudgetNok)}</p>
           <p className="shrink-0 text-right font-medium text-[#8b857b]">
             {householdSize} {householdSize === 1 ? "person" : "personer"} · {storeName}
@@ -218,22 +221,52 @@ function StatCard({
 
 function BudgetIllustration() {
   return (
-    <div className="relative flex h-[148px] w-full items-start justify-end self-start pr-1 pt-1">
+    <div className="relative flex h-[126px] w-full items-start justify-end self-start pr-1 pt-1">
       <img
         alt=""
         className="relative z-[1]"
-        height={140}
+        height={128}
         src={veggieBowl}
         style={{
           alignSelf: "flex-start",
-          height: 140,
-          marginLeft: 12,
+          height: 128,
+          marginLeft: 8,
           marginTop: -2,
           objectFit: "contain",
-          width: 140
+          width: 128
         }}
-        width={140}
+        width={128}
       />
+    </div>
+  );
+}
+
+function CelebrationBanner({ budgetDeltaNok, savedSharePercent }: { budgetDeltaNok: number; savedSharePercent: number }) {
+  return (
+    <Card className="flex items-center gap-3 rounded-[18px] border-0 bg-[#eef6ea] px-4 py-3 shadow-none" variant="quiet">
+      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#cff1d6] text-[#35bf69]">
+        <TrendingUp size={18} strokeWidth={2.5} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[0.92rem] font-black text-text-primary">Flott jobba! 🎉</p>
+        <p className="mt-1 text-[0.76rem] font-medium text-[#6f796d]">Du har spart {formatCompactNok(budgetDeltaNok)} denne uka</p>
+        <p className="mt-0.5 text-[0.76rem] font-medium text-[#6f796d]">Det er {savedSharePercent} % av budsjettet!</p>
+      </div>
+      <PlantIllustration />
+    </Card>
+  );
+}
+
+function PlantIllustration() {
+  return (
+    <div className="relative h-[62px] w-[52px] shrink-0">
+      <div className="absolute bottom-1 left-1/2 h-2.5 w-10 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(172,152,122,0.28),rgba(172,152,122,0.02)_72%)]" />
+      <div className="absolute bottom-2 left-1/2 h-[22px] w-[26px] -translate-x-1/2 rounded-[8px_8px_12px_12px] bg-[linear-gradient(180deg,#d6a470_0%,#b87d47_100%)] shadow-[inset_0_-4px_6px_rgba(0,0,0,0.08)]" />
+      <div className="absolute bottom-[22px] left-1/2 h-5 w-[2px] -translate-x-1/2 rounded-full bg-[#4a9a4e]" />
+      <div className="absolute bottom-[30px] left-[10px] h-[20px] w-[14px] rounded-[14px_14px_4px_14px] bg-[linear-gradient(180deg,#7fd24d_0%,#4fa33f_100%)] rotate-[-24deg]" />
+      <div className="absolute bottom-[34px] left-[20px] h-[24px] w-[16px] rounded-[16px_16px_4px_16px] bg-[linear-gradient(180deg,#79cf4b_0%,#48a23e_100%)] rotate-[-6deg]" />
+      <div className="absolute bottom-[30px] right-[10px] h-[20px] w-[14px] rounded-[14px_14px_14px_4px] bg-[linear-gradient(180deg,#76ca4a_0%,#43973c_100%)] rotate-[20deg]" />
+      <div className="absolute bottom-[38px] right-[17px] h-[18px] w-[12px] rounded-[12px_12px_12px_4px] bg-[linear-gradient(180deg,#88d857_0%,#4ba13f_100%)] rotate-[28deg]" />
     </div>
   );
 }
@@ -241,7 +274,7 @@ function BudgetIllustration() {
 function QuickActionButton({ children, onClick }: { children: ReactNode; onClick: () => void }) {
   return (
     <button
-      className="min-h-[42px] rounded-[16px] px-app-2 text-[0.7rem] font-black text-text-secondary transition-[background-color,color,opacity] duration-200 hover:bg-surface hover:text-text-primary hover:opacity-95"
+      className="min-h-[40px] rounded-[16px] px-app-2 text-[0.68rem] font-black text-text-secondary transition-[background-color,color,opacity] duration-200 hover:bg-surface hover:text-text-primary hover:opacity-95"
       onClick={onClick}
       type="button"
     >

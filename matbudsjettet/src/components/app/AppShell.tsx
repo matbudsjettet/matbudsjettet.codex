@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowLeft, Bell, CalendarDays, Crown, Home, Lightbulb, Settings, ShoppingBasket } from "lucide-react";
+import { ArrowLeft, Bell, CalendarDays, Home, Plus, Settings, ShoppingBasket, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { Tabs } from "@/components/ui/Tabs";
 import { buttonTap } from "@/lib/design/animations";
@@ -45,21 +45,22 @@ export function AppShell({
       label: "Handle",
       icon: ShoppingBasket,
       active: activeView === "shopping",
-      activeColor: "#FF7043",
+      activeColor: "#8c867d",
       onClick: () => onNavigate("shopping")
     },
     {
-      label: "Tips",
-      icon: Lightbulb,
+      label: "",
+      icon: Plus,
+      center: true,
       active: activeView === "tips",
-      activeColor: "#FFB300",
+      activeColor: "#34c86a",
       onClick: () => onNavigate("tips")
     },
     {
-      label: "Pro",
-      icon: Crown,
+      label: "Profil",
+      icon: User,
       active: activeView === "premium",
-      activeColor: "#8F7DFF",
+      activeColor: "#8c867d",
       onClick: () => onNavigate("premium")
     }
   ];
@@ -72,16 +73,16 @@ export function AppShell({
   return (
     <div className="min-h-screen text-text-primary">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
-        <header className="safe-top px-app-5 pb-5">
+        <header className="safe-top px-app-5 pb-4">
           {isOverview ? (
-            <div className="flex items-start justify-between gap-4 pt-2">
+            <div className="flex items-start justify-between gap-4 pt-1.5">
               <div className="min-w-0">
-                <h1 className="text-[1.58rem] font-black leading-[1.08] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
-                <p className="mt-2 text-[0.9rem] font-semibold text-text-secondary">Du sparer bra denne uka</p>
+                <h1 className="text-[1.72rem] font-black leading-[1.05] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
+                <p className="mt-2 text-[0.92rem] font-medium text-[#7f7a72]">Du sparer bra denne uka</p>
               </div>
               <motion.button
                 aria-label="Varsler"
-                className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[#f2e6d5] bg-white text-text-primary shadow-[0_7px_20px_rgba(42,31,16,0.08)] transition-[transform,opacity,border-color] duration-200"
+                className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[#f1e7d9] bg-white text-text-primary shadow-[0_8px_22px_rgba(42,31,16,0.08)] transition-[transform,opacity,border-color] duration-200"
                 onClick={() => onNavigate("settings")}
                 type="button"
                 {...buttonTap}
@@ -124,20 +125,15 @@ export function AppShell({
           )}
         </header>
 
-        <main className="flex-1 space-y-9 px-app-5 pb-28" ref={mainRef}>
+        <main className="flex-1 space-y-8 px-app-5 pb-28" ref={mainRef}>
           {children}
         </main>
 
         <nav className="fixed inset-x-0 bottom-0 z-20 px-app-4 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5">
           <div
-            className="glass-nav mx-auto max-w-md rounded-[24px] px-2 py-1"
+            className="mx-auto max-w-md rounded-[24px] border border-[#f2e9dc] bg-white px-2 py-1.5 shadow-[0_12px_28px_rgba(42,31,16,0.08)]"
             style={{
-              background: "rgba(247, 246, 242, 0.55)",
-              backdropFilter: "blur(28px) saturate(180%) brightness(1.08)",
-              WebkitBackdropFilter: "blur(28px) saturate(180%) brightness(1.08)",
-              border: "1px solid rgba(255, 255, 255, 0.55)",
-              boxShadow:
-                "0 4px 24px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.7) inset, 0 -1px 0 rgba(0,0,0,0.04) inset"
+              boxShadow: "0 12px 28px rgba(42,31,16,0.08)"
             }}
           >
             <Tabs items={tabs} />
