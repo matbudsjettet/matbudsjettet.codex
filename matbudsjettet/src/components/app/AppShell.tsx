@@ -1,9 +1,14 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowLeft, Bell, CalendarDays, Home, Plus, Settings, ShoppingBasket, User } from "lucide-react";
+import { ArrowLeft, CalendarDays, Home, Lightbulb, ShoppingBasket, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { Tabs } from "@/components/ui/Tabs";
 import { buttonTap } from "@/lib/design/animations";
 import type { AppView } from "@/types/navigation";
+
+const NON_BACK_VIEWS: AppView[] = ["overview", "meals", "shopping", "tips", "premium"];
+
+const NOW = new Date();
+const DATE_LABEL = NOW.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
 
 type AppShellProps = {
   activeView: AppView;
@@ -11,58 +16,19 @@ type AppShellProps = {
   children: ReactNode;
   onBack?: () => void;
   onNavigate: (view: AppView) => void;
-  subtitle?: string;
   title: string;
 };
 
-export function AppShell({
-  activeView,
-  canGoBack = false,
-  children,
-  onBack,
-  onNavigate,
-  subtitle = "Matbudsjettet",
-  title
-}: AppShellProps) {
+export function AppShell({ activeView, canGoBack = false, children, onBack, onNavigate, title }: AppShellProps) {
   const mainRef = useRef<HTMLElement>(null);
   const isOverview = activeView === "overview";
+
   const tabs = [
-    {
-      label: "Hjem",
-      icon: Home,
-      active: activeView === "overview",
-      activeColor: "#44D07B",
-      onClick: () => onNavigate("overview")
-    },
-    {
-      label: "Ukeplan",
-      icon: CalendarDays,
-      active: activeView === "meals",
-      activeColor: "#1E88E5",
-      onClick: () => onNavigate("meals")
-    },
-    {
-      label: "Handle",
-      icon: ShoppingBasket,
-      active: activeView === "shopping",
-      activeColor: "#8c867d",
-      onClick: () => onNavigate("shopping")
-    },
-    {
-      label: "",
-      icon: Plus,
-      center: true,
-      active: activeView === "tips",
-      activeColor: "#34c86a",
-      onClick: () => onNavigate("tips")
-    },
-    {
-      label: "Profil",
-      icon: User,
-      active: activeView === "premium",
-      activeColor: "#8c867d",
-      onClick: () => onNavigate("premium")
-    }
+    { label: "Oversikt", icon: Home, active: activeView === "overview", onClick: () => onNavigate("overview") },
+    { label: "Måltider", icon: CalendarDays, active: activeView === "meals" || activeView === "meal-detail", onClick: () => onNavigate("meals") },
+    { label: "Handleliste", icon: ShoppingBasket, active: activeView === "shopping", onClick: () => onNavigate("shopping") },
+    { label: "Tips", icon: Lightbulb, active: activeView === "tips", onClick: () => onNavigate("tips") },
+    { label: "Profil", icon: User, active: activeView === "premium" || activeView === "settings", onClick: () => onNavigate("premium") },
   ];
 
   useEffect(() => {
@@ -71,71 +37,68 @@ export function AppShell({
   }, [activeView]);
 
   return (
-    <div className="min-h-screen text-text-primary">
+    <div className="min-h-screen bg-background text-text-primary">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
-        <header className="safe-top px-app-5 pb-4">
+
+        {/* Header */}
+        <header className="safe-top px-5 pb-2">
           {isOverview ? (
-            <div className="flex items-start justify-between gap-4 pt-1.5">
-              <div className="min-w-0">
-                <h1 className="text-[1.72rem] font-black leading-[1.05] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
-                <p className="mt-2 text-[0.92rem] font-medium text-[#7f7a72]">Du sparer bra denne uka</p>
+            <div className="flex items-center justify-between pt-2">
+              <div>
+                <p className="text-[0.72rem] font-semibold capitalize tracking-wide text-text-tertiary">{DATE_LABEL}</p>
+                <h1 className="mt-0.5 text-[1.65rem] font-black leading-tight tracking-tight text-text-primary">Oversikt</h1>
               </div>
-              <motion.button
-                aria-label="Varsler"
-                className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[#f1e7d9] bg-white text-text-primary shadow-[0_8px_22px_rgba(42,31,16,0.08)] transition-[transform,opacity,border-color] duration-200"
-                onClick={() => onNavigate("settings")}
-                type="button"
-                {...buttonTap}
-              >
-                <Bell size={19} strokeWidth={2.2} />
-                <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#ff7448] px-1 text-[0.56rem] font-black leading-none text-white">
-                  2
-                </span>
-              </motion.button>
+              <div className="flex items-center gap-2">
+                <motion.button
+                  aria-label="Innstillinger"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface shadow-card"
+                  onClick={() => onNavigate("settings")}
+                  type="button"
+                  {...buttonTap}
+                >
+                  <User size={17} strokeWidth={1.8} className="text-text-secondary" />
+                </motion.button>
+              </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-app-3">
+            <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center gap-3">
                 {canGoBack ? (
                   <motion.button
                     aria-label="Tilbake"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-border bg-surface text-text-secondary shadow-app transition-[transform,opacity,border-color] duration-200"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface shadow-card"
                     onClick={onBack}
                     type="button"
                     {...buttonTap}
                   >
-                    <ArrowLeft size={19} />
+                    <ArrowLeft size={17} strokeWidth={2} className="text-text-secondary" />
                   </motion.button>
                 ) : null}
-                <div>
-                  <p className="text-caption font-bold uppercase tracking-[0.08em] text-text-tertiary">{subtitle}</p>
-                  <h1 className="mt-1 text-[2.35rem] font-black tracking-tight text-text-primary">{title}</h1>
-                </div>
+                <h1 className="text-[1.65rem] font-black tracking-tight text-text-primary">{title}</h1>
               </div>
-              <motion.button
-                aria-label="Innstillinger"
-                className="grid h-12 w-12 place-items-center rounded-xl border border-border bg-surface text-text-primary shadow-app transition-[transform,opacity,border-color] duration-200"
-                onClick={() => onNavigate("settings")}
-                type="button"
-                {...buttonTap}
-              >
-                <Settings size={22} strokeWidth={2.4} />
-              </motion.button>
+              {!canGoBack && (
+                <motion.button
+                  aria-label="Innstillinger"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface shadow-card"
+                  onClick={() => onNavigate("settings")}
+                  type="button"
+                  {...buttonTap}
+                >
+                  <User size={17} strokeWidth={1.8} className="text-text-secondary" />
+                </motion.button>
+              )}
             </div>
           )}
         </header>
 
-        <main className="flex-1 space-y-8 px-app-5 pb-28" ref={mainRef}>
+        {/* Content */}
+        <main className="flex-1 space-y-6 px-5 pb-32" ref={mainRef}>
           {children}
         </main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-20 px-app-4 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5">
-          <div
-            className="mx-auto max-w-md rounded-[24px] border border-[#f2e9dc] bg-white px-2 py-1.5 shadow-[0_12px_28px_rgba(42,31,16,0.08)]"
-            style={{
-              boxShadow: "0 12px 28px rgba(42,31,16,0.08)"
-            }}
-          >
+        {/* Tab bar */}
+        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
+          <div className="mx-auto max-w-md overflow-hidden rounded-[22px] border border-border bg-surface shadow-elevated">
             <Tabs items={tabs} />
           </div>
         </nav>
