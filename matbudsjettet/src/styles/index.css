@@ -4,29 +4,29 @@
 
 :root {
   color: #171512;
-  background: #f7f6f2;
-  --color-background: #f7f6f2;
-  --color-bg-elevated: #fbfaf7;
+  background: #f6f7f4;
+  --color-background: #f6f7f4;
+  --color-bg-elevated: #fbfbf8;
   --color-surface: #ffffff;
-  --color-surface-soft: #f0ece5;
+  --color-surface-soft: #f3f0ea;
   --color-card: #ffffff;
   --color-text-primary: #171512;
-  --color-text-secondary: #4e4a43;
-  --color-text-tertiary: #7a756b;
-  --color-border-subtle: #eee8de;
-  --color-border: #e6e0d6;
-  --color-saving: #44d07b;
-  --color-saving-bg: rgba(68, 208, 123, 0.12);
-  --color-premium: #8f7dff;
-  --color-premium-bg: #f0eeff;
+  --color-text-secondary: #4b4943;
+  --color-text-tertiary: #7a766d;
+  --color-border-subtle: #ece7df;
+  --color-border: #e5e0d8;
+  --color-saving: #236f49;
+  --color-saving-bg: rgba(35, 111, 73, 0.1);
+  --color-premium: #2f342f;
+  --color-premium-bg: #f2f3ef;
   --color-food-warm: #ff7043;
   --color-food-green: #43a047;
   --color-food-blue: #1e88e5;
   --color-food-amber: #ffb300;
   --color-tag-bg: rgba(0, 0, 0, 0.05);
   --shadow-app:
-    0 8px 20px rgba(0, 0, 0, 0.06),
-    0 2px 6px rgba(0, 0, 0, 0.04);
+    0 12px 28px rgba(23, 19, 15, 0.06),
+    0 2px 8px rgba(23, 19, 15, 0.03);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -39,14 +39,14 @@
 
 html {
   min-height: 100%;
-  background: #f7f6f2;
+  background: #f6f7f4;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #f7f6f2;
+  background: #f6f7f4;
 }
 
 button,
@@ -60,17 +60,17 @@ input {
 
 .glass-nav {
   background: rgba(247, 246, 242, 0.55);
-  backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
-  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(160%) brightness(1.03);
+  -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(1.03);
+  border: 1px solid rgba(255, 255, 255, 0.42);
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+    0 16px 40px rgba(23, 19, 15, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.58) inset;
 }
 
 @supports not (backdrop-filter: blur(1px)) {
   .glass-nav {
-    background: rgba(247, 246, 242, 0.97);
+    background: rgba(246, 247, 244, 0.96);
   }
 }
 
