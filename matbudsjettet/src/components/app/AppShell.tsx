@@ -76,8 +76,8 @@ export function AppShell({
           {isOverview ? (
             <div className="flex items-start justify-between gap-4 pt-3">
               <div className="min-w-0">
-                <h1 className="text-[2.3rem] font-black leading-[1.04] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
-                <p className="mt-3 text-body font-semibold text-text-secondary">Du sparer bra denne uka</p>
+                <h1 className="text-[1.75rem] font-black leading-[1.08] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
+                <p className="mt-3 text-[0.96rem] font-semibold text-text-secondary">Du sparer bra denne uka</p>
               </div>
               <motion.button
                 aria-label="Varsler"

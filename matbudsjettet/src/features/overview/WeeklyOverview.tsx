@@ -87,17 +87,17 @@ function WeeklyHeroCard({
       <Card className="overflow-hidden rounded-[30px] border-0 bg-white px-6 pb-7 pt-7 shadow-[0_18px_42px_rgba(42,31,16,0.07)] sm:px-7" variant="quiet">
         <div className="grid grid-cols-[minmax(0,1fr)_138px] items-start gap-7">
           <div className="min-w-0 pt-1.5">
-            <p className="text-[1.05rem] font-black text-text-primary">Du har</p>
-            <p className={cn("mt-5 whitespace-nowrap text-[4rem] font-black leading-[0.95] tracking-tight", amountColorClass)}>
+            <p className="text-[0.95rem] font-black text-text-primary">Du har</p>
+            <p className={cn("mt-5 whitespace-nowrap text-[2.95rem] font-black leading-[0.98] tracking-tight", amountColorClass)}>
               <AnimatedNumber className={amountColorClass} pulse={false} value={budgetDeltaNok} /> kr
             </p>
-            <p className="mt-5 text-[1.15rem] font-semibold text-[#7d776e]">igjen av matbudsjettet</p>
+            <p className="mt-5 text-[0.98rem] font-medium text-[#7d776e]">igjen av matbudsjettet</p>
           </div>
           <BudgetIllustration />
         </div>
 
-        <div className="mt-7 inline-flex items-center rounded-full bg-[#e7f7ea] px-3.5 py-2 text-[0.95rem] font-black text-[#2cad61]">
-          <span aria-hidden="true" className="mr-2 text-base leading-none">
+        <div className="mt-7 inline-flex items-center rounded-full bg-[#e7f7ea] px-3.5 py-2 text-[0.86rem] font-bold text-[#2cad61]">
+          <span aria-hidden="true" className="mr-2 text-[0.95rem] leading-none">
             {budgetIsOver ? "!" : "🎉"}
           </span>
           {statusLabel}
@@ -113,10 +113,10 @@ function WeeklyHeroCard({
               }}
             />
           </div>
-          <span className="min-w-[3.25rem] text-right text-[1.05rem] font-black leading-none text-[#2fc46e]">{remainingPercent} %</span>
+          <span className="min-w-[3.25rem] text-right text-[0.98rem] font-black leading-none text-[#2fc46e]">{remainingPercent} %</span>
         </div>
 
-        <div className="mt-5 flex items-center justify-between gap-3 text-[0.98rem] font-medium text-[#8b857b]">
+        <div className="mt-5 flex items-center justify-between gap-3 text-[0.86rem] font-medium text-[#8b857b]">
           <p>Du har brukt {formatCompactNok(weeklyTotalNok)} av {formatCompactNok(weeklyBudgetNok)}</p>
           <p className="shrink-0 text-right font-medium text-[#8b857b]">
             {householdSize} {householdSize === 1 ? "person" : "personer"} · {storeName}
@@ -157,8 +157,8 @@ function StatCard({
   return (
     <Card className="rounded-[26px] border-0 bg-white px-[1.15rem] pb-[1.15rem] pt-[1.2rem] shadow-[0_10px_26px_rgba(42,31,16,0.055)]" variant="quiet">
       <div className={cn("grid h-12 w-12 place-items-center rounded-full", iconClassName)}>{icon}</div>
-      <p className="mt-6 text-[0.92rem] font-semibold leading-snug text-[#736d65]">{label}</p>
-      <p className="mt-2.5 whitespace-nowrap text-[1.35rem] font-black leading-tight text-text-primary">{value}</p>
+      <p className="mt-6 text-[0.82rem] font-semibold leading-snug text-[#736d65]">{label}</p>
+      <p className="mt-2.5 whitespace-nowrap text-[1.26rem] font-black leading-tight text-text-primary">{value}</p>
     </Card>
   );
 }
