@@ -136,7 +136,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
             </button>
 
             {/* Bottom overlay */}
-            <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/85 via-black/45 to-transparent px-4 pb-4.5 pt-16">
+            <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/75 to-black/10 px-4 pb-4.5 pt-16">
               <h2 className="text-[1.35rem] font-bold leading-tight text-white">
                 {featuredMeal?.name ?? "Dagens middag"}
               </h2>
