@@ -7,7 +7,7 @@ import { MealPlan } from "@/features/meals/MealPlan";
 import { MealRecipeSheet } from "@/features/meals/MealRecipeSheet";
 import { OnboardingFlow } from "@/features/onboarding/OnboardingFlow";
 import type { OnboardingState } from "@/features/onboarding/OnboardingFlow";
-import { WeeklyOverview } from "@/features/overview/WeeklyOverview";
+import WeeklyOverview from "@/features/overview/WeeklyOverview";
 import { PaywallScreen } from "@/features/premium/PaywallScreen";
 import { PremiumOptimization } from "@/features/premium/PremiumOptimization";
 import { ResultScreen } from "@/features/result/ResultScreen";

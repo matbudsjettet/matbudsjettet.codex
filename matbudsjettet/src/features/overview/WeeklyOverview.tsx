@@ -80,8 +80,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc }) => {
               </div>
               <Button
                 variant="secondary"
-                size="sm"
-                className="rounded-xl bg-green-50 text-green-700 hover:bg-green-100 font-semibold text-sm whitespace-nowrap border-0 shadow-none"
+                className="rounded-xl bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100 font-semibold text-sm whitespace-nowrap border-0 shadow-none"
               >
                 Se ukeplan
               </Button>
