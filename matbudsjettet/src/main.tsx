@@ -1,0 +1,14 @@
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { MotionConfig } from "framer-motion";
+import { App } from "./App";
+import { motionTransition } from "./lib/design/animations";
+import "./styles/index.css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <MotionConfig reducedMotion="user" transition={motionTransition}>
+      <App />
+    </MotionConfig>
+  </StrictMode>
+);
