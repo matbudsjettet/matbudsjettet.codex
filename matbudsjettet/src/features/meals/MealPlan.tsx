@@ -1,6 +1,8 @@
+import { ChevronRight, Clock3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import mealImage1 from "../../../assets/meals/meal-1.png";
 import mealImage2 from "../../../assets/meals/meal-2.png";
 import mealImage3 from "../../../assets/meals/meal-3.png";
@@ -25,6 +27,7 @@ const mealImages = [
   mealImage9,
   mealImage10
 ];
+const weekdayLabels = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
 type MealPlanProps = {
   meals: PlannedMeal[];
@@ -33,35 +36,50 @@ type MealPlanProps = {
 
 export function MealPlan({ meals, onOpenRecipe }: MealPlanProps) {
   return (
-    <Section eyebrow="Middager" title="Denne uken">
+    <Section
+      action={
+        <Button className="min-h-[42px] px-4 py-2 text-[0.82rem]" variant="secondary">
+          Hele planen
+        </Button>
+      }
+      eyebrow="Middager"
+      title="Denne uken"
+    >
       <motion.div
         animate={{ opacity: 1 }}
-        className="flex gap-4 overflow-x-auto pb-2"
+        className="space-y-3"
         initial={{ opacity: 0 }}
       >
         {meals.map((meal, index) => (
           <button
-            className="min-w-[220px] overflow-hidden rounded-2xl bg-white text-left shadow-sm"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-[1.35rem] bg-white p-3 text-left shadow-[0_12px_28px_rgba(33,25,16,0.07)]"
             key={meal.id}
             onClick={() => onOpenRecipe(meal)}
             type="button"
           >
-            <div className="h-[150px] w-full overflow-hidden">
+            <div className="relative h-[88px] w-[88px] shrink-0 overflow-hidden rounded-[1rem]">
               <img
                 alt={meal.name}
                 className="h-full w-full object-cover"
                 src={mealImages[index % mealImages.length]}
               />
+              <div className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-1 text-[0.62rem] font-semibold text-[#544d43]">
+                {weekdayLabels[index] ?? meal.weekday ?? `Dag ${index + 1}`}
+              </div>
             </div>
 
-            <div className="p-3">
-              <p className="text-xs text-gray-400">{meal.weekday}</p>
-
-              <h3 className="mt-1 text-base font-semibold text-gray-900">
+            <div className="min-w-0 flex-1">
+              <h3 className="line-clamp-2 text-[1rem] font-bold leading-snug text-[#1d1a16]">
                 {meal.name}
               </h3>
-
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-1 flex items-center gap-3 text-[0.76rem] text-[#7d7569]">
+                <span className="inline-flex items-center gap-1">
+                  <Clock3 size={12} strokeWidth={2.1} />
+                  {meal.prepTimeMinutes} min
+                </span>
+                <span>{meal.totalPriceNok.toLocaleString("nb-NO")} kr</span>
+              </div>
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {meal.categorySignals.budget && (
                   <Badge tone="saving">Billig</Badge>
                 )}
@@ -73,6 +91,7 @@ export function MealPlan({ meals, onOpenRecipe }: MealPlanProps) {
                 )}
               </div>
             </div>
+            <ChevronRight className="shrink-0 text-[#8a8174]" size={18} strokeWidth={2.2} />
           </button>
         ))}
       </motion.div>

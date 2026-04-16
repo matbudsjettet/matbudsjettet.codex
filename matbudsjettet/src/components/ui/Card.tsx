@@ -10,8 +10,8 @@ type CardProps = {
 };
 
 const variants = {
-  default: "border-border/90 bg-surface shadow-app",
-  surface: "border-border/90 bg-surface shadow-app",
+  default: "border-[#ece3d8] bg-surface shadow-[0_14px_30px_rgba(33,25,16,0.06)]",
+  surface: "border-[#ece3d8] bg-surface shadow-[0_14px_30px_rgba(33,25,16,0.06)]",
   saving: "border-saving-border bg-saving-bg text-text-primary shadow-app",
   premium: "border-premium-border bg-premium-bg p-app-5 shadow-app",
   quiet: "border-border bg-transparent shadow-none"
@@ -20,7 +20,7 @@ const variants = {
 export function Card({ children, className, variant = "default" }: CardProps) {
   return (
     <motion.div
-      className={cn("rounded-2xl border p-app-4 will-change-transform", variants[variant], className)}
+      className={cn("rounded-[1.4rem] border p-app-4 will-change-transform", variants[variant], className)}
       {...cardMotion}
     >
       {children}

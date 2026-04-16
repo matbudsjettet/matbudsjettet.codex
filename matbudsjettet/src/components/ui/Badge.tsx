@@ -7,15 +7,15 @@ type BadgeProps = {
 };
 
 const tones = {
-  neutral: "border border-border bg-surface text-text-secondary",
-  saving: "bg-saving-bg text-saving",
-  premium: "border border-premium-border bg-premium-bg text-premium",
-  warm: "bg-surface text-text-secondary border border-border"
+  neutral: "border border-[#e8e0d6] bg-white text-text-secondary",
+  saving: "bg-[#e8f7ee] text-[#239d5a]",
+  premium: "border border-[#ddd9ff] bg-[#f2efff] text-[#7263ef]",
+  warm: "border border-[#f0e4d5] bg-[#fff7ef] text-[#a86a25]"
 };
 
 export function Badge({ children, tone = "neutral" }: BadgeProps) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-caption", tones[tone])}>
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-[0.7rem] font-semibold", tones[tone])}>
       {children}
     </span>
   );

@@ -1,9 +1,16 @@
-import { Bell, ChevronRight, Clock } from "lucide-react";
+import type { ReactNode } from "react";
+import { Bell, ChevronRight, Clock, Flame, Receipt, ShoppingBag, Sparkles, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
 import mealImage1 from "../../../assets/meals/meal-1.png";
-
+import mealImage2 from "../../../assets/meals/meal-2.png";
+import mealImage3 from "../../../assets/meals/meal-3.png";
+import mealImage4 from "../../../assets/meals/meal-4.png";
+import mealImage5 from "../../../assets/meals/meal-5.png";
+import mealImage6 from "../../../assets/meals/meal-6.png";
+import mealImage7 from "../../../assets/meals/meal-7.png";
 
 interface WeeklyOverviewProps {
   plan: WeeklyPlan;
@@ -12,169 +19,227 @@ interface WeeklyOverviewProps {
   mealImageSrc?: string;
 }
 
-const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, preference, onAction }) => {
+const mealImages = [mealImage1, mealImage2, mealImage3, mealImage4, mealImage5, mealImage6, mealImage7];
+const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+
+const formatNok = (value: number) => `${value.toLocaleString("nb-NO")} kr`;
+
+const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOverviewProps) => {
   const spent = plan.summary.weeklyTotalNok;
   const budget = preference.weeklyBudgetNok;
   const remaining = Math.max(0, budget - spent);
   const percent = budget > 0 ? Math.max(0, Math.min(100, Math.round((remaining / budget) * 100))) : 0;
   const featuredMeal = plan.meals[0];
+  const weekdayName = new Intl.DateTimeFormat("nb-NO", { weekday: "long" }).format(new Date());
 
   return (
-    <div className="min-h-screen w-full" style={{ backgroundColor: "#F5F0E8" }}>
-      <div className="max-w-md mx-auto flex flex-col gap-4 pb-28">
-
-        {/* Top bar */}
-        <div className="flex items-center justify-between pt-4 px-4">
-          <span className="text-xs font-semibold tracking-widest uppercase text-green-700">
-            Oversikt
-          </span>
-          <div className="flex items-center gap-3">
-            <button
-              aria-label="Varsler"
-              className="p-1 rounded-full text-stone-400 hover:text-stone-600 transition-colors"
-            >
-              <Bell size={20} strokeWidth={1.8} />
-            </button>
-            <div className="w-9 h-9 rounded-full bg-amber-600 flex items-center justify-center text-white text-sm font-bold select-none">
-              A
+    <div className="min-h-screen w-full bg-[#f5f0e8]">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-5 pb-28">
+        <div className="px-4 pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[0.76rem] font-semibold capitalize tracking-[0.08em] text-[#8e8375]">{weekdayName}</p>
+              <h1 className="mt-1 text-[2rem] font-black leading-none tracking-tight text-[#1d1a16]">Hei, André</h1>
+              <p className="mt-1.5 text-[0.95rem] text-[#7c7468]">Planen din er satt opp for lav friksjon og gode handler.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                aria-label="Varsler"
+                className="relative grid h-11 w-11 place-items-center rounded-full bg-white shadow-[0_10px_24px_rgba(33,25,16,0.08)]"
+                type="button"
+              >
+                <Bell size={19} strokeWidth={1.9} className="text-[#5c554b]" />
+                <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[#ff8f4d]" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Greeting */}
-        <div className="px-4 pt-1">
-          <h1 className="text-2xl font-bold text-stone-900 mt-0.5 leading-tight">
-            God kveld, André! 👋
-          </h1>
-          <p className="text-sm text-stone-500 mt-0.5">
-            Her er planen for uken din
-          </p>
-        </div>
-
-        {/* Budget card */}
         <div className="px-4">
-          <Card className="rounded-[1.35rem] border-0 bg-white p-4.5 shadow-[0_10px_24px_rgba(28,25,23,0.06)]">
-            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">
-              Ditt budsjett
-            </p>
-            <div className="mb-3.5 flex items-end gap-2">
-              <span className="text-3xl font-extrabold text-stone-900 leading-none">
-                {remaining.toLocaleString("nb-NO")} kr
-              </span>
-              <span className="text-sm text-stone-400 mb-0.5">
-                igjen av {budget.toLocaleString("nb-NO")} kr
-              </span>
-            </div>
-            <div className="h-3 w-full rounded-full bg-stone-100/95">
-              <div
-                className="h-3 rounded-full bg-green-700"
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-stone-400">{percent} %</p>
-          </Card>
-        </div>
-
-        {/* Week summary card */}
-        <div className="px-4">
-          <Card className="rounded-[1.35rem] border-0 bg-white p-4.5 shadow-[0_10px_24px_rgba(28,25,23,0.06)]">
-            <div className="flex items-center justify-between">
+          <Card className="overflow-hidden rounded-[1.7rem] border-0 bg-white p-5 shadow-[0_18px_36px_rgba(33,25,16,0.08)]">
+            <div className="grid grid-cols-[minmax(0,1fr)_124px] items-start gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-0.5">
-                  Uken din
-                </p>
-                <p className="text-base font-semibold text-stone-900">
-                  {plan.meals.length} av 7 middager planlagt
-                </p>
+                <p className="text-[0.76rem] font-semibold uppercase tracking-[0.12em] text-[#8c8172]">Ukens budsjett</p>
+                <p className="mt-3 text-[2.4rem] font-black leading-none tracking-tight text-[#1c8f55]">{formatNok(remaining)}</p>
+                <p className="mt-2 text-[0.95rem] text-[#7b7367]">igjen etter planlagte middager denne uken</p>
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#ecf8ef] px-3 py-1.5 text-[0.78rem] font-semibold text-[#1f9758]">
+                  <Sparkles size={13} strokeWidth={2} />
+                  Du ligger godt an
+                </div>
               </div>
-              <Button
-                onClick={() => onAction("meals")}
-                variant="secondary"
-                className="rounded-xl bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100 font-semibold text-sm whitespace-nowrap border-0 shadow-none"
-              >
-                Se ukeplan
-              </Button>
+              <div className="relative h-[124px]">
+                <div className="absolute inset-4 rounded-full bg-[radial-gradient(circle,rgba(129,201,149,0.24),rgba(129,201,149,0.02)_68%)]" />
+                <img
+                  alt={featuredMeal?.name ?? "Middag"}
+                  className="absolute inset-0 h-full w-full object-contain"
+                  src={mealImageSrc ?? mealImage1}
+                />
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <div className="mb-2 flex items-center justify-between text-[0.76rem] font-semibold text-[#8a806f]">
+                <span>Brukt {formatNok(spent)}</span>
+                <span>{percent}% igjen</span>
+              </div>
+              <div className="h-3.5 w-full rounded-full bg-[#efe9df]">
+                <div
+                  className="h-3.5 rounded-full"
+                  style={{
+                    width: `${percent}%`,
+                    background: "linear-gradient(90deg, #2cb768 0%, #8bcf4a 44%, #ffb347 78%, #ff8b4f 100%)"
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              <StatChip icon={<Receipt size={15} strokeWidth={2.1} />} label="Budsjett" value={formatNok(budget)} />
+              <StatChip icon={<TrendingUp size={15} strokeWidth={2.1} />} label="Per dag" value={formatNok(plan.summary.perDayCostNok)} />
+              <StatChip icon={<ShoppingBag size={15} strokeWidth={2.1} />} label="Handleliste" value={`${plan.shoppingList.totalItemsToBuy} varer`} />
             </div>
           </Card>
         </div>
 
-        {/* Featured meal card */}
+        <div className="px-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-[#8f8475]">Neste måltid</p>
+              <h2 className="mt-1 text-[1.5rem] font-black tracking-tight text-[#1d1a16]">Dagens middag</h2>
+            </div>
+            <Button className="min-h-[42px] px-4 py-2 text-[0.82rem]" onClick={() => onAction("meals")} variant="secondary">
+              Åpne ukeplan
+            </Button>
+          </div>
+        </div>
+
         <div className="px-4">
           <div
-            className="relative min-h-[208px] w-full overflow-hidden rounded-[1.35rem] bg-stone-600 text-left shadow-[0_12px_28px_rgba(28,25,23,0.1)]"
+            className="relative min-h-[254px] w-full overflow-hidden rounded-[1.7rem] bg-[#5c4a39] shadow-[0_18px_36px_rgba(33,25,16,0.14)]"
             onClick={() => onAction("meals")}
-            role="button"
-            tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 onAction("meals");
               }
             }}
+            role="button"
+            tabIndex={0}
           >
             <img
-              src={mealImageSrc ?? mealImage1}
               alt={featuredMeal?.name ?? "Dagens middag"}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
+              src={mealImageSrc ?? mealImage1}
             />
-
-            {/* Top label */}
-            <div className="absolute top-3 left-3 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-white/20 backdrop-blur-sm">
-                Dagens middag
-              </span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
+            <div className="absolute left-4 top-4 z-10">
+              <Badge tone="warm">Anbefalt i dag</Badge>
             </div>
-
-            {/* Arrow CTA */}
             <button
-              aria-label="Se oppskrift"
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              aria-label="Se ukeplan"
+              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/18 text-white backdrop-blur-md"
               onClick={() => onAction("meals")}
               type="button"
             >
-              <ChevronRight size={18} strokeWidth={2.2} />
+              <ChevronRight size={18} strokeWidth={2.3} />
             </button>
-
-            {/* Bottom overlay */}
-            <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/75 to-black/10 px-4 pb-4.5 pt-16">
-              <h2 className="text-[1.35rem] font-bold leading-tight text-white">
-                {featuredMeal?.name ?? "Dagens middag"}
-              </h2>
-              <p className="mt-0.5 text-sm text-white/82">
+            <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-5 pt-16">
+              <h3 className="text-[1.55rem] font-black leading-tight text-white">{featuredMeal?.name ?? "Dagens middag"}</h3>
+              <p className="mt-1 max-w-[15rem] text-[0.95rem] leading-relaxed text-white/84">
                 {featuredMeal?.savingsNote ?? "Ukens anbefalte middag"}
               </p>
-              <div className="mt-2.5 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white bg-white/20 backdrop-blur-sm">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/16 px-2.5 py-1 text-[0.76rem] font-medium text-white backdrop-blur-sm">
                   <Clock size={11} />
                   {featuredMeal?.prepTimeMinutes ?? 25} min
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/16 px-2.5 py-1 text-[0.76rem] font-medium text-white backdrop-blur-sm">
+                  <Flame size={11} />
+                  {formatNok(featuredMeal?.totalPriceNok ?? 0)}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Savings card */}
         <div className="px-4">
-          <Card className="rounded-[1.35rem] border-0 bg-[#edf7ef] p-4.5 shadow-[0_10px_24px_rgba(81,120,89,0.08)]">
-            <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[1.45rem] font-black tracking-tight text-[#1d1a16]">Denne uka</h2>
+            <button className="text-[0.82rem] font-semibold text-[#6d665d]" onClick={() => onAction("meals")} type="button">
+              Se alle
+            </button>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto px-4 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-3 pr-4">
+            {plan.meals.slice(0, 5).map((meal, index) => (
+              <button
+                className="w-[11rem] shrink-0 overflow-hidden rounded-[1.35rem] bg-white text-left shadow-[0_12px_28px_rgba(33,25,16,0.08)]"
+                key={meal.id}
+                onClick={() => onAction("meals")}
+                type="button"
+              >
+                <div className="relative h-[7.75rem] overflow-hidden">
+                  <img alt={meal.name} className="h-full w-full object-cover" src={mealImages[index % mealImages.length]} />
+                  <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[0.68rem] font-semibold text-[#514a42]">
+                    {weekdayLabels[index] ?? meal.weekday ?? `Dag ${index + 1}`}
+                  </div>
+                </div>
+                <div className="space-y-2 p-3">
+                  <div>
+                    <p className="line-clamp-1 text-[0.95rem] font-bold text-[#1d1a16]">{meal.name}</p>
+                    <p className="mt-1 text-[0.78rem] text-[#7a7369]">{meal.prepTimeMinutes} min • {formatNok(meal.totalPriceNok)}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {meal.categorySignals.budget ? <Badge tone="saving">Billig</Badge> : null}
+                    {meal.categorySignals.family ? <Badge tone="warm">Familie</Badge> : null}
+                    {meal.prepTimeMinutes <= 25 ? <Badge tone="premium">Rask</Badge> : null}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-4">
+          <Card className="rounded-[1.5rem] border-0 bg-[#edf7ef] p-4.5 shadow-[0_12px_28px_rgba(81,120,89,0.08)]">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-base font-bold text-stone-900">
-                  Du sparer godt!
-                </p>
-                <p className="text-sm text-green-800/80 mt-0.5">
-                  Du har spart{" "}
-                  <span className="font-bold text-green-700">{remaining.toLocaleString("nb-NO")} kr</span>{" "}
-                  så langt denne uken
+                <p className="text-[1.02rem] font-black text-[#1d1a16]">Du sparer godt denne uka</p>
+                <p className="mt-1 text-[0.92rem] leading-relaxed text-[#5f7a66]">
+                  Planen holder deg pa {formatNok(remaining)} igjen av budsjettet og gir et jevnt prisniva gjennom uka.
                 </p>
               </div>
-              <span className="text-4xl select-none ml-3 leading-none">🌱</span>
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/80 text-[#2aa95f] shadow-[0_8px_18px_rgba(81,120,89,0.08)]">
+                <Sparkles size={20} strokeWidth={2.1} />
+              </div>
+            </div>
+            <div className="mt-4 flex gap-2">
+              <Button className="min-h-[44px] flex-1 text-[0.84rem]" onClick={() => onAction("shopping")}>
+                Åpne handleliste
+              </Button>
+              <Button className="min-h-[44px] px-4 text-[0.84rem]" onClick={() => onAction("tips")} variant="secondary">
+                Spartips
+              </Button>
             </div>
           </Card>
         </div>
-
       </div>
     </div>
   );
 };
+
+function StatChip({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+  return (
+    <div className="rounded-[1.1rem] bg-[#faf7f1] px-3 py-3">
+      <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#238f56] shadow-[0_6px_14px_rgba(33,25,16,0.05)]">
+        {icon}
+      </div>
+      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-[#8a8173]">{label}</p>
+      <p className="mt-1 text-[0.92rem] font-bold text-[#1d1a16]">{value}</p>
+    </div>
+  );
+}
 
 export default WeeklyOverview;

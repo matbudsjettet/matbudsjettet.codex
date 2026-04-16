@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import { Tabs } from "@/components/ui/Tabs";
 import { buttonTap } from "@/lib/design/animations";
 import type { AppView } from "@/types/navigation";
-
-const NOW = new Date();
-const DATE_LABEL = NOW.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
+import { cn } from "@/lib/utils/cn";
 
 type AppShellProps = {
   activeView: AppView;
@@ -39,26 +37,8 @@ export function AppShell({ activeView, canGoBack = false, children, onBack, onNa
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
 
         {/* Header */}
-        <header className="safe-top px-5 pb-2">
-          {isOverview ? (
-            <div className="flex items-center justify-between pt-2">
-              <div>
-                <p className="text-[0.72rem] font-semibold capitalize tracking-wide text-text-tertiary">{DATE_LABEL}</p>
-                <h1 className="mt-0.5 text-[1.65rem] font-black leading-tight tracking-tight text-text-primary">Oversikt</h1>
-              </div>
-              <div className="flex items-center gap-2">
-                <motion.button
-                  aria-label="Innstillinger"
-                  className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface shadow-card"
-                  onClick={() => onNavigate("settings")}
-                  type="button"
-                  {...buttonTap}
-                >
-                  <User size={17} strokeWidth={1.8} className="text-text-secondary" />
-                </motion.button>
-              </div>
-            </div>
-          ) : (
+        <header className={cn("safe-top pb-2", isOverview ? "px-0" : "px-5")}>
+          {isOverview ? <div className="h-2" /> : (
             <div className="flex items-center justify-between pt-2">
               <div className="flex items-center gap-3">
                 {canGoBack ? (
@@ -90,13 +70,13 @@ export function AppShell({ activeView, canGoBack = false, children, onBack, onNa
         </header>
 
         {/* Content */}
-        <main className="flex-1 space-y-6 px-5 pb-32" ref={mainRef}>
+        <main className={cn("flex-1 pb-32", isOverview ? "" : "space-y-6 px-5")} ref={mainRef}>
           {children}
         </main>
 
         {/* Tab bar */}
-        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
-          <div className="mx-auto max-w-md overflow-hidden rounded-[22px] border border-border bg-surface shadow-elevated">
+        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(0.65rem,env(safe-area-inset-bottom))] pt-2">
+          <div className="mx-auto max-w-md overflow-hidden rounded-[24px] border border-[#ece3d8] bg-[rgba(255,255,255,0.92)] shadow-[0_18px_42px_rgba(33,25,16,0.12)] backdrop-blur-xl">
             <Tabs items={tabs} />
           </div>
         </nav>
