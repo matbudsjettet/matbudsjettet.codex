@@ -72,22 +72,22 @@ export function AppShell({
   return (
     <div className="min-h-screen text-text-primary">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
-        <header className="safe-top px-app-5 pb-6">
+        <header className="safe-top px-app-5 pb-5">
           {isOverview ? (
-            <div className="flex items-start justify-between gap-4 pt-3">
+            <div className="flex items-start justify-between gap-4 pt-2">
               <div className="min-w-0">
-                <h1 className="text-[1.75rem] font-black leading-[1.08] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
-                <p className="mt-3 text-[0.96rem] font-semibold text-text-secondary">Du sparer bra denne uka</p>
+                <h1 className="text-[1.58rem] font-black leading-[1.08] tracking-tight text-text-primary">Hei, Andreas! 👋</h1>
+                <p className="mt-2 text-[0.9rem] font-semibold text-text-secondary">Du sparer bra denne uka</p>
               </div>
               <motion.button
                 aria-label="Varsler"
-                className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full border border-[#f2e6d5] bg-white text-text-primary shadow-[0_8px_24px_rgba(42,31,16,0.08)] transition-[transform,opacity,border-color] duration-200"
+                className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[#f2e6d5] bg-white text-text-primary shadow-[0_7px_20px_rgba(42,31,16,0.08)] transition-[transform,opacity,border-color] duration-200"
                 onClick={() => onNavigate("settings")}
                 type="button"
                 {...buttonTap}
               >
-                <Bell size={22} strokeWidth={2.2} />
-                <span className="absolute right-1.5 top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff7448] px-1 text-[0.625rem] font-black leading-none text-white">
+                <Bell size={19} strokeWidth={2.2} />
+                <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#ff7448] px-1 text-[0.56rem] font-black leading-none text-white">
                   2
                 </span>
               </motion.button>
@@ -124,13 +124,13 @@ export function AppShell({
           )}
         </header>
 
-        <main className="flex-1 space-y-11 px-app-5 pb-32" ref={mainRef}>
+        <main className="flex-1 space-y-9 px-app-5 pb-28" ref={mainRef}>
           {children}
         </main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-20 px-app-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-app-2">
+        <nav className="fixed inset-x-0 bottom-0 z-20 px-app-4 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5">
           <div
-            className="glass-nav mx-auto max-w-md rounded-[28px] px-app-2 py-1.5"
+            className="glass-nav mx-auto max-w-md rounded-[24px] px-2 py-1"
             style={{
               background: "rgba(247, 246, 242, 0.55)",
               backdropFilter: "blur(28px) saturate(180%) brightness(1.08)",

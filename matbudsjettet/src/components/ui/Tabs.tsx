@@ -17,11 +17,11 @@ type TabsProps = {
 
 export function Tabs({ items }: TabsProps) {
   return (
-    <div className="grid grid-cols-5 gap-1.5">
+    <div className="grid grid-cols-5 gap-1">
       {items.map((item) => (
         <motion.button
           className={cn(
-            "flex min-h-[60px] flex-col items-center justify-center rounded-xl px-1 text-caption font-semibold tracking-tight transition-[transform,opacity,background-color,border-color,color] duration-200",
+            "flex min-h-[54px] flex-col items-center justify-center rounded-[11px] px-1 text-[0.68rem] font-semibold leading-none tracking-tight transition-[transform,opacity,background-color,border-color,color] duration-200",
             item.active
               ? "border border-white/70 text-text-primary shadow-sm"
               : "text-text-tertiary active:text-text-secondary"
@@ -40,7 +40,7 @@ export function Tabs({ items }: TabsProps) {
           type="button"
           {...tabMotion}
         >
-          <item.icon size={19} strokeWidth={2.4} />
+          <item.icon size={17} strokeWidth={2.35} />
           <span className="mt-1">{item.label}</span>
         </motion.button>
       ))}
