@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, ReceiptText, Wallet } from "lucide-react";
+import { CalendarDays, ChevronRight, Heart, ReceiptText, Wallet } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { ingredients } from "@/lib/data/ingredients";
 import { sectionVariants, pageTransition } from "@/lib/design/animations";
 import { formatCompactNok } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
-import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
+import type { BudgetPreference, PlannedMeal, WeeklyPlan } from "@/types/domain";
 import { stores } from "@/lib/data/stores";
 
 type WeeklyOverviewProps = {
@@ -36,18 +38,27 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         weeklyTotalNok={plan.summary.weeklyTotalNok}
       />
 
-      <Card className="p-app-5" variant="surface">
-        <h3 className="text-headline text-text-primary">Dette spiser dere denne uka</h3>
-        <p className="mt-app-2 text-body-sm text-text-secondary">En enkel og rimelig ukeplan for familien.</p>
-        <ul className="mt-app-5 space-y-app-2">
-          {plan.meals.map((meal) => (
-            <li className="flex items-center gap-app-3 rounded-xl bg-bg-elevated px-app-4 py-app-3 text-body-sm font-semibold text-text-primary" key={meal.id}>
-              <span className="text-base leading-none">{getMealIndicator(meal.mealTag)}</span>
-              <span>{meal.name}</span>
-            </li>
-          ))}
-        </ul>
-      </Card>
+      <section className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-[1.05rem] font-black tracking-tight text-text-primary">Denne uka 🍽️</h3>
+          <button
+            className="inline-flex items-center gap-1 rounded-full bg-[#f4f0e8] px-3.5 py-2 text-[0.8rem] font-semibold text-text-secondary transition hover:bg-[#efe9df]"
+            onClick={() => onAction("meals")}
+            type="button"
+          >
+            Se hele ukeplanen
+            <ChevronRight size={15} strokeWidth={2.4} />
+          </button>
+        </div>
+
+        <div className="-mx-app-5 overflow-x-auto px-app-5 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex snap-x snap-mandatory gap-4">
+            {plan.meals.slice(0, 4).map((meal, index) => (
+              <MealRailCard key={meal.id} meal={meal} weekdayLabel={getWeekdayLabel(index)} />
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div className="grid grid-cols-4 gap-app-2 rounded-[22px] bg-bg-elevated p-1.5">
         <QuickActionButton onClick={() => onAction("meals")}>Ukeplan</QuickActionButton>
@@ -56,6 +67,45 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         <QuickActionButton onClick={() => onAction("swap")}>Bytt rett</QuickActionButton>
       </div>
     </motion.section>
+  );
+}
+
+function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel: string }) {
+  return (
+    <Card className="w-[13rem] shrink-0 snap-start overflow-hidden rounded-[24px] border-0 bg-white p-0 shadow-[0_12px_30px_rgba(42,31,16,0.07)]" variant="quiet">
+      <div className="relative aspect-[0.98] overflow-hidden">
+        <img
+          alt={meal.name}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          src={getMealPhoto(meal)}
+        />
+        <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
+          <span className="rounded-full bg-[#ff9d2f] px-2.5 py-1 text-[0.72rem] font-black text-white shadow-[0_8px_18px_rgba(255,157,47,0.35)]">
+            {weekdayLabel}
+          </span>
+          <button
+            aria-label={`Lagre ${meal.name} som favoritt`}
+            className="grid h-8 w-8 place-items-center rounded-full bg-white/92 text-[#9a9488] shadow-[0_8px_20px_rgba(42,31,16,0.12)] backdrop-blur-sm"
+            type="button"
+          >
+            <Heart size={15} strokeWidth={2.2} />
+          </button>
+        </div>
+      </div>
+
+      <div className="p-3.5">
+        <h4 className="line-clamp-2 text-[1rem] font-black leading-[1.2] text-text-primary">{meal.name}</h4>
+        <p className="mt-1.5 line-clamp-1 text-[0.88rem] font-medium text-[#7c766d]">{getMealSubtitle(meal)}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {getMealRailTags(meal).map((tag) => (
+            <Badge key={tag.label} tone={tag.tone}>
+              {tag.label}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -199,18 +249,74 @@ function QuickActionButton({ children, onClick }: { children: ReactNode; onClick
   );
 }
 
-const getMealIndicator = (mealTag: WeeklyPlan["meals"][number]["mealTag"]) => {
-  if (mealTag === "Premium") {
-    return "🐟";
+const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+
+const mealPhotoFallbacks: Record<string, string> = {
+  "kylling-med-ris-og-gronnsaker": "https://images.pexels.com/photos/35156470/pexels-photo-35156470.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/4013723/pexels-photo-4013723.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "chili-sin-carne": "https://images.pexels.com/photos/15881322/pexels-photo-15881322.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "laksefilet-med-poteter": "https://images.pexels.com/photos/5670958/pexels-photo-5670958.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  default: "https://images.pexels.com/photos/6126962/pexels-photo-6126962.jpeg?auto=compress&cs=tinysrgb&w=1200"
+};
+
+const ingredientNameById = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient.name]));
+
+const getWeekdayLabel = (index: number) => weekdayLabels[index] ?? `Dag ${index + 1}`;
+
+const getMealPhoto = (meal: PlannedMeal) => mealPhotoFallbacks[meal.id] ?? mealPhotoFallbacks.default;
+
+const getMealSubtitle = (meal: PlannedMeal) => {
+  const selectedNames = meal.ingredients
+    .map((entry) => ingredientNameById.get(entry.ingredientId))
+    .filter((value): value is string => Boolean(value))
+    .filter((name) => !["Yoghurt naturell", "Hakkede tomater", "Jasminris", "Fullkornspasta"].includes(name))
+    .slice(0, 2)
+    .map(normalizeIngredientLabel);
+
+  if (selectedNames.length >= 2) {
+    return `med ${selectedNames[0]} og ${selectedNames[1]}`;
   }
 
-  if (mealTag === "Protein") {
-    return "🍗";
+  if (selectedNames.length === 1) {
+    return `med ${selectedNames[0]}`;
   }
 
-  if (mealTag === "Vegetar") {
-    return "🥦";
+  return `${meal.prepTimeMinutes} min · ${meal.mealTag.toLowerCase()}`;
+};
+
+const normalizeIngredientLabel = (label: string) =>
+  label
+    .replace("Kyllinglårfilet", "kylling")
+    .replace("Laksefilet", "laks")
+    .replace("Torskefilet", "torsk")
+    .replace("Gulrøtter", "gulrot")
+    .replace("Poteter", "potet")
+    .replace("Brokkoli", "brokkoli")
+    .replace("Hodekål", "grønnsaker")
+    .toLowerCase();
+
+const getMealRailTags = (meal: PlannedMeal) => {
+  const tags: Array<{ label: string; tone: "saving" | "warm" | "premium" | "neutral" }> = [];
+
+  if (meal.categorySignals.budget) {
+    tags.push({ label: "Billig", tone: "saving" });
   }
 
-  return "🥘";
+  if (meal.difficulty === "easy") {
+    tags.push({ label: "Enkel", tone: "warm" });
+  }
+
+  if (meal.categorySignals.protein || meal.categorySignals.vegetarian) {
+    tags.push({ label: "Sunn", tone: "saving" });
+  }
+
+  if (meal.prepTimeMinutes <= 30) {
+    tags.push({ label: "Rask", tone: "premium" });
+  }
+
+  if (meal.categorySignals.family) {
+    tags.push({ label: "Familie", tone: "neutral" });
+  }
+
+  return tags.slice(0, 2);
 };
