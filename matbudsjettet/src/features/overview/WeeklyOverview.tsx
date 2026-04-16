@@ -20,7 +20,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
 
   return (
     <div className="min-h-screen w-full" style={{ backgroundColor: "#F5F0E8" }}>
-      <div className="max-w-md mx-auto flex flex-col gap-3 pb-28">
+      <div className="max-w-md mx-auto flex flex-col gap-4 pb-28">
 
         {/* Top bar */}
         <div className="flex items-center justify-between pt-4 px-4">
@@ -41,7 +41,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
         </div>
 
         {/* Greeting */}
-        <div className="px-4">
+        <div className="px-4 pt-1">
           <p className="text-xs text-stone-400">Torsdag 16. april</p>
           <h1 className="text-2xl font-bold text-stone-900 mt-0.5 leading-tight">
             God kveld, André! 👋
@@ -53,11 +53,11 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
 
         {/* Budget card */}
         <div className="px-4">
-          <Card className="rounded-2xl border-0 shadow-sm bg-white p-4">
+          <Card className="rounded-[1.35rem] border-0 bg-white p-4.5 shadow-[0_10px_24px_rgba(28,25,23,0.06)]">
             <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">
               Ditt budsjett
             </p>
-            <div className="flex items-end gap-2 mb-3">
+            <div className="mb-3.5 flex items-end gap-2">
               <span className="text-3xl font-extrabold text-stone-900 leading-none">
                 {remaining.toLocaleString("nb-NO")} kr
               </span>
@@ -65,19 +65,19 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
                 igjen av {budget.toLocaleString("nb-NO")} kr
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full bg-stone-100">
+            <div className="h-3 w-full rounded-full bg-stone-100/95">
               <div
-                className="h-2.5 rounded-full bg-green-700"
+                className="h-3 rounded-full bg-green-700"
                 style={{ width: `${percent}%` }}
               />
             </div>
-            <p className="text-xs text-stone-400 mt-1.5">{percent} %</p>
+            <p className="mt-2 text-xs text-stone-400">{percent} %</p>
           </Card>
         </div>
 
         {/* Week summary card */}
         <div className="px-4">
-          <Card className="rounded-2xl border-0 shadow-sm bg-white p-4">
+          <Card className="rounded-[1.35rem] border-0 bg-white p-4.5 shadow-[0_10px_24px_rgba(28,25,23,0.06)]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-0.5">
@@ -101,7 +101,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
         {/* Featured meal card */}
         <div className="px-4">
           <div
-            className="relative min-h-[200px] w-full overflow-hidden rounded-2xl bg-stone-600 text-left shadow-sm"
+            className="relative min-h-[208px] w-full overflow-hidden rounded-[1.35rem] bg-stone-600 text-left shadow-[0_12px_28px_rgba(28,25,23,0.1)]"
             onClick={() => onAction("meals")}
             role="button"
             tabIndex={0}
@@ -140,14 +140,14 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
             </button>
 
             {/* Bottom overlay */}
-            <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 pt-14 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
-              <h2 className="text-xl font-bold text-white leading-tight">
+            <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/85 via-black/45 to-transparent px-4 pb-4.5 pt-16">
+              <h2 className="text-[1.35rem] font-bold leading-tight text-white">
                 {featuredMeal?.name ?? "Dagens middag"}
               </h2>
-              <p className="text-sm text-white/80">
+              <p className="mt-0.5 text-sm text-white/82">
                 {featuredMeal?.savingsNote ?? "Ukens anbefalte middag"}
               </p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="mt-2.5 flex items-center gap-2">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-white bg-white/20 backdrop-blur-sm">
                   <Clock size={11} />
                   {featuredMeal?.prepTimeMinutes ?? 25} min
@@ -159,7 +159,7 @@ const WeeklyOverview: React.FC<WeeklyOverviewProps> = ({ mealImageSrc, plan, pre
 
         {/* Savings card */}
         <div className="px-4">
-          <Card className="rounded-2xl border-0 shadow-sm bg-green-50 p-4">
+          <Card className="rounded-[1.35rem] border-0 bg-[#edf7ef] p-4.5 shadow-[0_10px_24px_rgba(81,120,89,0.08)]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-base font-bold text-stone-900">
