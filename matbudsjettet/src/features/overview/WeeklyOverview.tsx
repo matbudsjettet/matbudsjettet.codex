@@ -244,7 +244,14 @@ function BudgetIllustration() {
           height={bowlAsset.height}
           onError={() => setAssetFailed(true)}
           src={bowlAsset.path}
-          style={{ height: bowlAsset.height, objectFit: bowlAsset.objectFit, objectPosition: bowlAsset.objectPosition, width: bowlAsset.width }}
+          style={{
+            height: bowlAsset.height,
+            marginLeft: 12,
+            marginTop: -4,
+            objectFit: bowlAsset.objectFit,
+            objectPosition: bowlAsset.objectPosition,
+            width: bowlAsset.width
+          }}
           width={bowlAsset.width}
         />
       )}

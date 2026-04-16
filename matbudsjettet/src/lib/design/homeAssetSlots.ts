@@ -1,8 +1,8 @@
 export const homeAssetSlots = {
   veggieBowl: {
     path: "/assets/veggie-bowl.png",
-    width: 110,
-    height: 128,
+    width: 90,
+    height: 90,
     objectFit: "contain" as const,
     objectPosition: "right top" as const
   },
