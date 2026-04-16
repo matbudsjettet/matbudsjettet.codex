@@ -1,6 +1,16 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, ChevronRight, Heart, ReceiptText, TrendingUp, Wallet } from "lucide-react";
+import mealImage1 from "../../../assets/:assets:meals:/:assets:meals:meal-1.png";
+import mealImage2 from "../../../assets/:assets:meals:/:assets:meals:meal-2.png";
+import mealImage3 from "../../../assets/:assets:meals:/:assets:meals:meal-3.png";
+import mealImage4 from "../../../assets/:assets:meals:/:assets:meals:meal-4.png";
+import mealImage5 from "../../../assets/:assets:meals:/:assets:meals:meal-5.png";
+import mealImage6 from "../../../assets/:assets:meals:/:assets:meals:meal-6.png";
+import mealImage7 from "../../../assets/:assets:meals:/:assets:meals:meal-7.png";
+import mealImage8 from "../../../assets/:assets:meals:/:assets:meals:meal-8.png";
+import mealImage9 from "../../../assets/:assets:meals:/:assets:meals:meal-9.png";
+import mealImage10 from "../../../assets/:assets:meals:/:assets:meals:meal-10.png";
 import veggieBowl from "../../../assets/veggie-bowl.png";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Card } from "@/components/ui/Card";
@@ -56,7 +66,7 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
         <div className="relative -mx-app-5 overflow-x-auto px-app-5 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex snap-x snap-proximity gap-2.5 pr-10">
             {plan.meals.map((meal, index) => (
-              <MealRailCard key={meal.id} meal={meal} weekdayLabel={getWeekdayLabel(index)} />
+              <MealRailCard key={meal.id} imageSrc={getMealPhoto(index)} meal={meal} weekdayLabel={getWeekdayLabel(index)} />
             ))}
           </div>
         </div>
@@ -74,17 +84,17 @@ export function WeeklyOverview({ onAction, plan, preference }: WeeklyOverviewPro
   );
 }
 
-function MealRailCard({ meal, weekdayLabel }: { meal: PlannedMeal; weekdayLabel: string }) {
+function MealRailCard({ imageSrc, meal, weekdayLabel }: { imageSrc: string; meal: PlannedMeal; weekdayLabel: string }) {
   return (
     <Card className="w-[6.9rem] shrink-0 snap-start overflow-hidden rounded-[18px] border-0 bg-white p-0 shadow-[0_10px_22px_rgba(42,31,16,0.06)]" variant="quiet">
       <div className="relative h-[6.85rem] overflow-hidden bg-[#f6f0e6]">
         <img
           alt={meal.name}
-          className="h-full w-full scale-[1.02] object-cover object-center brightness-[0.94] saturate-[0.82] contrast-[0.9] sepia-[0.08]"
+          className="h-full w-full object-cover object-center brightness-[0.98] saturate-[0.96] contrast-[0.96]"
           loading="lazy"
-          src={getMealPhoto(meal)}
+          src={imageSrc}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,244,229,0.12),rgba(240,206,162,0.2))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,248,239,0.06),rgba(230,192,145,0.12))]" />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-2">
           <span className="rounded-full bg-[#ff9d2f] px-2 py-[0.28rem] text-[0.62rem] font-black text-white shadow-[0_6px_12px_rgba(255,157,47,0.24)]">
             {weekdayLabel}
@@ -285,33 +295,13 @@ function QuickActionButton({ children, onClick }: { children: ReactNode; onClick
 
 const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
-const mealPhotoFallbacks: Record<string, string> = {
-  "pasta-med-tomatsaus": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kylling-med-ris-og-gronnsaker": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "laksefilet-med-poteter": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "torsk-med-gulrot-og-potet": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "tomatsuppe-med-egg": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "chili-sin-carne": "https://images.pexels.com/photos/5737247/pexels-photo-5737247.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "fiskekaker-med-rakost": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "taco-fredag": "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "pytt-i-panne": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "ovnsbakt-laks": "https://images.pexels.com/photos/3296279/pexels-photo-3296279.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "omelett-med-gronnsaker": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "spaghetti-bolognese": "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "linsesuppe-med-brod": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kyllingwraps-med-spro-kal": "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "kyllingform-med-potet-og-gulrot": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "pastafrittata-med-brokkoli": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "potetsuppe-med-brod": "https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "egg-og-brod-med-rakost": "https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  default: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1200"
-};
+const mealPhotoAssets = [mealImage1, mealImage2, mealImage3, mealImage4, mealImage5, mealImage6, mealImage7, mealImage8, mealImage9, mealImage10];
 
 const ingredientNameById = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient.name]));
 
 const getWeekdayLabel = (index: number) => weekdayLabels[index] ?? `Dag ${index + 1}`;
 
-const getMealPhoto = (meal: PlannedMeal) => mealPhotoFallbacks[meal.id] ?? mealPhotoFallbacks.default;
+const getMealPhoto = (index: number) => mealPhotoAssets[index % mealPhotoAssets.length];
 
 const getMealSubtitle = (meal: PlannedMeal) => {
   const selectedNames = meal.ingredients
