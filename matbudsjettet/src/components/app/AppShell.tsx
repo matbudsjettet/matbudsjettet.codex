@@ -75,8 +75,8 @@ export function AppShell({ activeView, canGoBack = false, children, onBack, onNa
         </main>
 
         {/* Tab bar */}
-        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(0.65rem,env(safe-area-inset-bottom))] pt-2">
-          <div className="mx-auto max-w-md overflow-hidden rounded-[24px] border border-[#ece3d8] bg-[rgba(255,255,255,0.92)] shadow-[0_18px_42px_rgba(33,25,16,0.12)] backdrop-blur-xl">
+        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+1.1rem)] pt-3">
+          <div className="mx-auto max-w-md overflow-hidden rounded-[28px] border border-[rgba(255,255,255,0.38)] bg-[rgba(247,243,236,0.68)] shadow-[0_20px_46px_rgba(37,29,18,0.16),0_2px_0_rgba(255,255,255,0.42)_inset] backdrop-blur-[24px]">
             <Tabs items={tabs} />
           </div>
         </nav>
