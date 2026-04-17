@@ -4,7 +4,7 @@ export function Section({ eyebrow, title, action, children }: {
   eyebrow?: string; title?: string; action?: ReactNode; children: ReactNode;
 }) {
   return (
-    <section className="space-y-4">
+    <section className="space-y-3.5">
       {(eyebrow || title || action) && (
         <div className="flex items-end justify-between gap-3">
           <div>

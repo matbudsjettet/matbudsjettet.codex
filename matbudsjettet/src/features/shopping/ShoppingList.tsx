@@ -78,18 +78,18 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
 
 
   return (
-    <motion.div animate="animate" className="space-y-5" initial="initial" transition={pageTransition} variants={sectionVariants}>
+    <motion.div animate="animate" className="space-y-4" initial="initial" transition={pageTransition} variants={sectionVariants}>
 
       {/* Summary hero */}
       <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
-        <div className="px-5 pt-5 pb-4">
+        <div className="px-4.5 pt-4.5 pb-4">
           <p className="text-[0.75rem] font-semibold text-text-tertiary">Handleliste</p>
           <p className="mt-1 text-[2rem] font-black tracking-tight text-text-primary">{formatCompactNok(shoppingList.basketTotalNok)}</p>
           <p className="mt-0.5 text-[0.82rem] text-text-secondary">
             {totalCount} varer · Middagskostnad: {formatCompactNok(planWeeklyTotalNok)}
           </p>
           {shoppingList.pantrySavingsNok > 0 && (
-            <div className="mt-2 inline-flex items-center rounded-xl bg-saving-bg px-3 py-1.5 text-[0.78rem] font-bold text-saving">
+            <div className="mt-2 inline-flex items-center rounded-xl bg-saving-bg px-3 py-1.25 text-[0.78rem] font-bold text-saving">
               Du sparer {formatCompactNok(shoppingList.pantrySavingsNok)} fra pantry
             </div>
           )}
@@ -97,8 +97,8 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
 
         {/* Progress */}
         {totalCount > 0 && (
-          <div className="border-t border-border-subtle px-5 py-3">
-            <div className="flex items-center justify-between mb-2">
+          <div className="border-t border-border-subtle px-4.5 py-3">
+            <div className="mb-2 flex items-center justify-between">
               <p className="text-[0.78rem] font-semibold text-text-secondary">
                 {checkedCount} av {totalCount} handlet
               </p>
@@ -130,8 +130,8 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
       />
 
       {/* Pantry */}
-      <div className="rounded-2xl bg-surface border border-border shadow-card p-4">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="rounded-2xl bg-surface border border-border shadow-card p-4">
+        <div className="mb-3 flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-surface-soft">
             <Home size={16} className="text-text-secondary" />
           </div>
@@ -161,9 +161,9 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
 
       {/* Empty state */}
       {totalCount === 0 && (
-        <div className="rounded-2xl bg-surface border border-border shadow-card p-8 text-center">
+        <div className="rounded-2xl bg-surface border border-border shadow-card p-6 text-center">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-saving-bg text-2xl">🛒</div>
-          <p className="mt-4 text-[0.95rem] font-bold text-text-primary">Alt er hjemme!</p>
+          <p className="mt-3.5 text-[0.95rem] font-bold text-text-primary">Alt er hjemme!</p>
           <p className="mt-1 text-[0.82rem] text-text-secondary">Du har allerede alt du trenger.</p>
         </div>
       )}
@@ -171,7 +171,7 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
       {/* Items grouped */}
       {groupedForDisplay.map(group => (
         <div key={group.group} className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle">
             <p className="text-[0.82rem] font-black text-text-primary">{group.group}</p>
             <span className="text-[0.72rem] font-semibold text-text-tertiary">{group.items.length} varer</span>
           </div>
@@ -181,7 +181,7 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
               <button
                 key={item.ingredientId}
                 className={cn(
-                  "flex w-full items-center gap-3.5 px-4 py-3.5 text-left transition-colors active:bg-bg-elevated",
+                  "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-bg-elevated",
                   i > 0 ? "border-t border-border-subtle" : "",
                   checked ? "opacity-60" : ""
                 )}
@@ -211,7 +211,7 @@ export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWee
 
       {/* Total */}
       {totalCount > 0 && (
-        <div className="rounded-2xl bg-brand text-white px-5 py-4 flex items-center justify-between">
+        <div className="flex items-center justify-between rounded-2xl bg-brand px-4.5 py-3.5 text-white">
           <div>
             <p className="text-[0.78rem] font-semibold text-white/70">Totalt estimert</p>
             <p className="text-[1.5rem] font-black">{formatCompactNok(shoppingList.basketTotalNok)}</p>

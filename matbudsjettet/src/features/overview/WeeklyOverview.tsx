@@ -39,7 +39,7 @@ export function WeeklyOverview({ onAction, plan, preference }: Props) {
   return (
     <motion.div
       animate="animate"
-      className="space-y-5"
+      className="space-y-4.5"
       initial="initial"
       transition={pageTransition}
       variants={sectionVariants}
@@ -47,7 +47,7 @@ export function WeeklyOverview({ onAction, plan, preference }: Props) {
       {/* Greeting */}
       <div>
         <h2 className="text-[1.45rem] font-black tracking-tight text-text-primary">God kveld! 👋</h2>
-        <p className="mt-0.5 text-[0.875rem] font-medium text-text-tertiary">Her er planen for uken din</p>
+        <p className="mt-1 text-[0.875rem] font-medium text-text-tertiary">Her er planen for uken din</p>
       </div>
 
       {/* Budget card */}
@@ -62,7 +62,7 @@ export function WeeklyOverview({ onAction, plan, preference }: Props) {
 
       {/* Meal rail */}
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="mb-2.5 flex items-center justify-between">
           <div>
             <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Denne uken</p>
             <h3 className="mt-0.5 text-[1.05rem] font-black tracking-tight text-text-primary">
@@ -80,7 +80,7 @@ export function WeeklyOverview({ onAction, plan, preference }: Props) {
 
         {/* Horizontal scroll */}
         <div className="-mx-5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex gap-3 pr-10">
+          <div className="flex gap-2.5 pr-10">
             {plan.meals.map((meal, i) => (
               <MealRailCard
                 key={meal.id}
@@ -108,8 +108,8 @@ function BudgetHeroCard({ budgetIsOver, budgetNok, progressPct, remainingPct, sa
   budgetIsOver: boolean; budgetNok: number; progressPct: number; remainingPct: number; savedNok: number; spentNok: number;
 }) {
   return (
-    <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
-      <div className="px-5 pt-5 pb-4">
+      <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+      <div className="px-4.5 pt-4.5 pb-4">
         <p className="text-[0.78rem] font-semibold text-text-tertiary">Ditt budsjett</p>
         <div className="mt-1 flex items-baseline gap-2">
           <span className={cn("text-[2.2rem] font-black tracking-tight leading-none", budgetIsOver ? "text-danger" : "text-text-primary")}>
@@ -121,7 +121,7 @@ function BudgetHeroCard({ budgetIsOver, budgetNok, progressPct, remainingPct, sa
         </div>
 
         {/* Progress bar */}
-        <div className="mt-3.5 h-2 rounded-full bg-surface-soft overflow-hidden">
+        <div className="mt-3 h-2 rounded-full bg-surface-soft overflow-hidden">
           <motion.div
             animate={{ width: `${progressPct}%` }}
             className={cn("h-full rounded-full", budgetIsOver ? "bg-danger" : "bg-brand")}
@@ -144,7 +144,7 @@ function BudgetHeroCard({ budgetIsOver, budgetNok, progressPct, remainingPct, sa
           { label: "Varer igjen", value: "—" },
           { label: "Spart", value: formatCompactNok(savedNok) },
         ].map((stat, i) => (
-          <div key={stat.label} className={cn("py-3 px-4 text-center", i > 0 ? "border-l border-border-subtle" : "")}>
+          <div key={stat.label} className={cn("px-3.5 py-3 text-center", i > 0 ? "border-l border-border-subtle" : "")}>
             <p className="text-[0.68rem] font-semibold text-text-tertiary">{stat.label}</p>
             <p className={cn("mt-0.5 text-[0.88rem] font-black text-text-primary", stat.label === "Spart" && !budgetIsOver ? "text-brand" : "")}>{stat.value}</p>
           </div>
@@ -182,7 +182,7 @@ function MealRailCard({ meal, index, onClick }: { meal: PlannedMeal; index: numb
         </div>
       </div>
       {/* Text */}
-      <div className="px-2.5 py-2.5">
+      <div className="px-2.5 py-2.25">
         <p className="line-clamp-2 text-[0.78rem] font-bold leading-snug text-text-primary">{meal.name}</p>
         {meal.categorySignals.budget && (
           <div className="mt-1.5 flex items-center gap-1">
@@ -215,7 +215,7 @@ function TodayMealCard({ meal, index, onClick }: { meal: PlannedMeal; index: num
         <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
           <div>
             <p className="text-[1.05rem] font-black text-white leading-snug">{meal.name}</p>
-            <div className="mt-1 flex items-center gap-3">
+            <div className="mt-1.5 flex items-center gap-3">
               <span className="flex items-center gap-1 text-[0.72rem] text-white/90">
                 <Clock3 size={12} />{meal.prepTimeMinutes} min
               </span>
@@ -244,7 +244,7 @@ function AchievementCard({ savedNok, budgetIsOver, onTips }: { savedNok: number;
   if (budgetIsOver) {
     return (
       <button
-        className="w-full rounded-2xl bg-[#FFF4EC] border border-[#FBDBB8] p-4 text-left transition-opacity active:opacity-80"
+        className="w-full rounded-2xl bg-[#FFF4EC] border border-[#FBDBB8] p-3.5 text-left transition-opacity active:opacity-80"
         onClick={onTips}
         type="button"
       >
@@ -262,7 +262,7 @@ function AchievementCard({ savedNok, budgetIsOver, onTips }: { savedNok: number;
 
   return (
     <button
-      className="w-full rounded-2xl bg-[#EBF5EF] border border-saving-border p-4 text-left transition-opacity active:opacity-80"
+      className="w-full rounded-2xl bg-[#EBF5EF] border border-saving-border p-3.5 text-left transition-opacity active:opacity-80"
       onClick={onTips}
       type="button"
     >

@@ -29,19 +29,19 @@ type Props = {
 
 export function SavingsTips({ onCompleteTip, onDismissTip, report }: Props) {
   return (
-    <motion.div animate="animate" className="space-y-5" initial="initial" transition={pageTransition} variants={sectionVariants}>
+    <motion.div animate="animate" className="space-y-4" initial="initial" transition={pageTransition} variants={sectionVariants}>
 
       {/* Savings hero */}
       <div className="rounded-2xl overflow-hidden bg-[#1A3225] text-white relative">
-        <div className="px-5 pt-6 pb-5">
+        <div className="px-5 pt-5.5 pb-5">
           <p className="text-[0.78rem] font-semibold text-white/60">Denne uken</p>
-          <p className="mt-2 text-[0.875rem] font-medium text-white/80">Du kan spare ytterligere</p>
-          <p className="text-[2.8rem] font-black tracking-tight leading-none mt-1">
+          <p className="mt-1.5 text-[0.875rem] font-medium text-white/80">Du kan spare ytterligere</p>
+          <p className="mt-1 text-[2.8rem] font-black tracking-tight leading-none">
             {formatCompactNok(report.totalSavingsPotentialNok)}
           </p>
           <p className="mt-1 text-[0.875rem] text-white/70">ved å følge tipsene under</p>
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3.5 py-2 text-[0.78rem] font-semibold text-white/80">
+          <div className="mt-3.5 inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3.5 py-2 text-[0.78rem] font-semibold text-white/80">
             🌱 Så bra! Du er allerede på rett vei.
           </div>
         </div>
@@ -51,7 +51,7 @@ export function SavingsTips({ onCompleteTip, onDismissTip, report }: Props) {
 
       {/* Priority tips */}
       {report.primaryTips.length > 0 ? (
-        <section className="space-y-3">
+        <section className="space-y-2.5">
           <div>
             <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Det viktigste</p>
             <h3 className="mt-0.5 text-[1.05rem] font-black text-text-primary">Ukens tips</h3>
@@ -71,7 +71,7 @@ export function SavingsTips({ onCompleteTip, onDismissTip, report }: Props) {
           </AnimatePresence>
         </section>
       ) : (
-        <div className="rounded-2xl bg-saving-bg border border-saving-border p-5 text-center">
+        <div className="rounded-2xl bg-saving-bg border border-saving-border p-4.5 text-center">
           <div className="text-2xl mb-2">👏</div>
           <p className="text-[0.9rem] font-bold text-text-primary">Du gjør allerede smarte valg!</p>
           <p className="mt-1 text-[0.8rem] text-text-secondary">Ingen forbedringer akkurat nå.</p>
@@ -80,7 +80,7 @@ export function SavingsTips({ onCompleteTip, onDismissTip, report }: Props) {
 
       {/* Secondary tips */}
       {report.secondaryTips.length > 0 && (
-        <section className="space-y-3">
+        <section className="space-y-2.5">
           <p className="text-[0.875rem] font-bold text-text-secondary">Flere forslag</p>
           <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
             {report.secondaryTips.map((tip, i) => (
@@ -113,7 +113,7 @@ function PriorityTipCard({ tip, onComplete, onDismiss }: { tip: SavingsTip; onCo
               {formatCompactNok(tip.estimatedSavingsNok)}
             </span>
           </div>
-          <p className="mt-2 text-[0.82rem] text-text-secondary leading-relaxed">{tip.body}</p>
+          <p className="mt-1.5 text-[0.82rem] text-text-secondary leading-relaxed">{tip.body}</p>
           <div className="mt-3 flex gap-2">
             <Button onClick={() => onComplete(tip.id)} size="sm" type="button" variant="primary">
               Gjort det ✓
@@ -133,7 +133,7 @@ function SmallTipRow({ tip, last }: { tip: SavingsTip; last: boolean }) {
   const color = kindColor[tip.kind];
 
   return (
-    <div className={`flex items-center gap-3.5 px-4 py-3.5 ${!last ? "border-b border-border-subtle" : ""}`}>
+    <div className={`flex items-center gap-3 px-4 py-3 ${!last ? "border-b border-border-subtle" : ""}`}>
       <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${color.bg}`}>
         <Icon size={16} className={color.text} strokeWidth={2} />
       </div>

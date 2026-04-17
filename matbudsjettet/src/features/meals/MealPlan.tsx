@@ -54,9 +54,9 @@ export function MealPlan({ mealPreferences, meals, onOpenRecipe, onSwapMeal, onT
   const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
 
   return (
-    <motion.div animate="animate" className="space-y-4" initial="initial" transition={pageTransition} variants={sectionVariants}>
+    <motion.div animate="animate" className="space-y-3.5" initial="initial" transition={pageTransition} variants={sectionVariants}>
       {/* Week header */}
-      <div className="rounded-2xl bg-surface border border-border shadow-card px-4 py-3.5 flex items-center justify-between">
+      <div className="flex items-center justify-between rounded-2xl bg-surface border border-border px-4 py-3 shadow-card">
         <div>
           <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Uke {weekNumber}</p>
           <p className="mt-0.5 text-[0.88rem] font-bold text-text-primary">{weekRange}</p>
@@ -84,12 +84,12 @@ export function MealPlan({ mealPreferences, meals, onOpenRecipe, onSwapMeal, onT
               )}
             >
               <button
-                className="flex w-full items-center gap-3.5 px-4 py-3.5 text-left transition-colors hover:bg-bg-elevated active:bg-bg-elevated"
+                className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-elevated active:bg-bg-elevated"
                 onClick={() => onSwapMeal(meal)}
                 type="button"
               >
                 {/* Thumbnail */}
-                <div className="h-[52px] w-[52px] shrink-0 overflow-hidden rounded-xl bg-surface-soft">
+                <div className="h-[50px] w-[50px] shrink-0 overflow-hidden rounded-xl bg-surface-soft">
                   <img alt={meal.name} className="h-full w-full object-cover" src={img} />
                 </div>
 
@@ -100,7 +100,7 @@ export function MealPlan({ mealPreferences, meals, onOpenRecipe, onSwapMeal, onT
                     {isToday && <span className="rounded-md bg-brand-light text-brand text-[0.62rem] font-bold px-1.5 py-0.5">I dag</span>}
                   </div>
                   <p className="mt-0.5 text-[0.9rem] font-bold text-text-primary leading-snug line-clamp-1">{meal.name}</p>
-                  <div className="mt-1 flex items-center gap-3 text-[0.72rem] text-text-tertiary">
+                  <div className="mt-1 flex items-center gap-2.5 text-[0.72rem] text-text-tertiary">
                     <span className="flex items-center gap-1"><Clock3 size={11} />{meal.prepTimeMinutes} min</span>
                     <span>{formatCompactNok(meal.totalPriceNok)}</span>
                   </div>
@@ -110,7 +110,7 @@ export function MealPlan({ mealPreferences, meals, onOpenRecipe, onSwapMeal, onT
               </button>
 
               {/* Quick actions */}
-              <div className="flex gap-2 px-4 pb-3 -mt-1">
+              <div className="-mt-0.5 flex gap-2 px-4 pb-2.5">
                 <QuickAction
                   active={isFavorite}
                   icon={<Heart size={13} strokeWidth={2} />}
@@ -149,7 +149,7 @@ function QuickAction({ active, icon, label, onClick }: { active: boolean; icon: 
   return (
     <button
       className={cn(
-        "flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[0.7rem] font-semibold transition-all",
+        "flex items-center gap-1.5 rounded-xl px-2.5 py-1.25 text-[0.7rem] font-semibold transition-all",
         active ? "bg-saving-bg text-saving" : "bg-surface-soft text-text-tertiary hover:text-text-secondary"
       )}
       onClick={onClick}
