@@ -90,13 +90,13 @@ export function AppShell({ activeView, canGoBack = false, children, onBack, onNa
         </header>
 
         {/* Content */}
-        <main className="flex-1 space-y-6 px-5 pb-32" ref={mainRef}>
+        <main className="flex-1 space-y-6 px-5 pb-36" ref={mainRef}>
           {children}
         </main>
 
         {/* Tab bar */}
-        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
-          <div className="mx-auto max-w-md overflow-hidden rounded-[22px] border border-border bg-surface shadow-elevated">
+        <nav className="fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3">
+          <div className="glass-nav mx-auto max-w-md overflow-hidden rounded-[28px]">
             <Tabs items={tabs} />
           </div>
         </nav>
