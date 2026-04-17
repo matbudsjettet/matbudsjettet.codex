@@ -6,7 +6,7 @@ type CardVariant = "default" | "surface" | "saving" | "premium" | "quiet" | "mut
 const variantClasses: Record<CardVariant, string> = {
   default: "bg-surface border border-border shadow-card",
   surface: "bg-bg-elevated border border-border-subtle",
-  saving: "bg-[#EBF5EF] border border-saving-border",
+  saving: "bg-brand-light border border-saving-border",
   premium: "bg-premium-bg border border-premium-border",
   quiet: "bg-surface border border-border-subtle",
   muted: "bg-surface-soft border border-border-subtle",

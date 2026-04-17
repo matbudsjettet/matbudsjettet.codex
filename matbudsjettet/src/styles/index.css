@@ -6,40 +6,40 @@
 
 :root {
   color: #1C1A17;
-  background: #F5F1EB;
+  background: #FAFAF8;
 
-  --color-background: #F5F1EB;
-  --color-bg-elevated: #FAF8F4;
+  --color-background: #FAFAF8;
+  --color-bg-elevated: #F5F5F2;
   --color-surface: #FFFFFF;
-  --color-surface-soft: #EDE8E1;
+  --color-surface-soft: #F3F4F0;
   --color-card: #FFFFFF;
 
   --color-text-primary: #1C1A17;
-  --color-text-secondary: #574F47;
-  --color-text-tertiary: #8C8278;
+  --color-text-secondary: #55514B;
+  --color-text-tertiary: #847F77;
 
-  --color-border-subtle: #EDE7DE;
-  --color-border: #E2DAD0;
-  --color-border-strong: #CAC0B4;
+  --color-border-subtle: #ECECE7;
+  --color-border: #E4E5DF;
+  --color-border-strong: #D6D8D0;
 
   --color-brand: #2E7D5A;
-  --color-brand-light: #EBF5EF;
+  --color-brand-light: #EDF6F0;
   --color-brand-medium: #4CAF76;
 
   --color-saving: #2E7D5A;
-  --color-saving-bg: rgba(46, 125, 90, 0.10);
-  --color-saving-border: rgba(46, 125, 90, 0.22);
+  --color-saving-bg: rgba(46, 125, 90, 0.09);
+  --color-saving-border: rgba(46, 125, 90, 0.16);
 
-  --color-premium: #8A6F3E;
-  --color-premium-bg: #FBF5E8;
-  --color-premium-border: #E8D8B4;
+  --color-premium: #65583D;
+  --color-premium-bg: #F7F4EC;
+  --color-premium-border: #E7E0CD;
 
   --color-danger: #C0392B;
   --color-danger-bg: rgba(192, 57, 43, 0.09);
 
-  --shadow-card: 0 2px 12px rgba(28, 26, 23, 0.06), 0 1px 3px rgba(28, 26, 23, 0.04);
-  --shadow-elevated: 0 8px 24px rgba(28, 26, 23, 0.09), 0 2px 8px rgba(28, 26, 23, 0.05);
-  --shadow-nav: 0 -1px 0 rgba(28, 26, 23, 0.06), 0 -8px 24px rgba(28, 26, 23, 0.06);
+  --shadow-card: 0 8px 24px rgba(20, 20, 18, 0.045), 0 2px 6px rgba(20, 20, 18, 0.025);
+  --shadow-elevated: 0 16px 40px rgba(20, 20, 18, 0.055), 0 4px 12px rgba(20, 20, 18, 0.03);
+  --shadow-nav: 0 18px 42px rgba(20, 20, 18, 0.07), 0 1px 0 rgba(255, 255, 255, 0.7) inset;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -49,13 +49,13 @@
 
 * { box-sizing: border-box; }
 
-html { min-height: 100%; background: #F5F1EB; }
+html { min-height: 100%; background: #FAFAF8; }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #F5F1EB;
+  background: #FAFAF8;
   font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
@@ -64,15 +64,15 @@ button, input, select, textarea { font: inherit; }
 #root { min-height: 100vh; }
 
 .glass-nav {
-  background: rgba(245, 241, 235, 0.72);
+  background: rgba(255, 255, 255, 0.76);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(228, 229, 223, 0.8);
   box-shadow: var(--shadow-nav);
 }
 
 @supports not (backdrop-filter: blur(1px)) {
-  .glass-nav { background: rgba(245, 241, 235, 0.97); }
+  .glass-nav { background: rgba(255, 255, 255, 0.96); }
 }
 
 @layer utilities {

@@ -1,34 +1,35 @@
 export const designTokens = {
-  shadowValue: "0 2px 12px rgba(28,26,23,0.06), 0 1px 3px rgba(28,26,23,0.04)",
+  shadowValue: "0 8px 24px rgba(20,20,18,0.045), 0 2px 6px rgba(20,20,18,0.025)",
   color: {
-    background: "#F5F1EB",
-    bgElevated: "#FAF8F4",
+    background: "#FAFAF8",
+    bgElevated: "#F5F5F2",
     surface: "#FFFFFF",
+    surfaceSoft: "#F3F4F0",
     text: {
       primary: "#1C1A17",
-      secondary: "#574F47",
-      tertiary: "#8C8278"
+      secondary: "#55514B",
+      tertiary: "#847F77"
     },
     border: {
-      subtle: "#EDE7DE",
-      default: "#E2DAD0",
-      strong: "#CAC0B4"
+      subtle: "#ECECE7",
+      default: "#E4E5DF",
+      strong: "#D6D8D0"
     },
     brand: {
       default: "#2E7D5A",
-      light: "#EBF5EF",
+      light: "#EDF6F0",
       medium: "#4CAF76",
       strong: "#236248"
     },
     saving: {
       text: "#2E7D5A",
-      background: "rgba(46,125,90,0.10)",
-      border: "rgba(46,125,90,0.22)"
+      background: "rgba(46,125,90,0.09)",
+      border: "rgba(46,125,90,0.16)"
     },
     premium: {
-      text: "#8A6F3E",
-      background: "#FBF5E8",
-      border: "#E8D8B4"
+      text: "#65583D",
+      background: "#F7F4EC",
+      border: "#E7E0CD"
     },
     danger: {
       text: "#C0392B",
@@ -42,9 +43,9 @@ export const designTokens = {
   },
   radius: { xs: "0.5rem", sm: "0.75rem", md: "1rem", lg: "1.25rem", xl: "1.5rem", "2xl": "1.75rem" },
   shadow: {
-    card: "0 2px 12px rgba(28,26,23,0.06), 0 1px 3px rgba(28,26,23,0.04)",
-    elevated: "0 8px 24px rgba(28,26,23,0.09), 0 2px 8px rgba(28,26,23,0.05)",
-    hero: "0 12px 32px rgba(28,26,23,0.10), 0 4px 12px rgba(28,26,23,0.06)"
+    card: "0 8px 24px rgba(20,20,18,0.045), 0 2px 6px rgba(20,20,18,0.025)",
+    elevated: "0 16px 40px rgba(20,20,18,0.055), 0 4px 12px rgba(20,20,18,0.03)",
+    hero: "0 20px 48px rgba(20,20,18,0.065), 0 6px 18px rgba(20,20,18,0.035)"
   },
   button: {
     radius: "1rem",
@@ -52,7 +53,7 @@ export const designTokens = {
     fontSize: "0.9375rem",
     fontWeight: 700,
     primary: { background: "#2E7D5A", color: "#FFFFFF", border: "transparent" },
-    secondary: { background: "#FFFFFF", color: "#1C1A17", border: "#E2DAD0" }
+    secondary: { background: "#FFFFFF", color: "#1C1A17", border: "#E4E5DF" }
   },
   typography: {
     display: { fontSize: "2.5rem", lineHeight: "2.75rem", fontWeight: 800 },
