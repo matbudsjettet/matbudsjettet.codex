@@ -1,198 +1,281 @@
-import { Bell, ChevronRight, Clock, Flame } from "lucide-react";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
-import { getMealImage } from "@/lib/design/mealImages";
+import { motion } from "framer-motion";
+import { ChevronRight, Clock3, Flame, TrendingDown, Leaf } from "lucide-react";
+import mealImage1 from "../../../assets/:assets:meals:/:assets:meals:meal-1.png";
+import mealImage2 from "../../../assets/:assets:meals:/:assets:meals:meal-2.png";
+import mealImage3 from "../../../assets/:assets:meals:/:assets:meals:meal-3.png";
+import mealImage4 from "../../../assets/:assets:meals:/:assets:meals:meal-4.png";
+import mealImage5 from "../../../assets/:assets:meals:/:assets:meals:meal-5.png";
+import mealImage6 from "../../../assets/:assets:meals:/:assets:meals:meal-6.png";
+import mealImage7 from "../../../assets/:assets:meals:/:assets:meals:meal-7.png";
+import mealImage8 from "../../../assets/:assets:meals:/:assets:meals:meal-8.png";
+import mealImage9 from "../../../assets/:assets:meals:/:assets:meals:meal-9.png";
+import mealImage10 from "../../../assets/:assets:meals:/:assets:meals:meal-10.png";
+import { pageTransition, sectionVariants } from "@/lib/design/animations";
+import { formatCompactNok } from "@/lib/utils/format";
+import { cn } from "@/lib/utils/cn";
+import type { BudgetPreference, PlannedMeal, WeeklyPlan } from "@/types/domain";
 
-interface WeeklyOverviewProps {
+const plan_per_day = (weeklyNok: number) => Math.round(weeklyNok / 7);
+
+const mealImages = [mealImage1, mealImage2, mealImage3, mealImage4, mealImage5, mealImage6, mealImage7, mealImage8, mealImage9, mealImage10];
+const weekdays = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+
+type Props = {
+  onAction: (action: "meals" | "shopping" | "tips" | "swap") => void;
   plan: WeeklyPlan;
   preference: BudgetPreference;
-  onAction: (action: "meals" | "shopping" | "tips" | "swap") => void;
-  mealImageSrc?: string;
-}
+};
 
-const weekdayLabels = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-
-const formatNok = (value: number) => `${value.toLocaleString("nb-NO")} kr`;
-
-const WeeklyOverview = ({ mealImageSrc, plan, preference, onAction }: WeeklyOverviewProps) => {
-  const spent = plan.summary.weeklyTotalNok;
-  const budget = preference.weeklyBudgetNok;
-  const remaining = Math.max(0, budget - spent);
-  const percent = budget > 0 ? Math.max(0, Math.min(100, Math.round((remaining / budget) * 100))) : 0;
-  const featuredMeal = plan.meals[0];
-  const featuredMealImage = featuredMeal ? getMealImage(featuredMeal.id, 0) : getMealImage("fallback", 0);
-  const weekdayName = new Intl.DateTimeFormat("nb-NO", { weekday: "long" }).format(new Date());
+export function WeeklyOverview({ onAction, plan, preference }: Props) {
+  const { budgetComparison } = plan.summary;
+  const budgetIsOver = budgetComparison.status === "over";
+  const spentNok = plan.summary.weeklyTotalNok;
+  const budgetNok = preference.weeklyBudgetNok;
+  const savedNok = Math.max(0, budgetNok - spentNok);
+  const progressPct = Math.min(100, Math.round((spentNok / budgetNok) * 100));
+  const remainingPct = 100 - progressPct;
+  const todayMeal = plan.meals[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1] ?? plan.meals[0];
 
   return (
-    <div className="min-h-screen w-full bg-[#f5f0e8]">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-4 pb-28">
-        <div className="px-4 pt-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[0.76rem] font-semibold capitalize tracking-[0.08em] text-[#8e8375]">{weekdayName}</p>
-              <h1 className="mt-1 text-[1.8rem] font-black leading-none tracking-tight text-[#1d1a16]">Hei, André</h1>
-              <p className="mt-1 text-[0.92rem] text-[#7c7468]">Rolig uke, god mat og færre småturer.</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                aria-label="Varsler"
-                className="relative grid h-11 w-11 place-items-center rounded-full bg-white shadow-[0_10px_24px_rgba(33,25,16,0.08)]"
-                type="button"
-              >
-                <Bell size={19} strokeWidth={1.9} className="text-[#5c554b]" />
-                <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[#ff8f4d]" />
-              </button>
-            </div>
+    <motion.div
+      animate="animate"
+      className="space-y-5"
+      initial="initial"
+      transition={pageTransition}
+      variants={sectionVariants}
+    >
+      {/* Greeting */}
+      <div>
+        <h2 className="text-[1.45rem] font-black tracking-tight text-text-primary">God kveld! 👋</h2>
+        <p className="mt-0.5 text-[0.875rem] font-medium text-text-tertiary">Her er planen for uken din</p>
+      </div>
+
+      {/* Budget card */}
+      <BudgetHeroCard
+        budgetIsOver={budgetIsOver}
+        budgetNok={budgetNok}
+        progressPct={progressPct}
+        remainingPct={remainingPct}
+        savedNok={savedNok}
+        spentNok={spentNok}
+      />
+
+      {/* Meal rail */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Denne uken</p>
+            <h3 className="mt-0.5 text-[1.05rem] font-black tracking-tight text-text-primary">
+              {plan.meals.length} av 7 middager planlagt
+            </h3>
           </div>
-        </div>
-
-        <div className="px-4">
-          <Card className="overflow-hidden rounded-[1.45rem] border-0 bg-white p-4 shadow-[0_12px_24px_rgba(33,25,16,0.06)]">
-            <div className="grid grid-cols-[minmax(0,1fr)_98px] items-start gap-3">
-              <div>
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[#8c8172]">Budsjett igjen</p>
-                <p className="mt-2 text-[1.8rem] font-black leading-none tracking-tight text-[#1c7c4d]">{formatNok(remaining)}</p>
-                <p className="mt-1 text-[0.86rem] text-[#7b7367]">etter ukens plan</p>
-              </div>
-              <div className="relative h-[98px]">
-                <div className="absolute inset-3 rounded-full bg-[radial-gradient(circle,rgba(129,201,149,0.16),rgba(129,201,149,0.02)_70%)]" />
-                <img alt={featuredMeal?.name ?? "Middag"} className="absolute inset-0 h-full w-full object-contain" src={mealImageSrc ?? featuredMealImage} />
-              </div>
-            </div>
-
-            <div className="mt-3.5">
-              <div className="mb-2 flex items-center justify-between text-[0.72rem] font-semibold text-[#8a806f]">
-                <span>Brukt {formatNok(spent)}</span>
-                <span>{percent}% igjen</span>
-              </div>
-              <div className="h-2.5 w-full rounded-full bg-[#eee6dc]">
-                <div
-                  className="h-2.5 rounded-full"
-                  style={{
-                    width: `${percent}%`,
-                    background: "linear-gradient(90deg, #2b8a58 0%, #5fa06d 100%)"
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-3.5 grid grid-cols-3 gap-3 border-t border-[#f0ebe4] pt-3">
-              <StatChip label="Budsjett" value={formatNok(budget)} />
-              <StatChip label="Per dag" value={formatNok(plan.summary.perDayCostNok)} />
-              <StatChip label="Varer" value={`${plan.shoppingList.totalItemsToBuy}`} />
-            </div>
-          </Card>
-        </div>
-
-        <div className="px-4">
-          <div
-            className="relative min-h-[248px] w-full overflow-hidden rounded-[1.6rem] bg-[#5c4a39] shadow-[0_16px_30px_rgba(33,25,16,0.12)]"
+          <button
+            className="flex items-center gap-1 rounded-full bg-surface-soft px-3.5 py-2 text-[0.78rem] font-bold text-text-secondary transition-colors hover:bg-surface-soft active:opacity-80"
             onClick={() => onAction("meals")}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                onAction("meals");
-              }
-            }}
-            role="button"
-            tabIndex={0}
+            type="button"
           >
-            <img alt={featuredMeal?.name ?? "Dagens middag"} className="absolute inset-0 h-full w-full object-cover" src={mealImageSrc ?? featuredMealImage} />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
-            <div className="absolute left-4 top-4 z-10">
-              <Badge tone="warm">I kveld</Badge>
-            </div>
-            <button
-              aria-label="Åpne ukeplan"
-              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/18 text-white backdrop-blur-md"
-              onClick={() => onAction("meals")}
-              type="button"
-            >
-              <ChevronRight size={18} strokeWidth={2.3} />
-            </button>
-            <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-5 pt-16">
-              <h3 className="text-[1.55rem] font-black leading-tight text-white">{featuredMeal?.name ?? "Dagens middag"}</h3>
-              <p className="mt-1 max-w-[15rem] text-[0.95rem] leading-relaxed text-white/84">
-                {featuredMeal?.savingsNote ?? "Ukens anbefalte middag"}
-              </p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/16 px-2.5 py-1 text-[0.76rem] font-medium text-white backdrop-blur-sm">
-                  <Clock size={11} />
-                  {featuredMeal?.prepTimeMinutes ?? 25} min
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/16 px-2.5 py-1 text-[0.76rem] font-medium text-white backdrop-blur-sm">
-                  <Flame size={11} />
-                  {formatNok(featuredMeal?.totalPriceNok ?? 0)}
-                </span>
-              </div>
-            </div>
-          </div>
+            Se ukeplan <ChevronRight size={14} strokeWidth={2.5} />
+          </button>
         </div>
 
-        <div className="px-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[1.45rem] font-black tracking-tight text-[#1d1a16]">Denne uka</h2>
-            <Button className="min-h-[38px] px-3.5 py-2 text-[0.78rem]" onClick={() => onAction("meals")} variant="secondary">Åpne ukeplan</Button>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto px-4 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex gap-3 pr-4">
-            {plan.meals.slice(0, 5).map((meal, index) => (
-              <button
-                className="w-[11rem] shrink-0 overflow-hidden rounded-[1.35rem] bg-white text-left shadow-[0_12px_28px_rgba(33,25,16,0.08)]"
+        {/* Horizontal scroll */}
+        <div className="-mx-5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-3 pr-10">
+            {plan.meals.map((meal, i) => (
+              <MealRailCard
                 key={meal.id}
+                meal={meal}
+                index={i}
                 onClick={() => onAction("meals")}
-                type="button"
-              >
-                <div className="relative h-[7.75rem] overflow-hidden">
-                  <img alt={meal.name} className="h-full w-full object-cover" src={getMealImage(meal.id, index)} />
-                  <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[0.68rem] font-semibold text-[#514a42]">
-                    {weekdayLabels[index] ?? meal.weekday ?? `Dag ${index + 1}`}
-                  </div>
-                </div>
-                <div className="space-y-2 p-3">
-                  <div>
-                    <p className="line-clamp-1 text-[0.95rem] font-bold text-[#1d1a16]">{meal.name}</p>
-                    <p className="mt-1 text-[0.78rem] text-[#7a7369]">{meal.prepTimeMinutes} min • {formatNok(meal.totalPriceNok)}</p>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {meal.categorySignals.budget ? <Badge tone="saving">Billig</Badge> : null}
-                    {!meal.categorySignals.budget && meal.prepTimeMinutes <= 25 ? <Badge tone="premium">Rask</Badge> : null}
-                  </div>
-                </div>
-              </button>
+              />
             ))}
           </div>
         </div>
+      </section>
 
-        <div className="px-4">
-          <div className="flex items-center justify-between gap-4 rounded-[1.35rem] bg-[#edf3ed] px-4 py-3.5">
-            <div>
-              <p className="text-[0.98rem] font-black text-[#1d1a16]">Du ligger godt an</p>
-              <p className="mt-1 text-[0.88rem] leading-relaxed text-[#5f7a66]">
-                {formatNok(remaining)} igjen og {plan.shoppingList.totalItemsToBuy} varer å handle.
-              </p>
-            </div>
-            <Button className="min-h-[40px] shrink-0 px-4 py-2 text-[0.8rem]" onClick={() => onAction("shopping")}>
-              Handleliste
-            </Button>
-          </div>
+      {/* Today feature card */}
+      {todayMeal && (
+        <TodayMealCard meal={todayMeal} index={plan.meals.indexOf(todayMeal)} onClick={() => onAction("meals")} />
+      )}
+
+      {/* Achievement card */}
+      <AchievementCard savedNok={savedNok} budgetIsOver={budgetIsOver} onTips={() => onAction("tips")} />
+    </motion.div>
+  );
+}
+
+function BudgetHeroCard({ budgetIsOver, budgetNok, progressPct, remainingPct, savedNok, spentNok }: {
+  budgetIsOver: boolean; budgetNok: number; progressPct: number; remainingPct: number; savedNok: number; spentNok: number;
+}) {
+  return (
+    <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+      <div className="px-5 pt-5 pb-4">
+        <p className="text-[0.78rem] font-semibold text-text-tertiary">Ditt budsjett</p>
+        <div className="mt-1 flex items-baseline gap-2">
+          <span className={cn("text-[2.2rem] font-black tracking-tight leading-none", budgetIsOver ? "text-danger" : "text-text-primary")}>
+            {formatCompactNok(budgetIsOver ? spentNok : savedNok)}
+          </span>
+          <span className="text-[0.9rem] font-medium text-text-tertiary">
+            {budgetIsOver ? "brukt av" : "igjen av"} {formatCompactNok(budgetNok)}
+          </span>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mt-3.5 h-2 rounded-full bg-surface-soft overflow-hidden">
+          <motion.div
+            animate={{ width: `${progressPct}%` }}
+            className={cn("h-full rounded-full", budgetIsOver ? "bg-danger" : "bg-brand")}
+            initial={{ width: "0%" }}
+            transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
+          />
+        </div>
+        <div className="mt-1.5 flex justify-between">
+          <span className="text-[0.72rem] font-semibold text-text-tertiary">{formatCompactNok(spentNok)} brukt</span>
+          <span className={cn("text-[0.72rem] font-bold", budgetIsOver ? "text-danger" : "text-brand")}>
+            {remainingPct}% igjen
+          </span>
         </div>
       </div>
-    </div>
-  );
-};
 
-function StatChip({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[#8a8173]">{label}</p>
-      <p className="mt-1 text-[0.95rem] font-bold text-[#1d1a16]">{value}</p>
+      {/* Stat row */}
+      <div className="grid grid-cols-3 border-t border-border-subtle">
+        {[
+          { label: "Per dag", value: formatCompactNok(plan_per_day(spentNok)) },
+          { label: "Varer igjen", value: "—" },
+          { label: "Spart", value: formatCompactNok(savedNok) },
+        ].map((stat, i) => (
+          <div key={stat.label} className={cn("py-3 px-4 text-center", i > 0 ? "border-l border-border-subtle" : "")}>
+            <p className="text-[0.68rem] font-semibold text-text-tertiary">{stat.label}</p>
+            <p className={cn("mt-0.5 text-[0.88rem] font-black text-text-primary", stat.label === "Spart" && !budgetIsOver ? "text-brand" : "")}>{stat.value}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-export default WeeklyOverview;
+
+function MealRailCard({ meal, index, onClick }: { meal: PlannedMeal; index: number; onClick: () => void }) {
+  const img = mealImages[index % mealImages.length];
+  const day = weekdays[index] ?? `Dag ${index + 1}`;
+
+  return (
+    <button
+      className="w-[128px] shrink-0 overflow-hidden rounded-2xl bg-white shadow-card text-left transition-transform duration-150 active:scale-95"
+      onClick={onClick}
+      type="button"
+    >
+      {/* Image */}
+      <div className="relative h-[112px] overflow-hidden bg-surface-soft">
+        <img alt={meal.name} className="h-full w-full object-cover" src={img} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+        {/* Day pill */}
+        <div className="absolute left-2 top-2">
+          <span className="rounded-lg bg-black/50 px-2 py-1 text-[0.62rem] font-bold text-white backdrop-blur-sm">
+            {day}
+          </span>
+        </div>
+        {/* Time pill */}
+        <div className="absolute bottom-2 left-2 flex items-center gap-1">
+          <Clock3 size={10} className="text-white/90" />
+          <span className="text-[0.62rem] font-semibold text-white/90">{meal.prepTimeMinutes} min</span>
+        </div>
+      </div>
+      {/* Text */}
+      <div className="px-2.5 py-2.5">
+        <p className="line-clamp-2 text-[0.78rem] font-bold leading-snug text-text-primary">{meal.name}</p>
+        {meal.categorySignals.budget && (
+          <div className="mt-1.5 flex items-center gap-1">
+            <TrendingDown size={10} className="text-brand" />
+            <span className="text-[0.65rem] font-semibold text-brand">Billig</span>
+          </div>
+        )}
+      </div>
+    </button>
+  );
+}
+
+function TodayMealCard({ meal, index, onClick }: { meal: PlannedMeal; index: number; onClick: () => void }) {
+  const img = mealImages[index % mealImages.length];
+
+  return (
+    <button
+      className="w-full overflow-hidden rounded-2xl bg-white shadow-card text-left transition-transform duration-150 active:scale-[0.99]"
+      onClick={onClick}
+      type="button"
+    >
+      <div className="relative h-[180px] overflow-hidden bg-surface-soft">
+        <img alt={meal.name} className="h-full w-full object-cover" src={img} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute left-3 top-3">
+          <span className="rounded-xl bg-black/40 px-3 py-1.5 text-[0.72rem] font-bold text-white backdrop-blur-sm">
+            Dagens middag
+          </span>
+        </div>
+        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+          <div>
+            <p className="text-[1.05rem] font-black text-white leading-snug">{meal.name}</p>
+            <div className="mt-1 flex items-center gap-3">
+              <span className="flex items-center gap-1 text-[0.72rem] text-white/90">
+                <Clock3 size={12} />{meal.prepTimeMinutes} min
+              </span>
+              {meal.categorySignals.vegetarian && (
+                <span className="flex items-center gap-1 text-[0.72rem] text-white/90">
+                  <Leaf size={12} /> Vegetar
+                </span>
+              )}
+              {meal.categorySignals.protein && (
+                <span className="flex items-center gap-1 text-[0.72rem] text-white/90">
+                  <Flame size={12} /> Protein
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/90">
+            <ChevronRight size={16} className="text-text-primary" strokeWidth={2.5} />
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function AchievementCard({ savedNok, budgetIsOver, onTips }: { savedNok: number; budgetIsOver: boolean; onTips: () => void }) {
+  if (budgetIsOver) {
+    return (
+      <button
+        className="w-full rounded-2xl bg-[#FFF4EC] border border-[#FBDBB8] p-4 text-left transition-opacity active:opacity-80"
+        onClick={onTips}
+        type="button"
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#FEE3CC] text-[#B45309] text-xl">⚠️</div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[0.88rem] font-black text-text-primary">Over budsjettet denne uken</p>
+            <p className="mt-0.5 text-[0.78rem] text-text-secondary">Se spartips for å komme tilbake på sporet</p>
+          </div>
+          <ChevronRight size={16} className="text-text-tertiary shrink-0" />
+        </div>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      className="w-full rounded-2xl bg-[#EBF5EF] border border-saving-border p-4 text-left transition-opacity active:opacity-80"
+      onClick={onTips}
+      type="button"
+    >
+      <div className="flex items-center gap-3">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-xl shadow-sm">🌱</div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[0.88rem] font-black text-text-primary">Du sparer godt!</p>
+          <p className="mt-0.5 text-[0.78rem] text-text-secondary">
+            Du har spart {formatCompactNok(savedNok)} så langt denne uken
+          </p>
+        </div>
+        <ChevronRight size={16} className="text-brand shrink-0" />
+      </div>
+    </button>
+  );
+}

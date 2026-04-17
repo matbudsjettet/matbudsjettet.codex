@@ -1,107 +1,73 @@
-import { Check, Crown } from "lucide-react";
-import { motion } from "framer-motion";
+import { Crown, Lock, TrendingDown } from "lucide-react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Section } from "@/components/ui/Section";
-import { pageTransition, sectionVariants } from "@/lib/design/animations";
-import { createPremiumOptimizationPreview } from "@/lib/engines/premiumOptimizationEngine";
 import { formatCompactNok } from "@/lib/utils/format";
+import { createPremiumOptimizationPreview } from "@/lib/engines/premiumOptimizationEngine";
 import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
 
-type PremiumOptimizationProps = {
-  locked?: boolean;
-  onOpenPaywall: () => void;
-  plan: WeeklyPlan;
-  preference: BudgetPreference;
-};
+type Props = { locked: boolean; onOpenPaywall: () => void; plan: WeeklyPlan; preference: BudgetPreference };
 
-export function PremiumOptimization({ locked = true, onOpenPaywall, plan, preference }: PremiumOptimizationProps) {
-  const preview = createPremiumOptimizationPreview(plan, preference, locked);
-  const currentStrategy = preview.strategies.find((strategy) => strategy.id === "practical");
-  const optimizedStrategy = preview.strategies.find((strategy) => strategy.id === "max-savings");
-  const originalTotalNok = currentStrategy?.estimatedTotalNok ?? plan.summary.weeklyTotalNok;
-  const optimizedTotalNok = optimizedStrategy?.estimatedTotalNok ?? Math.max(0, originalTotalNok - preview.estimatedExtraSavingsNok);
-  const estimatedSavingsNok = Math.max(0, originalTotalNok - optimizedTotalNok);
+export function PremiumOptimization({ locked, onOpenPaywall, plan, preference }: Props) {
+  const preview = useMemo(() => createPremiumOptimizationPreview(plan, preference, locked), [locked, plan, preference]);
 
   return (
-    <Section eyebrow="Pro" title="Optimaliser handelen din">
-      <motion.div
-        animate="animate"
-        className="space-y-app-6"
-        initial="initial"
-        transition={pageTransition}
-        variants={sectionVariants}
-      >
-        <div className="overflow-hidden rounded-[28px] border border-border bg-surface p-app-6 shadow-app">
-          <div className="flex items-start justify-between gap-app-4">
-            <div className="min-w-0">
-              <div className="inline-flex items-center gap-app-2 rounded-full border border-premium-border bg-premium-bg px-app-3 py-app-2 text-caption text-premium">
-                <Crown size={14} strokeWidth={2.5} />
-                <span>Matbudsjettet Pro</span>
-              </div>
-              <h3 className="mt-app-5 text-[2rem] font-black leading-9 tracking-tight text-text-primary">
-                Spar mer med smartere handlevalg.
-              </h3>
-              <p className="mt-app-3 max-w-[17rem] text-body text-text-secondary">
-                Finn billigste kombinasjon og få forslag som kutter kostnader automatisk.
-              </p>
+    <div className="space-y-5">
+      {/* Pro hero */}
+      <div className="rounded-2xl bg-[#1A3225] text-white p-6">
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Crown size={18} className="text-[#D4A017]" />
+              <span className="text-[0.78rem] font-bold text-[#D4A017]">PRO</span>
             </div>
-          </div>
-
-          <div className="mt-app-6 rounded-2xl bg-bg-elevated p-app-4">
-            <div className="grid grid-cols-3 gap-app-2">
-              <ComparisonValue label="Uten Pro" value={formatCompactNok(originalTotalNok)} />
-              <ComparisonValue emphasized label="Med Pro" value={formatCompactNok(optimizedTotalNok)} />
-              <ComparisonValue saving label="Sparer" value={formatCompactNok(estimatedSavingsNok)} />
-            </div>
-            <p className="mt-app-3 text-caption text-text-tertiary">
-              {preview.locked ? "Estimert, ikke live prisdata." : "Beregnet fra ukeplanen din."} Sparer {formatCompactNok(estimatedSavingsNok)} denne uken.
+            <h2 className="text-[1.4rem] font-black leading-snug">Optimaliser ukeplanen din</h2>
+            <p className="mt-1 text-[0.82rem] text-white/70">
+              Spar ytterligere {formatCompactNok(preview.estimatedExtraSavingsNok)} med smarte bytter
             </p>
           </div>
-
-          <Button className="mt-app-6 w-full" onClick={onOpenPaywall} type="button" variant="premium">
-            Få tilgang til Pro
-          </Button>
+          {locked && <Lock size={20} className="text-white/40 shrink-0" />}
         </div>
 
-        <Card className="p-app-4" variant="default">
-          <h3 className="text-headline text-text-primary">Dette åpner Pro</h3>
-          <div className="mt-app-3 space-y-app-2">
-            {[
-              "Live priser fra norske butikker",
-              "Automatisk billigste handlekurv",
-              "Smarte bytteforslag basert på pris",
-              "Oppdatert prisnivå hver uke"
-            ].map((bullet) => (
-              <div className="flex items-center gap-app-2 text-body-sm font-bold text-text-secondary" key={bullet}>
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-premium-border bg-premium-bg text-premium">
-                  <Check size={15} strokeWidth={3} />
-                </span>
-                <span>{bullet}</span>
+        {locked ? (
+          <Button className="w-full bg-[#D4A017] text-white border-[#D4A017]" onClick={onOpenPaywall} size="lg" type="button">
+            Lås opp Pro
+          </Button>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {preview.strategies.map(s => (
+              <div key={s.id} className="rounded-xl bg-white/10 p-3">
+                <p className="text-[0.78rem] font-bold text-white">{s.title}</p>
+                <p className="mt-1 text-[1.1rem] font-black text-white">{formatCompactNok(s.estimatedSavingsNok)}</p>
+                <p className="text-[0.68rem] text-white/60">spart</p>
               </div>
             ))}
           </div>
-        </Card>
-      </motion.div>
-    </Section>
-  );
-}
+        )}
+      </div>
 
-function ComparisonValue({
-  emphasized = false,
-  label,
-  saving = false,
-  value
-}: {
-  emphasized?: boolean;
-  label: string;
-  saving?: boolean;
-  value: string;
-}) {
-  return (
-    <div className={emphasized ? "rounded-xl bg-surface px-app-2 py-app-3 shadow-app" : "px-app-1 py-app-3"}>
-      <p className="text-caption text-text-tertiary">{label}</p>
-      <p className={saving ? "mt-1 text-body-sm font-black text-saving" : "mt-1 text-body-sm font-black text-text-primary"}>{value}</p>
+      {/* Improvements list */}
+      {!locked && preview.improvements.map(imp => (
+        <div key={imp.id} className="rounded-2xl bg-surface border border-border shadow-card p-4">
+          <div className="flex items-start gap-3">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-saving-bg">
+              <TrendingDown size={16} className="text-saving" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[0.875rem] font-bold text-text-primary">{imp.title}</p>
+              <p className="mt-0.5 text-[0.78rem] text-text-secondary">{imp.body}</p>
+            </div>
+            <span className="shrink-0 text-[0.82rem] font-bold text-brand">{formatCompactNok(imp.estimatedSavingsNok)}</span>
+          </div>
+        </div>
+      ))}
+
+      {locked && (
+        <div className="rounded-2xl bg-surface border border-border shadow-card p-5 text-center">
+          <p className="text-[0.875rem] font-semibold text-text-secondary">
+            Lås opp for å se alle forbedringsforslag og spare {formatCompactNok(preview.estimatedExtraSavingsNok)} ekstra denne uken.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

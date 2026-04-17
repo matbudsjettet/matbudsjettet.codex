@@ -1,180 +1,154 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { BadgePercent, Leaf, ShoppingBasket, Sparkles } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { TrendingDown, ShoppingCart, Leaf, Repeat2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { pageTransition, sectionVariants } from "@/lib/design/animations";
 import { formatCompactNok } from "@/lib/utils/format";
 import type { SavingsTip, SavingsTipsReport } from "@/types/domain";
 
-type SavingsTipsProps = {
-  onCompleteTip: (tipId: string) => void;
-  onDismissTip: (tipId: string) => void;
+const kindIcon = {
+  "meal-swap": TrendingDown,
+  pantry: Leaf,
+  frozen: Leaf,
+  store: ShoppingCart,
+  leftovers: Repeat2,
+};
+
+const kindColor = {
+  "meal-swap": { bg: "bg-saving-bg", text: "text-saving" },
+  pantry: { bg: "bg-[#EBF5EF]", text: "text-[#2D7D4F]" },
+  frozen: { bg: "bg-[#EBF5EF]", text: "text-[#2D7D4F]" },
+  store: { bg: "bg-[#EEF3FB]", text: "text-[#1D5BA8]" },
+  leftovers: { bg: "bg-[#FEF3E8]", text: "text-[#B25D0D]" },
+};
+
+type Props = {
+  onCompleteTip: (id: string) => void;
+  onDismissTip: (id: string) => void;
   report: SavingsTipsReport;
 };
 
-const iconByKind = {
-  "meal-swap": Sparkles,
-  pantry: BadgePercent,
-  frozen: Leaf,
-  store: ShoppingBasket,
-  leftovers: Leaf
-} satisfies Record<SavingsTip["kind"], typeof Sparkles>;
-
-export function SavingsTips({ onCompleteTip, onDismissTip, report }: SavingsTipsProps) {
+export function SavingsTips({ onCompleteTip, onDismissTip, report }: Props) {
   return (
-    <motion.div
-      animate="animate"
-      className="space-y-app-6"
-      initial="initial"
-      transition={pageTransition}
-      variants={sectionVariants}
-    >
-      <div>
-        <p className="text-body text-text-secondary">Denne uken</p>
+    <motion.div animate="animate" className="space-y-5" initial="initial" transition={pageTransition} variants={sectionVariants}>
+
+      {/* Savings hero */}
+      <div className="rounded-2xl overflow-hidden bg-[#1A3225] text-white relative">
+        <div className="px-5 pt-6 pb-5">
+          <p className="text-[0.78rem] font-semibold text-white/60">Denne uken</p>
+          <p className="mt-2 text-[0.875rem] font-medium text-white/80">Du kan spare ytterligere</p>
+          <p className="text-[2.8rem] font-black tracking-tight leading-none mt-1">
+            {formatCompactNok(report.totalSavingsPotentialNok)}
+          </p>
+          <p className="mt-1 text-[0.875rem] text-white/70">ved å følge tipsene under</p>
+
+          <div className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3.5 py-2 text-[0.78rem] font-semibold text-white/80">
+            🌱 Så bra! Du er allerede på rett vei.
+          </div>
+        </div>
+        {/* Decorative coin jar illustration */}
+        <div className="absolute right-4 top-4 text-4xl opacity-40 select-none">💰</div>
       </div>
 
-      <div className="space-y-app-6">
-        <Card className="p-app-5" variant="saving">
-          <div className="flex items-end justify-between gap-app-4">
-            <div>
-              <h3 className="text-title">Du kan spare ytterligere {formatCompactNok(report.totalSavingsPotentialNok)}</h3>
-              <p className="mt-app-2 text-body-sm">Ved å følge tipsene under kan du kutte enda mer</p>
-            </div>
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-surface text-saving">
-              <Sparkles size={22} />
-            </div>
+      {/* Priority tips */}
+      {report.primaryTips.length > 0 ? (
+        <section className="space-y-3">
+          <div>
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Det viktigste</p>
+            <h3 className="mt-0.5 text-[1.05rem] font-black text-text-primary">Ukens tips</h3>
           </div>
-        </Card>
-
-        {report.primaryTips.length > 0 ? (
-          <div className="space-y-app-4">
-            <h3 className="text-headline text-text-primary">Det viktigste først</h3>
-            <AnimatePresence mode="popLayout">
-              <div className="space-y-app-3">
-                {report.primaryTips.map((tip) => (
-                  <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    initial={{ opacity: 0, y: 8 }}
-                    key={tip.id}
-                    transition={pageTransition}
-                  >
-                    <PriorityTipCard onCompleteTip={onCompleteTip} onDismissTip={onDismissTip} tip={tip} />
-                  </motion.div>
-                ))}
-              </div>
-            </AnimatePresence>
-          </div>
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              initial={{ opacity: 0, y: 8 }}
-              transition={pageTransition}
-            >
-              <Card className="p-app-4 text-center" variant="surface">
-                <h3 className="text-headline text-text-primary">Du gjør allerede smarte valg 👏</h3>
-                <p className="mt-app-2 text-body-sm text-text-secondary">Ingen flere forbedringer akkurat nå</p>
-              </Card>
-            </motion.div>
+          <AnimatePresence mode="popLayout">
+            {report.primaryTips.map(tip => (
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                initial={{ opacity: 0, y: 8 }}
+                key={tip.id}
+                transition={pageTransition}
+              >
+                <PriorityTipCard tip={tip} onComplete={onCompleteTip} onDismiss={onDismissTip} />
+              </motion.div>
+            ))}
           </AnimatePresence>
-        )}
+        </section>
+      ) : (
+        <div className="rounded-2xl bg-saving-bg border border-saving-border p-5 text-center">
+          <div className="text-2xl mb-2">👏</div>
+          <p className="text-[0.9rem] font-bold text-text-primary">Du gjør allerede smarte valg!</p>
+          <p className="mt-1 text-[0.8rem] text-text-secondary">Ingen forbedringer akkurat nå.</p>
+        </div>
+      )}
 
-        {report.secondaryTips.length > 0 ? (
-          <div className="space-y-app-3">
-            <h3 className="text-body-sm font-black text-text-secondary">Flere forslag</h3>
-            <AnimatePresence mode="popLayout">
-              <div className="space-y-app-2">
-                {report.secondaryTips.map((tip) => (
-                  <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    initial={{ opacity: 0, y: 8 }}
-                    key={tip.id}
-                    transition={pageTransition}
-                  >
-                    <SmallTipRow tip={tip} />
-                  </motion.div>
-                ))}
-              </div>
-            </AnimatePresence>
+      {/* Secondary tips */}
+      {report.secondaryTips.length > 0 && (
+        <section className="space-y-3">
+          <p className="text-[0.875rem] font-bold text-text-secondary">Flere forslag</p>
+          <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+            {report.secondaryTips.map((tip, i) => (
+              <SmallTipRow key={tip.id} tip={tip} last={i === report.secondaryTips.length - 1} />
+            ))}
           </div>
-        ) : null}
-      </div>
+        </section>
+      )}
     </motion.div>
   );
 }
 
-function PriorityTipCard({
-  onCompleteTip,
-  onDismissTip,
-  tip
-}: {
-  onCompleteTip: (tipId: string) => void;
-  onDismissTip: (tipId: string) => void;
-  tip: SavingsTip;
-}) {
-  const Icon = iconByKind[tip.kind];
+function PriorityTipCard({ tip, onComplete, onDismiss }: { tip: SavingsTip; onComplete: (id: string) => void; onDismiss: (id: string) => void }) {
+  const Icon = kindIcon[tip.kind];
+  const color = kindColor[tip.kind];
 
   return (
-    <Card className="p-app-5" variant="surface">
-      <div className="flex items-start gap-app-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-saving-bg text-saving">
-          <Icon size={19} />
+    <div className="rounded-2xl bg-surface border border-border shadow-card p-4">
+      <div className="flex items-start gap-3">
+        <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl ${color.bg}`}>
+          <Icon size={20} className={color.text} strokeWidth={2} />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-app-3">
+          <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-caption text-text-tertiary">{getActionLabel(tip)}</p>
-              <h4 className="text-headline text-text-primary">{tip.title}</h4>
+              <p className="text-[0.72rem] font-semibold text-text-tertiary">{getActionLabel(tip)}</p>
+              <h4 className="mt-0.5 text-[0.95rem] font-bold text-text-primary leading-snug">{tip.title}</h4>
             </div>
-            <span className="shrink-0 rounded-md bg-saving-bg px-2 py-1 text-caption text-saving">
+            <span className="shrink-0 rounded-xl bg-saving-bg text-saving text-[0.72rem] font-bold px-2.5 py-1.5">
               {formatCompactNok(tip.estimatedSavingsNok)}
             </span>
           </div>
-          <p className="mt-app-2 text-body-sm text-text-secondary">{tip.body}</p>
-          <div className="mt-app-4 flex gap-app-2">
-            <Button className="min-h-11 px-app-4 py-app-2 text-body-sm" onClick={() => onCompleteTip(tip.id)} type="button" variant="secondary">
+          <p className="mt-2 text-[0.82rem] text-text-secondary leading-relaxed">{tip.body}</p>
+          <div className="mt-3 flex gap-2">
+            <Button onClick={() => onComplete(tip.id)} size="sm" type="button" variant="primary">
               Gjort det ✓
             </Button>
-            <Button className="min-h-11 px-app-4 py-app-2 text-body-sm" onClick={() => onDismissTip(tip.id)} type="button" variant="secondary">
+            <Button onClick={() => onDismiss(tip.id)} size="sm" type="button" variant="ghost">
               Ikke nå
             </Button>
           </div>
-          <p className="mt-app-2 text-caption text-text-tertiary">Huk av når du har gjort endringen</p>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
-function SmallTipRow({ tip }: { tip: SavingsTip }) {
+function SmallTipRow({ tip, last }: { tip: SavingsTip; last: boolean }) {
+  const Icon = kindIcon[tip.kind];
+  const color = kindColor[tip.kind];
+
   return (
-    <Card className="p-app-4" variant="default">
-      <div className="flex items-start justify-between gap-app-3">
-        <div>
-          <p className="text-body-sm font-black text-text-primary">{tip.title}</p>
-          <p className="mt-1 text-caption text-text-secondary">{tip.body}</p>
-        </div>
-        <span className="shrink-0 text-body-sm font-black text-saving">{formatCompactNok(tip.estimatedSavingsNok)}</span>
+    <div className={`flex items-center gap-3.5 px-4 py-3.5 ${!last ? "border-b border-border-subtle" : ""}`}>
+      <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${color.bg}`}>
+        <Icon size={16} className={color.text} strokeWidth={2} />
       </div>
-    </Card>
+      <div className="min-w-0 flex-1">
+        <p className="text-[0.875rem] font-bold text-text-primary leading-snug">{tip.title}</p>
+        <p className="mt-0.5 text-[0.75rem] text-text-tertiary line-clamp-1">{tip.body}</p>
+      </div>
+      <span className="shrink-0 text-[0.82rem] font-bold text-brand">{formatCompactNok(tip.estimatedSavingsNok)}</span>
+    </div>
   );
 }
 
-const getActionLabel = (tip: SavingsTip) => {
-  if (tip.kind === "meal-swap") {
-    return "Bytt middag";
-  }
-
-  if (tip.kind === "pantry" || tip.kind === "leftovers") {
-    return "Bruk det du har";
-  }
-
-  if (tip.kind === "store") {
-    return "Juster butikkvalg";
-  }
-
-  return "Gjør et smart bytte";
-};
+function getActionLabel(tip: SavingsTip) {
+  if (tip.kind === "meal-swap") return "Bytt middag";
+  if (tip.kind === "pantry" || tip.kind === "leftovers") return "Bruk det du har";
+  if (tip.kind === "store") return "Juster butikkvalg";
+  return "Smart grep";
+}

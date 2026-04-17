@@ -5,64 +5,65 @@ const config: Config = {
   theme: {
     boxShadow: {
       none: "none",
-      app: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      xs: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      sm: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      md: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      premium: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      hero: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)",
-      saving: "0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)"
+      app: "0 2px 12px rgba(28,26,23,0.06), 0 1px 3px rgba(28,26,23,0.04)",
+      card: "0 2px 12px rgba(28,26,23,0.06), 0 1px 3px rgba(28,26,23,0.04)",
+      elevated: "0 8px 24px rgba(28,26,23,0.09), 0 2px 8px rgba(28,26,23,0.05)",
+      hero: "0 12px 32px rgba(28,26,23,0.10), 0 4px 12px rgba(28,26,23,0.06)",
+      saving: "0 8px 20px rgba(46,125,90,0.18)",
+      premium: "0 8px 20px rgba(138,111,62,0.14)",
+      sm: "0 2px 12px rgba(28,26,23,0.06), 0 1px 3px rgba(28,26,23,0.04)",
+      md: "0 8px 24px rgba(28,26,23,0.09), 0 2px 8px rgba(28,26,23,0.05)"
     },
     extend: {
       colors: {
-        background: "#F7F6F2",
-        "bg-elevated": "#FBFAF7",
+        background: "#F5F1EB",
+        "bg-elevated": "#FAF8F4",
         surface: "#FFFFFF",
-        "surface-soft": "#F0ECE5",
+        "surface-soft": "#EDE8E1",
         card: "#FFFFFF",
-        "text-primary": "#171512",
-        "text-secondary": "#4E4A43",
-        "text-tertiary": "#7A756B",
-        "text-muted": "#7A756B",
+        "text-primary": "#1C1A17",
+        "text-secondary": "#574F47",
+        "text-tertiary": "#8C8278",
+        "text-muted": "#8C8278",
         "text-inverse": "#FFFFFF",
         brand: {
-          DEFAULT: "#6C5CE7",
-          soft: "rgba(108,92,231,0.18)",
-          strong: "#8F7DFF"
+          DEFAULT: "#2E7D5A",
+          soft: "rgba(46,125,90,0.12)",
+          light: "#EBF5EF",
+          medium: "#4CAF76",
+          strong: "#236248"
         },
         border: {
-          subtle: "#EEE8DE",
-          DEFAULT: "#E6E0D6",
-          strong: "#CFC6B7"
+          subtle: "#EDE7DE",
+          DEFAULT: "#E2DAD0",
+          strong: "#CAC0B4"
         },
         saving: {
-          DEFAULT: "#44D07B",
-          bg: "rgba(68,208,123,0.12)",
-          border: "rgba(68,208,123,0.28)"
+          DEFAULT: "#2E7D5A",
+          bg: "rgba(46,125,90,0.10)",
+          border: "rgba(46,125,90,0.22)",
+          dark: "#236248"
         },
         premium: {
-          DEFAULT: "#8F7DFF",
-          bg: "#F0EEFF",
-          border: "#DAD5FF",
-          strong: "#C026D3"
-        },
-        hero: {
-          bg: "#0B1020",
-          surface: "rgba(255,255,255,0.06)",
-          "surface-2": "rgba(255,255,255,0.12)"
+          DEFAULT: "#8A6F3E",
+          bg: "#FBF5E8",
+          border: "#E8D8B4",
+          strong: "#6B5530"
         },
         neutral: {
-          50: "#FBFAF7",
-          100: "#F7F6F2",
-          200: "#F0ECE5",
-          300: "#E6E0D6",
-          700: "#4E4A43",
-          900: "#171512"
+          50: "#FAF8F4",
+          100: "#F5F1EB",
+          200: "#EDE8E1",
+          300: "#E2DAD0",
+          400: "#CAC0B4",
+          500: "#8C8278",
+          700: "#574F47",
+          900: "#1C1A17"
         },
         danger: {
-          DEFAULT: "#FF6B6B",
-          bg: "rgba(255,107,107,0.12)",
-          border: "rgba(255,107,107,0.28)"
+          DEFAULT: "#C0392B",
+          bg: "rgba(192,57,43,0.09)",
+          border: "rgba(192,57,43,0.20)"
         }
       },
       spacing: {
@@ -78,24 +79,25 @@ const config: Config = {
         "app-16": "4rem"
       },
       borderRadius: {
-        xs: "0.75rem",
+        xs: "0.5rem",
         sm: "0.75rem",
         md: "1rem",
         lg: "1.25rem",
         xl: "1.5rem",
-        "2xl": "1.75rem"
+        "2xl": "1.75rem",
+        "3xl": "2rem"
       },
       fontSize: {
-        display: ["2.75rem", { lineHeight: "3rem", fontWeight: "900" }],
-        title: ["1.75rem", { lineHeight: "2.125rem", fontWeight: "900" }],
-        headline: ["1.25rem", { lineHeight: "1.625rem", fontWeight: "850" }],
-        body: ["0.9375rem", { lineHeight: "1.5rem", fontWeight: "500" }],
-        "body-sm": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "500" }],
-        caption: ["0.75rem", { lineHeight: "1rem", fontWeight: "700" }]
+        display: ["2.5rem", { lineHeight: "2.75rem", fontWeight: "800" }],
+        title: ["1.625rem", { lineHeight: "2rem", fontWeight: "800" }],
+        headline: ["1.125rem", { lineHeight: "1.5rem", fontWeight: "700" }],
+        body: ["0.9375rem", { lineHeight: "1.5rem", fontWeight: "400" }],
+        "body-sm": ["0.875rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+        caption: ["0.75rem", { lineHeight: "1rem", fontWeight: "600" }]
       },
       fontFamily: {
         sans: [
-          "Inter",
+          "DM Sans",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",

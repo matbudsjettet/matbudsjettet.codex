@@ -1,55 +1,45 @@
-import { CalendarDays, Heart, RotateCcw } from "lucide-react";
-import type { ReactNode } from "react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Section } from "@/components/ui/Section";
 import type { WeeklyRoutineState } from "@/types/domain";
+import { formatCompactNok } from "@/lib/utils/format";
 
-type WeeklyRoutinePanelProps = {
-  onRefreshWeek: () => void;
-  routine: WeeklyRoutineState;
-};
+type Props = { onRefreshWeek: () => void; routine: WeeklyRoutineState; };
 
-export function WeeklyRoutinePanel({ onRefreshWeek, routine }: WeeklyRoutinePanelProps) {
-  const favoriteCount = routine.mealPreferences.favoriteMealIds.length;
-  const dislikedCount = routine.mealPreferences.dislikedMealIds.length;
-  const repeatCheapCount = routine.mealPreferences.repeatCheapMealIds.length;
+export function WeeklyRoutinePanel({ onRefreshWeek, routine }: Props) {
+  const hasHistory = routine.weeklyHistory.length > 0;
+  const lastWeekSavings = hasHistory ? routine.weeklyHistory[0]?.pantrySavingsNok ?? 0 : 0;
 
   return (
-    <Section eyebrow="Ukentlig rytme" title="Neste uke blir smartere">
-      <Card className="p-app-4" variant="surface">
-        <div className="flex items-start gap-app-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-surface text-saving">
-            <CalendarDays size={20} />
+    <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.1em] text-text-tertiary">Rutine</p>
+            <h3 className="mt-0.5 text-[1.05rem] font-black text-text-primary">Ukentlig oppsett</h3>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-black text-text-primary">Vanene dine er lagret lokalt</p>
-            <p className="mt-1 text-body-sm text-text-secondary">
-              Favoritter, retter du vil se sjeldnere og billige gjengangere brukes når ukeplanen friskes opp.
-            </p>
-          </div>
+          {hasHistory && lastWeekSavings > 0 && (
+            <span className="rounded-xl bg-saving-bg text-saving text-[0.75rem] font-bold px-3 py-1.5">
+              Spart {formatCompactNok(lastWeekSavings)}
+            </span>
+          )}
         </div>
-
-        <div className="mt-app-4 grid grid-cols-3 gap-app-2 text-center">
-          <RoutineMetric icon={<Heart size={16} />} label="Favoritter" value={favoriteCount} />
-          <RoutineMetric icon={<RotateCcw size={16} />} label="Billig igjen" value={repeatCheapCount} />
-          <RoutineMetric icon={<CalendarDays size={16} />} label="Ikke ofte" value={dislikedCount} />
-        </div>
-
-        <Button className="mt-app-4 w-full" onClick={onRefreshWeek} type="button" variant="secondary">
-          Frisk opp ukeplanen
+        <p className="mt-2 text-[0.82rem] text-text-secondary">
+          {hasHistory
+            ? `${routine.weeklyHistory.length} uker planlagt med Matbudsjett`
+            : "Generer en ny ukeplan basert på dine preferanser"}
+        </p>
+      </div>
+      <div className="border-t border-border-subtle px-5 py-4">
+        <Button
+          className="w-full gap-2"
+          onClick={onRefreshWeek}
+          type="button"
+          variant="secondary"
+        >
+          <RotateCcw size={16} strokeWidth={2} />
+          Generer ny ukeplan
         </Button>
-      </Card>
-    </Section>
-  );
-}
-
-function RoutineMetric({ icon, label, value }: { icon: ReactNode; label: string; value: number }) {
-  return (
-    <div className="rounded-lg border border-border-subtle bg-surface p-app-3">
-      <div className="mx-auto grid h-8 w-8 place-items-center rounded-md bg-saving-bg text-saving">{icon}</div>
-      <p className="mt-app-2 text-headline text-text-primary">{value}</p>
-      <p className="text-caption text-text-tertiary">{label}</p>
+      </div>
     </div>
   );
 }

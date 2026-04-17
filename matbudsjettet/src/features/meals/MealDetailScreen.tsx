@@ -1,125 +1,187 @@
-import { Clock3, Minus, Plus } from "lucide-react";
-import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
-import { Badge } from "@/components/ui/Badge";
+import React from "react";
+import { Clock3, Users, ChefHat, Check } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Section } from "@/components/ui/Section";
-import { getMealImage } from "@/lib/design/mealImages";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { formatCompactNok } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
-import { formatCompactNok, formatNok } from "@/lib/utils/format";
+import { ingredients } from "@/lib/data/ingredients";
 import type { MealSwapAlternative, PlannedMeal } from "@/types/domain";
+import mealImage1 from "../../../assets/:assets:meals:/:assets:meals:meal-1.png";
+import mealImage2 from "../../../assets/:assets:meals:/:assets:meals:meal-2.png";
+import mealImage3 from "../../../assets/:assets:meals:/:assets:meals:meal-3.png";
+import mealImage4 from "../../../assets/:assets:meals:/:assets:meals:meal-4.png";
+import mealImage5 from "../../../assets/:assets:meals:/:assets:meals:meal-5.png";
+import mealImage6 from "../../../assets/:assets:meals:/:assets:meals:meal-6.png";
+import mealImage7 from "../../../assets/:assets:meals:/:assets:meals:meal-7.png";
+import mealImage8 from "../../../assets/:assets:meals:/:assets:meals:meal-8.png";
+import mealImage9 from "../../../assets/:assets:meals:/:assets:meals:meal-9.png";
+import mealImage10 from "../../../assets/:assets:meals:/:assets:meals:meal-10.png";
 
-type MealDetailScreenProps = {
+const mealImages = [mealImage1, mealImage2, mealImage3, mealImage4, mealImage5, mealImage6, mealImage7, mealImage8, mealImage9, mealImage10];
+const ingredientMap = new Map(ingredients.map(i => [i.id, i]));
+
+type Props = {
   alternatives: MealSwapAlternative[];
   meal: PlannedMeal;
-  onSelectAlternative: (alternative: MealSwapAlternative) => void;
+  onSelectAlternative: (alt: MealSwapAlternative) => void;
 };
 
-export function MealDetailScreen({ alternatives, meal, onSelectAlternative }: MealDetailScreenProps) {
-  return (
-    <div className="space-y-5">
-      <Card className="overflow-hidden p-0" variant="surface">
-        <div className="relative h-[14rem] overflow-hidden bg-[#5d4e3c]">
-          <img alt={meal.name} className="h-full w-full object-cover" src={getMealImage(meal.id)} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-4">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <Badge tone={meal.mealTag === "Budsjett" ? "saving" : meal.mealTag === "Premium" ? "neutral" : "warm"}>
-                {meal.mealTag}
-              </Badge>
-            </div>
-            <h2 className="text-[1.7rem] font-black leading-tight text-white">{meal.name}</h2>
-            <p className="mt-2 max-w-[18rem] text-[0.92rem] leading-relaxed text-white/84">{meal.savingsNote}</p>
-          </div>
-        </div>
-        <div className="space-y-3 p-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Pris</p>
-              <p className="mt-1 font-black text-text-primary">{formatCompactNok(meal.totalPriceNok)}</p>
-            </div>
-            <div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Tid</p>
-              <p className="mt-1 font-black text-text-primary">{meal.prepTimeMinutes} min</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-3">
-            <div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Per porsjon</p>
-              <p className="mt-1 font-black text-text-primary">{formatNok(meal.costPerServingNok)}</p>
-            </div>
-            <div>
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Planmodus</p>
-              <p className="mt-1 font-black text-text-primary">{meal.baseCostReference}</p>
-            </div>
-          </div>
-        </div>
-      </Card>
+export function MealDetailScreen({ alternatives, meal, onSelectAlternative }: Props) {
+  const [tab, setTab] = useState<"ingredients" | "steps" | "swap">("ingredients");
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
+  const imgIndex = Math.abs(meal.id.charCodeAt(0) + meal.id.charCodeAt(1)) % 10;
+  const img = mealImages[imgIndex];
 
-      <Section eyebrow="Bytt rett" title="Gode alternativer">
-        <div className="space-y-3">
-          {alternatives.length > 0 ? (
-            alternatives.map((alternative) => (
-              <AlternativeCard
-                alternative={alternative}
-                key={alternative.kind}
-                onSelect={() => onSelectAlternative(alternative)}
-              />
-            ))
-          ) : (
-            <Card className="p-app-4" variant="surface">
-              <p className="font-black text-text-primary">Ingen tydelige bytter akkurat nå</p>
-              <p className="mt-app-1 text-body-sm text-text-secondary">
-                Denne retten passer allerede godt med budsjett, tid og ukens sammensetning.
-              </p>
-            </Card>
-          )}
+  const toggleIngredient = (id: string) => {
+    setCheckedIngredients(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  return (
+    <div className="-mx-5 -mt-4">
+      {/* Hero image */}
+      <div className="relative h-[260px] overflow-hidden bg-surface-soft">
+        <img alt={meal.name} className="h-full w-full object-cover" src={img} />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30" />
+      </div>
+
+      {/* Content */}
+      <div className="px-5 pt-5 space-y-5">
+        {/* Title block */}
+        <div>
+          <p className="text-[0.75rem] font-semibold text-text-tertiary">{meal.weekday ?? "Denne uken"}</p>
+          <h1 className="mt-1 text-[1.5rem] font-black tracking-tight text-text-primary leading-snug">{meal.name}</h1>
+          <p className="mt-1 text-[0.875rem] text-text-secondary">{meal.savingsNote}</p>
         </div>
-      </Section>
+
+        {/* Pill row */}
+        <div className="flex flex-wrap gap-2">
+          <InfoPill icon={<Clock3 size={13} />} label={`${meal.prepTimeMinutes} min`} />
+          <InfoPill icon={<ChefHat size={13} />} label={meal.difficulty === "easy" ? "Enkel" : "Middels"} />
+          <InfoPill icon={<Users size={13} />} label={`${meal.servings} porsjoner`} />
+          <InfoPill icon={null} label={formatCompactNok(meal.totalPriceNok)} accent />
+        </div>
+
+        {/* Tabs */}
+        <SegmentedControl
+          items={[
+            { label: "Ingredienser", value: "ingredients" },
+            { label: "Fremgangsmåte", value: "steps" },
+            { label: `Bytt (${alternatives.length})`, value: "swap" },
+          ]}
+          onChange={v => setTab(v as typeof tab)}
+          value={tab}
+        />
+
+        {/* Tab content */}
+        {tab === "ingredients" && (
+          <div className="space-y-1 pb-4">
+            {meal.ingredients.map(ri => {
+              const ing = ingredientMap.get(ri.ingredientId);
+              if (!ing) return null;
+              const checked = checkedIngredients.has(ri.ingredientId);
+              return (
+                <button
+                  key={ri.ingredientId}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-bg-elevated active:bg-bg-elevated"
+                  onClick={() => toggleIngredient(ri.ingredientId)}
+                  type="button"
+                >
+                  <span className={cn("grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-all", checked ? "border-brand bg-brand" : "border-border")}>
+                    {checked && <Check size={12} strokeWidth={3} className="text-white" />}
+                  </span>
+                  <span className={cn("flex-1 text-[0.875rem] font-medium text-text-primary", checked ? "line-through text-text-tertiary" : "")}>
+                    {ing.name}
+                  </span>
+                  <span className="text-[0.8rem] font-semibold text-text-tertiary">
+                    {ri.quantity} {ing.unit}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === "steps" && (
+          <div className="space-y-3 pb-4">
+            {meal.instructions.map((step, i) => (
+              <div key={i} className="flex gap-3">
+                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-white text-[0.72rem] font-black">
+                  {i + 1}
+                </div>
+                <p className="flex-1 text-[0.875rem] text-text-secondary leading-relaxed pt-0.5">{step}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "swap" && (
+          <div className="space-y-3 pb-4">
+            {alternatives.length === 0 ? (
+              <div className="rounded-2xl bg-bg-elevated border border-border-subtle p-5 text-center">
+                <p className="text-[0.875rem] font-bold text-text-primary">Ingen bytter akkurat nå</p>
+                <p className="mt-1 text-[0.8rem] text-text-secondary">Denne retten passer godt for uken.</p>
+              </div>
+            ) : alternatives.map(alt => (
+              <SwapCard alt={alt} key={alt.kind} onSelect={() => onSelectAlternative(alt)} />
+            ))}
+          </div>
+        )}
+
+        {/* CTA */}
+        <div className="pb-4">
+          <Button className="w-full" onClick={() => setTab("swap")} type="button">
+            Bytt måltid
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
 
-function AlternativeCard({ alternative, onSelect }: { alternative: MealSwapAlternative; onSelect: () => void }) {
-  const isSaving = alternative.priceDifferenceNok < 0;
-  const isIncrease = alternative.priceDifferenceNok > 0;
-
+function InfoPill({ icon, label, accent }: { icon: React.ReactNode; label: string; accent?: boolean }) {
   return (
-    <Card className="overflow-hidden p-0" variant="default">
-      <div className="grid grid-cols-[92px_minmax(0,1fr)] items-stretch gap-0">
-        <div className="overflow-hidden bg-[#efe8dd]">
-          <img alt={alternative.meal.name} className="h-full w-full object-cover" src={getMealImage(alternative.meal.id)} />
-        </div>
-        <div className="space-y-3 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">{alternative.title}</p>
-              <h3 className="mt-1 text-[1.05rem] font-bold leading-snug text-text-primary">{alternative.meal.name}</h3>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 text-body-sm font-bold text-text-secondary">
-            <span>{formatCompactNok(alternative.meal.totalPriceNok)}</span>
-            <span
-              className={cn(
-                "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.72rem] font-semibold",
-                isSaving ? "bg-saving-bg text-saving" : "",
-                isIncrease ? "bg-[#f8ede7] text-[#c96943]" : "",
-                !isSaving && !isIncrease ? "bg-[#efebe4] text-text-secondary" : ""
-              )}
-            >
-              {isSaving ? <Minus size={13} /> : isIncrease ? <Plus size={13} /> : null}
-              {alternative.priceDifferenceNok === 0 ? "Samme pris" : <AnimatedNumber pulse={isSaving} value={Math.abs(alternative.priceDifferenceNok)} />}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Clock3 size={15} />
-              {alternative.meal.prepTimeMinutes} min
-            </span>
-          </div>
-          <Button className="w-full" onClick={onSelect} type="button" variant="secondary">
-            Velg denne
-          </Button>
-        </div>
+    <div className={cn(
+      "flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[0.78rem] font-semibold",
+      accent ? "bg-saving-bg text-saving" : "bg-surface-soft text-text-secondary"
+    )}>
+      {icon}{label}
+    </div>
+  );
+}
+
+function SwapCard({ alt, onSelect }: { alt: MealSwapAlternative; onSelect: () => void }) {
+  const isCheaper = alt.priceDifferenceNok < 0;
+  const imgIndex = Math.abs(alt.meal.id.charCodeAt(0) + alt.meal.id.charCodeAt(1)) % 10;
+  return (
+    <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+      <div className="h-[100px] overflow-hidden bg-surface-soft">
+        <img alt={alt.meal.name} className="h-full w-full object-cover" src={mealImages[imgIndex]} />
       </div>
-    </Card>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-[0.72rem] font-semibold text-text-tertiary">{alt.title}</p>
+            <p className="mt-0.5 text-[0.95rem] font-bold text-text-primary">{alt.meal.name}</p>
+          </div>
+          {isCheaper && (
+            <span className="shrink-0 rounded-xl bg-saving-bg text-saving text-[0.72rem] font-bold px-2.5 py-1">
+              Spar {formatCompactNok(Math.abs(alt.priceDifferenceNok))}
+            </span>
+          )}
+        </div>
+        <div className="mt-2 flex items-center gap-3 text-[0.78rem] text-text-tertiary">
+          <span className="flex items-center gap-1"><Clock3 size={12} />{alt.meal.prepTimeMinutes} min</span>
+          <span>{formatCompactNok(alt.meal.totalPriceNok)}</span>
+        </div>
+        <Button className="mt-3 w-full" onClick={onSelect} size="sm" type="button">
+          Velg denne
+        </Button>
+      </div>
+    </div>
   );
 }

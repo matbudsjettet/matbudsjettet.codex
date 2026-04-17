@@ -1,29 +1,12 @@
-import { Check, ChevronRight, Crown, Home, LockKeyhole, ShoppingBasket, Sparkles } from "lucide-react";
+import { Check, Home, ShoppingBasket } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Section } from "@/components/ui/Section";
+import { motion } from "framer-motion";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { ingredients } from "@/lib/data/ingredients";
-import { stores } from "@/lib/data/stores";
 import { cn } from "@/lib/utils/cn";
 import { formatCompactNok } from "@/lib/utils/format";
+import { sectionVariants, pageTransition } from "@/lib/design/animations";
 import type { ShoppingList as ShoppingListModel, ShoppingListItem, StoreId } from "@/types/domain";
-
-type ShoppingListProps = {
-  onPantryItemsChange: (pantryIngredientIds: string[]) => void;
-  pantryIngredientIds: string[];
-  planWeeklyTotalNok: number;
-  selectedStore: StoreId;
-  shoppingList: ShoppingListModel;
-};
-
-type ShoppingSortMode = "category" | "flow";
-type DisplayGroup = {
-  group: string;
-  items: ShoppingListItem[];
-};
 
 const pantryOptions = [
   { id: "rice", label: "Ris" },
@@ -32,385 +15,220 @@ const pantryOptions = [
   { id: "lentils", label: "Røde linser" },
   { id: "bread", label: "Brød" },
   { id: "tortilla", label: "Tortilla" },
-  { id: "oats", label: "Havregryn" }
+  { id: "oats", label: "Havregryn" },
 ];
 
 const storeFlowOrders: Record<StoreId, string[]> = {
-  KIWI: ["Frukt og grønt", "Bakeri", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Frys", "Drikke", "Diverse"],
-  REMA_1000: ["Frukt og grønt", "Bakeri", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Frys", "Drikke", "Diverse"],
-  MENY: ["Frukt og grønt", "Bakeri", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Frys", "Drikke", "Diverse"]
+  KIWI: ["Frukt og grønt", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Diverse"],
+  REMA_1000: ["Frukt og grønt", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Diverse"],
+  MENY: ["Frukt og grønt", "Kjøtt og fisk", "Meieri og egg", "Tørrvarer", "Diverse"],
 };
 
-export function ShoppingList({
-  onPantryItemsChange,
-  pantryIngredientIds,
-  planWeeklyTotalNok,
-  selectedStore,
-  shoppingList
-}: ShoppingListProps) {
-  const [sortMode, setSortMode] = useState<ShoppingSortMode>("category");
-  const visibleGroups = useMemo<DisplayGroup[]>(
-    () =>
-      shoppingList.groups
-        .map((group) => ({
-          ...group,
-          items: group.items.filter((item) => !item.alreadyHave)
-        }))
-        .filter((group) => group.items.length > 0),
-    [shoppingList]
-  );
-  const groupedForDisplay = useMemo<DisplayGroup[]>(() => {
-    if (sortMode === "category") {
-      return visibleGroups;
-    }
+type DisplayGroup = { group: string; items: ShoppingListItem[] };
 
-    const flowOrder = storeFlowOrders[selectedStore];
-    const grouped = new Map<string, ShoppingListItem[]>();
-
-    visibleGroups
-      .flatMap((group) => group.items)
-      .forEach((item) => {
-        const nextGroup = getFlowGroup(item);
-        grouped.set(nextGroup, [...(grouped.get(nextGroup) ?? []), item]);
-      });
-
-    return flowOrder
-      .map((group) => ({
-        group,
-        items: (grouped.get(group) ?? []).sort((a, b) => a.name.localeCompare(b.name, "nb-NO"))
-      }))
-      .filter((group) => group.items.length > 0);
-  }, [selectedStore, sortMode, visibleGroups]);
-  const activeHelperText =
-    sortMode === "flow"
-      ? "Sorter varene i en mer naturlig rekkefølge gjennom butikken."
-      : "Sorter varene etter vanlige matgrupper.";
-  const itemIds = useMemo(
-    () => groupedForDisplay.flatMap((group) => group.items.map((item) => item.ingredientId)),
-    [groupedForDisplay]
-  );
-  const itemSignature = itemIds.join("|");
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(() => new Set());
-
-  useEffect(() => {
-    setCheckedItems(new Set());
-  }, [itemSignature]);
-
-  const checkedCount = itemIds.filter((id) => checkedItems.has(id)).length;
-  const totalCount = shoppingList.totalItemsToBuy;
-  const allChecked = totalCount > 0 && checkedCount === totalCount;
-  const displayedTotal = shoppingList.basketTotalNok;
-
-  const togglePantryItem = (id: string) => {
-    const next = pantryIngredientIds.includes(id)
-      ? pantryIngredientIds.filter((item) => item !== id)
-      : [...pantryIngredientIds, id];
-
-    onPantryItemsChange(next);
-  };
-
-  const toggleItem = (id: string) => {
-    setCheckedItems((current) => {
-      const next = new Set(current);
-
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-
-      return next;
-    });
-  };
-
-  return (
-    <Section title="Dette må du handle nå">
-      {totalCount === 0 ? (
-        <div className="space-y-4">
-          <ShoppingListControls
-            helperText={activeHelperText}
-            displayedTotal={displayedTotal}
-            onSortModeChange={setSortMode}
-            pantrySavingsNok={shoppingList.pantrySavingsNok}
-            planWeeklyTotalNok={planWeeklyTotalNok}
-            selectedStore={selectedStore}
-            shoppingList={shoppingList}
-            sortMode={sortMode}
-          />
-          <PantryEditor pantryIngredientIds={pantryIngredientIds} togglePantryItem={togglePantryItem} />
-          <EmptyShoppingList />
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <ShoppingListControls
-            helperText={activeHelperText}
-            displayedTotal={displayedTotal}
-            onSortModeChange={setSortMode}
-            pantrySavingsNok={shoppingList.pantrySavingsNok}
-            planWeeklyTotalNok={planWeeklyTotalNok}
-            selectedStore={selectedStore}
-            shoppingList={shoppingList}
-            sortMode={sortMode}
-          />
-
-          <PantryEditor pantryIngredientIds={pantryIngredientIds} togglePantryItem={togglePantryItem} />
-
-          <div className={cn("flex items-center justify-between gap-3 rounded-[1rem] px-4 py-3", allChecked ? "bg-[rgba(35,111,73,0.08)]" : "bg-[#f4f0e8]")}>
-            <div>
-              <p className="font-black">{allChecked ? "Alt er handlet" : "Klar for butikken"}</p>
-              <p className="text-body-sm text-text-secondary">
-                {allChecked ? "Handlelisten er ferdig krysset av." : `${checkedCount} av ${totalCount} varer er krysset av.`}
-              </p>
-            </div>
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-white text-saving">
-              {allChecked ? <Check size={18} /> : <ShoppingBasket size={18} />}
-            </div>
-          </div>
-
-          <div className="space-y-2.5">
-            {groupedForDisplay.map((group) => (
-              <div className="overflow-hidden rounded-[1.05rem] border border-border-subtle bg-white/78" key={group.group}>
-                <div className="px-4 py-3">
-                  <h3 className="text-[0.98rem] font-bold text-text-primary">{group.group}</h3>
-                </div>
-                {group.items.map((item, index) => {
-                  const store = stores.find((entry) => entry.id === item.bestStore);
-                  const checked = checkedItems.has(item.ingredientId);
-
-                  return (
-                    <button
-                      className={cn(
-                        "flex w-full items-center gap-3 px-4 py-3 text-left transition-[background-color,opacity] duration-200 active:bg-neutral-200",
-                        index === group.items.length - 1 ? "" : "border-t border-border-subtle"
-                      )}
-                      key={item.ingredientId}
-                      onClick={() => toggleItem(item.ingredientId)}
-                      type="button"
-                    >
-                      <span
-                        className={cn(
-                          "grid h-6 w-6 shrink-0 place-items-center rounded-full border",
-                          checked ? "border-saving bg-saving text-white" : "border-border bg-surface text-transparent"
-                        )}
-                      >
-                        <Check size={14} strokeWidth={3} />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span
-                          className={cn(
-                            "block truncate font-black text-text-primary",
-                            checked ? "text-text-tertiary line-through" : ""
-                          )}
-                        >
-                          {item.name}
-                        </span>
-                        <span className="block text-body-sm text-text-secondary">
-                          {item.displayQuantity} · {store?.name}
-                        </span>
-                      </span>
-                      <span className="shrink-0 text-body-sm font-black text-text-primary">
-                        {formatCompactNok(item.estimatedPriceNok)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
-          <ShoppingListProCard />
-        </div>
-      )}
-    </Section>
-  );
-}
-
-function ShoppingListControls({
-  helperText,
-  displayedTotal,
-  onSortModeChange,
-  pantrySavingsNok,
-  planWeeklyTotalNok,
-  selectedStore,
-  shoppingList,
-  sortMode
-}: {
-  helperText: string;
-  displayedTotal: number;
-  onSortModeChange: (mode: ShoppingSortMode) => void;
-  pantrySavingsNok: number;
+type Props = {
+  onPantryItemsChange: (ids: string[]) => void;
+  pantryIngredientIds: string[];
   planWeeklyTotalNok: number;
   selectedStore: StoreId;
   shoppingList: ShoppingListModel;
-  sortMode: ShoppingSortMode;
-}) {
-  return (
-    <div className="space-y-3">
-      <div>
-        <p className="text-[1.4rem] font-black tracking-tight text-text-primary">{formatCompactNok(displayedTotal)}</p>
-        <p className="mt-1 text-[0.84rem] text-text-secondary">
-          {shoppingList.totalItemsToBuy} av {shoppingList.totalItems} varer må kjøpes
-        </p>
-        <p className="mt-1 text-[0.78rem] text-text-tertiary">
-          Middagskostnaden er {formatCompactNok(planWeeklyTotalNok)}.
-        </p>
-        {pantrySavingsNok > 0 ? (
-          <p className="mt-2 text-[0.82rem] font-semibold text-saving">Du sparer {formatCompactNok(pantrySavingsNok)} fra det du allerede har hjemme</p>
-        ) : null}
-      </div>
-      <div className="space-y-2 rounded-[1rem] bg-[#f4f0e8] p-3">
-        <SegmentedControl
-          items={[
-            { label: "Kategori", value: "category" },
-            { label: "Butikkflyt", value: "flow" }
-          ]}
-          onChange={(value) => onSortModeChange(value as ShoppingSortMode)}
-          value={sortMode}
-        />
-        <p className="text-[0.8rem] text-text-secondary">
-          {helperText}
-          {sortMode === "flow" ? ` Gjelder typisk handlemønster hos ${getStoreName(selectedStore)}.` : ""}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-const getStoreName = (storeId: StoreId) => stores.find((store) => store.id === storeId)?.name ?? storeId;
-
-const getFlowGroup = (item: ShoppingListItem) => {
-  const ingredient = ingredients.find((entry) => entry.id === item.ingredientId);
-
-  if (!ingredient) {
-    return "Diverse";
-  }
-
-  if (ingredient.category === "produce") {
-    return "Frukt og grønt";
-  }
-
-  if (ingredient.category === "bakery") {
-    return "Bakeri";
-  }
-
-  if (ingredient.category === "protein") {
-    return "Kjøtt og fisk";
-  }
-
-  if (ingredient.category === "dairy") {
-    return "Meieri og egg";
-  }
-
-  if (ingredient.category === "pantry") {
-    return "Tørrvarer";
-  }
-
-  if (ingredient.category === "frozen") {
-    return "Frys";
-  }
-
-  return "Diverse";
 };
 
-function PantryEditor({
-  pantryIngredientIds,
-  togglePantryItem
-}: {
-  pantryIngredientIds: string[];
-  togglePantryItem: (id: string) => void;
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-start gap-3">
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#f4f0e8] text-text-secondary">
-          <Home size={17} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-[1rem] font-black text-text-primary">Basisvarer hjemme</h3>
-          <p className="mt-1 text-body-sm text-text-secondary">
-            Påvirker handlelisten, ikke middagskostnaden.
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {pantryOptions.map((item) => {
-          const selected = pantryIngredientIds.includes(item.id);
+export function ShoppingList({ onPantryItemsChange, pantryIngredientIds, planWeeklyTotalNok, selectedStore, shoppingList }: Props) {
+  const [sortMode, setSortMode] = useState<"category" | "flow">("category");
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
-          return (
-            <button
-              className={cn(
-                "rounded-full px-3 py-2 text-[0.74rem] font-semibold transition",
-                selected
-                  ? "bg-saving-bg text-saving"
-                  : "bg-white text-text-secondary shadow-[0_4px_12px_rgba(33,25,16,0.03)]"
+  const visibleGroups = useMemo<DisplayGroup[]>(() =>
+    shoppingList.groups
+      .map(g => ({ ...g, items: g.items.filter(i => !i.alreadyHave) }))
+      .filter(g => g.items.length > 0),
+    [shoppingList]
+  );
+
+  const groupedForDisplay = useMemo<DisplayGroup[]>(() => {
+    if (sortMode === "category") return visibleGroups;
+    const flowOrder = storeFlowOrders[selectedStore];
+    const grouped = new Map<string, ShoppingListItem[]>();
+    visibleGroups.flatMap(g => g.items).forEach(item => {
+      const grp = getFlowGroup(item);
+      grouped.set(grp, [...(grouped.get(grp) ?? []), item]);
+    });
+    return flowOrder
+      .map(g => ({ group: g, items: (grouped.get(g) ?? []).sort((a, b) => a.name.localeCompare(b.name, "nb-NO")) }))
+      .filter(g => g.items.length > 0);
+  }, [selectedStore, sortMode, visibleGroups]);
+
+  const allItemIds = useMemo(() => groupedForDisplay.flatMap(g => g.items.map(i => i.ingredientId)), [groupedForDisplay]);
+  const itemSignature = allItemIds.join("|");
+  useEffect(() => { setCheckedItems(new Set()); }, [itemSignature]);
+
+  const checkedCount = allItemIds.filter(id => checkedItems.has(id)).length;
+  const totalCount = shoppingList.totalItemsToBuy;
+  const allChecked = totalCount > 0 && checkedCount === totalCount;
+
+  const toggleItem = (id: string) => {
+    setCheckedItems(prev => { const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id); return next; });
+  };
+
+  const togglePantry = (id: string) => {
+    onPantryItemsChange(pantryIngredientIds.includes(id)
+      ? pantryIngredientIds.filter(i => i !== id)
+      : [...pantryIngredientIds, id]);
+  };
+
+
+  return (
+    <motion.div animate="animate" className="space-y-5" initial="initial" transition={pageTransition} variants={sectionVariants}>
+
+      {/* Summary hero */}
+      <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+        <div className="px-5 pt-5 pb-4">
+          <p className="text-[0.75rem] font-semibold text-text-tertiary">Handleliste</p>
+          <p className="mt-1 text-[2rem] font-black tracking-tight text-text-primary">{formatCompactNok(shoppingList.basketTotalNok)}</p>
+          <p className="mt-0.5 text-[0.82rem] text-text-secondary">
+            {totalCount} varer · Middagskostnad: {formatCompactNok(planWeeklyTotalNok)}
+          </p>
+          {shoppingList.pantrySavingsNok > 0 && (
+            <div className="mt-2 inline-flex items-center rounded-xl bg-saving-bg px-3 py-1.5 text-[0.78rem] font-bold text-saving">
+              Du sparer {formatCompactNok(shoppingList.pantrySavingsNok)} fra pantry
+            </div>
+          )}
+        </div>
+
+        {/* Progress */}
+        {totalCount > 0 && (
+          <div className="border-t border-border-subtle px-5 py-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[0.78rem] font-semibold text-text-secondary">
+                {checkedCount} av {totalCount} handlet
+              </p>
+              {allChecked && (
+                <span className="flex items-center gap-1 text-[0.75rem] font-bold text-brand">
+                  <Check size={13} strokeWidth={3} />Alt handlet
+                </span>
               )}
+            </div>
+            <div className="h-1.5 rounded-full bg-surface-soft overflow-hidden">
+              <motion.div
+                animate={{ width: totalCount > 0 ? `${(checkedCount / totalCount) * 100}%` : "0%" }}
+                className="h-full rounded-full bg-brand"
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Sort toggle */}
+      <SegmentedControl
+        items={[
+          { label: `Etter kategori`, value: "category" },
+          { label: "Butikkflyt", value: "flow" },
+        ]}
+        onChange={v => setSortMode(v as "category" | "flow")}
+        value={sortMode}
+      />
+
+      {/* Pantry */}
+      <div className="rounded-2xl bg-surface border border-border shadow-card p-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-surface-soft">
+            <Home size={16} className="text-text-secondary" />
+          </div>
+          <div>
+            <p className="text-[0.875rem] font-bold text-text-primary">Har du hjemme?</p>
+            <p className="text-[0.75rem] text-text-tertiary">Trykk på det du allerede har</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {pantryOptions.map(item => (
+            <button
               key={item.id}
-              onClick={() => togglePantryItem(item.id)}
+              className={cn(
+                "rounded-xl px-3 py-1.5 text-[0.78rem] font-semibold transition-all",
+                pantryIngredientIds.includes(item.id)
+                  ? "bg-saving-bg text-saving border border-saving-border"
+                  : "bg-surface-soft text-text-secondary border border-border-subtle"
+              )}
+              onClick={() => togglePantry(item.id)}
               type="button"
             >
               {item.label}
             </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function EmptyShoppingList() {
-  return (
-    <Card className="p-5 text-center" variant="surface">
-      <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#f3eee6] text-text-secondary">
-        <ShoppingBasket size={22} />
-      </div>
-      <h3 className="mt-app-3 text-headline text-text-primary">Handlekurven er tom</h3>
-      <p className="mt-app-2 text-body-sm text-text-secondary">
-        Alt du trenger til middagene er allerede hjemme.
-      </p>
-    </Card>
-  );
-}
-
-function ShoppingListProCard() {
-  const bullets = [
-    "Live priser fra norske butikker",
-    "Automatisk billigste handlekurv",
-    "Smarte bytteforslag"
-  ];
-
-  return (
-    <Card className="p-4" variant="premium">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <Badge tone="premium">Pro</Badge>
-          <h3 className="mt-3 text-[1.12rem] font-black text-text-primary">Prisjakt med Matbudsjettet Pro</h3>
-          <p className="mt-1.5 text-body-sm text-text-secondary">Se billigste butikk per vare og spar enda mer</p>
-        </div>
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface text-premium">
-          <Crown size={20} strokeWidth={2.3} />
+          ))}
         </div>
       </div>
 
-      <div className="mt-4 space-y-2">
-        {bullets.map((bullet) => (
-          <div className="flex items-center gap-2 text-body-sm font-semibold text-text-primary" key={bullet}>
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-surface text-premium">
-              <Sparkles size={13} />
-            </span>
-            <span>{bullet}</span>
+      {/* Empty state */}
+      {totalCount === 0 && (
+        <div className="rounded-2xl bg-surface border border-border shadow-card p-8 text-center">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-saving-bg text-2xl">🛒</div>
+          <p className="mt-4 text-[0.95rem] font-bold text-text-primary">Alt er hjemme!</p>
+          <p className="mt-1 text-[0.82rem] text-text-secondary">Du har allerede alt du trenger.</p>
+        </div>
+      )}
+
+      {/* Items grouped */}
+      {groupedForDisplay.map(group => (
+        <div key={group.group} className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
+            <p className="text-[0.82rem] font-black text-text-primary">{group.group}</p>
+            <span className="text-[0.72rem] font-semibold text-text-tertiary">{group.items.length} varer</span>
           </div>
-        ))}
-      </div>
+          {group.items.map((item, i) => {
+            const checked = checkedItems.has(item.ingredientId);
+            return (
+              <button
+                key={item.ingredientId}
+                className={cn(
+                  "flex w-full items-center gap-3.5 px-4 py-3.5 text-left transition-colors active:bg-bg-elevated",
+                  i > 0 ? "border-t border-border-subtle" : "",
+                  checked ? "opacity-60" : ""
+                )}
+                onClick={() => toggleItem(item.ingredientId)}
+                type="button"
+              >
+                <span className={cn(
+                  "grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-all",
+                  checked ? "border-brand bg-brand" : "border-border"
+                )}>
+                  {checked && <Check size={12} strokeWidth={3} className="text-white" />}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className={cn("block text-[0.875rem] font-semibold text-text-primary", checked ? "line-through" : "")}>
+                    {item.name}
+                  </span>
+                  <span className="block text-[0.75rem] text-text-tertiary mt-0.5">{item.displayQuantity}</span>
+                </span>
+                <span className="shrink-0 text-[0.82rem] font-bold text-text-primary">
+                  {formatCompactNok(item.estimatedPriceNok)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      ))}
 
-      <div className="mt-4 flex items-center gap-3 rounded-[0.95rem] bg-surface p-3">
-        <LockKeyhole className="shrink-0 text-premium" size={17} />
-        <p className="text-body-sm text-text-secondary">Klar for live prisdata når Pro åpner.</p>
-      </div>
-
-      <Button className="mt-5 w-full justify-between" type="button" variant="premium">
-        Få tidlig tilgang
-        <ChevronRight size={18} />
-      </Button>
-    </Card>
+      {/* Total */}
+      {totalCount > 0 && (
+        <div className="rounded-2xl bg-brand text-white px-5 py-4 flex items-center justify-between">
+          <div>
+            <p className="text-[0.78rem] font-semibold text-white/70">Totalt estimert</p>
+            <p className="text-[1.5rem] font-black">{formatCompactNok(shoppingList.basketTotalNok)}</p>
+          </div>
+          <ShoppingBasket size={28} className="text-white/40" />
+        </div>
+      )}
+    </motion.div>
   );
+}
+
+function getFlowGroup(item: ShoppingListItem) {
+  const ing = ingredients.find(i => i.id === item.ingredientId);
+  if (!ing) return "Diverse";
+  if (ing.category === "produce") return "Frukt og grønt";
+  if (ing.category === "protein") return "Kjøtt og fisk";
+  if (ing.category === "dairy") return "Meieri og egg";
+  if (ing.category === "pantry") return "Tørrvarer";
+  return "Diverse";
 }

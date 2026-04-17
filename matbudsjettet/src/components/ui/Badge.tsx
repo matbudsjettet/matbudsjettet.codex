@@ -1,21 +1,20 @@
-import type { ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
+import type { ReactNode } from "react";
 
-type BadgeProps = {
-  children: ReactNode;
-  tone?: "neutral" | "saving" | "premium" | "warm";
+type BadgeTone = "saving" | "warm" | "premium" | "neutral" | "brand" | "danger";
+
+const toneClasses: Record<BadgeTone, string> = {
+  saving: "bg-saving-bg text-saving border border-saving-border",
+  warm: "bg-[#FFF4EC] text-[#B45309] border border-[#FBDBB8]",
+  premium: "bg-premium-bg text-premium border border-premium-border",
+  neutral: "bg-surface-soft text-text-secondary border border-border-subtle",
+  brand: "bg-brand-light text-brand border border-saving-border",
+  danger: "bg-danger-bg text-danger border border-[rgba(192,57,43,0.20)]",
 };
 
-const tones = {
-  neutral: "bg-[#f5f2ec] text-text-secondary",
-  saving: "bg-[rgba(35,111,73,0.08)] text-[#236f49]",
-  premium: "bg-[#f1f3ef] text-[#353a35]",
-  warm: "bg-[#f7f2ea] text-[#6f614d]"
-};
-
-export function Badge({ children, tone = "neutral" }: BadgeProps) {
+export function Badge({ children, tone = "neutral", className }: { children: ReactNode; tone?: BadgeTone; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-[0.32rem] text-[0.66rem] font-semibold tracking-[0.01em]", tones[tone])}>
+    <span className={cn("inline-flex items-center rounded-lg px-2.5 py-1 text-[0.72rem] font-bold tracking-[0.01em]", toneClasses[tone], className)}>
       {children}
     </span>
   );

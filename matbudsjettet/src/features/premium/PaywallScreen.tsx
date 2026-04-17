@@ -1,212 +1,104 @@
 import { Check, Crown, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { createPremiumOptimizationPreview } from "@/lib/engines/premiumOptimizationEngine";
-import { formatCompactNok } from "@/lib/utils/format";
 import type { BudgetPreference, WeeklyPlan } from "@/types/domain";
 
-type PaywallScreenProps = {
-  onClose: () => void;
-  plan?: WeeklyPlan;
-  preference?: BudgetPreference;
-};
-
-type PaywallValue = {
-  comparisonLabel: string;
-  differenceNok?: number;
-  differenceLabel: string;
-  hasDynamicData: boolean;
-  monthlyLabel: string;
-  optimizedTotalNok?: number;
-  optimizedTotalLabel: string;
-  originalTotalNok?: number;
-  originalTotalLabel: string;
-  weeklySavingsNok?: number;
-  weeklySavingsLabel: string;
-};
+type Props = { onClose: () => void; plan?: WeeklyPlan; preference?: BudgetPreference; };
 
 const monthlyPriceNok = 49;
 
-export function PaywallScreen({ onClose, plan, preference }: PaywallScreenProps) {
-  const [ctaPressed, setCtaPressed] = useState(false);
-  const value = useMemo(() => getPaywallValue(plan, preference), [plan, preference]);
+const features = [
+  "Ubegrenset antall planer",
+  "Flere smarte spartips",
+  "Eksklusive oppskrifter",
+  "Prioritert support",
+];
 
-  const handleStartTrial = () => {
-    setCtaPressed(true);
-    window.setTimeout(() => setCtaPressed(false), 900);
-  };
+export function PaywallScreen({ onClose, plan, preference }: Props) {
+  const [pressed, setPressed] = useState(false);
+  const savings = useMemo(() => {
+    if (!plan || !preference) return null;
+    const preview = createPremiumOptimizationPreview(plan, preference, true);
+    return preview.estimatedExtraSavingsNok;
+  }, [plan, preference]);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-background">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-app-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))]">
-        <header className="sticky top-0 z-10 -mx-app-5 flex items-center justify-between border-b border-border-subtle bg-background px-app-5 py-app-3">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
+
+        {/* Header */}
+        <header className="flex items-center justify-between py-4">
           <button
             aria-label="Lukk"
-            className="grid h-10 w-10 place-items-center rounded-lg border border-border-subtle bg-surface text-text-secondary"
+            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface"
             onClick={onClose}
             type="button"
           >
-            <X size={18} />
+            <X size={17} strokeWidth={2} className="text-text-secondary" />
           </button>
-          <p className="text-body-sm font-black text-text-primary">Matbudsjettet Pro</p>
+          <p className="text-[0.875rem] font-bold text-text-primary">Matbudsjett+</p>
           <div className="h-10 w-10" />
         </header>
 
-        <main className="flex-1 space-y-app-4 py-app-5">
-          <PaywallHero value={value} />
-          <PaywallComparison value={value} />
-          <PaywallValueBullets value={value} />
-          <PaywallPricing />
-
-          <div className="rounded-lg border border-premium-border bg-premium-bg px-app-3 py-app-2 text-center text-body-sm font-black text-premium">
-            7 dager gratis • Ingen binding
+        {/* Hero */}
+        <div className="rounded-2xl bg-[#1A3225] text-white p-6 text-center mb-5">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#D4A017]/20 mb-4">
+            <Crown size={28} className="text-[#D4A017]" strokeWidth={2} />
           </div>
+          <h1 className="text-[1.65rem] font-black tracking-tight leading-snug">Matbudsjett+</h1>
+          <p className="mt-2 text-[0.875rem] text-white/70">Få enda mer ut av appen</p>
 
-          <Button className="mt-app-6 w-full" onClick={handleStartTrial} type="button" variant="premium">
-            {ctaPressed ? "Klar for prøveperiode" : "Start gratis prøveperiode"}
-          </Button>
-
-          <div className="space-y-1 text-center text-caption text-text-tertiary">
-            <p>Avslutt når som helst i App Store</p>
-            <p>Ingen skjulte kostnader</p>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function PaywallHero({ value }: { value: PaywallValue }) {
-  return (
-    <section className="rounded-lg border border-premium-border bg-premium-bg p-app-5 text-center shadow-app">
-      <div className="mx-auto grid h-12 w-12 place-items-center rounded-lg bg-surface text-premium">
-        <Crown size={22} />
-      </div>
-      <h1 className="mt-app-4 text-title text-text-primary">
-        Du kan spare{" "}
-        {value.weeklySavingsNok ? (
-          <AnimatedNumber className="text-saving" value={value.weeklySavingsNok} />
-        ) : (
-          value.weeklySavingsLabel
-        )}{" "}
-        denne uken
-      </h1>
-      <p className="mt-app-2 text-body font-bold text-saving">{value.monthlyLabel}</p>
-      <p className="mt-app-2 text-caption text-text-tertiary">
-        {value.hasDynamicData ? "Basert på ukeplanen din" : "Realistisk estimat før ukeplanen er klar"}
-      </p>
-    </section>
-  );
-}
-
-function PaywallComparison({ value }: { value: PaywallValue }) {
-  return (
-    <Card className="p-app-4" variant="default">
-      <div className="grid grid-cols-2 gap-app-3">
-        <ComparisonColumn label="Uten Pro" value={value.originalTotalLabel} valueNok={value.originalTotalNok} />
-        <ComparisonColumn label="Med Pro" tone="saving" value={value.optimizedTotalLabel} valueNok={value.optimizedTotalNok} />
-      </div>
-      <div className="mt-app-4 rounded-lg bg-saving-bg p-app-3 text-center">
-        <p className="text-caption text-saving">{value.comparisonLabel}</p>
-        <p className="mt-1 text-headline text-saving">
-          Spar{" "}
-          {value.differenceNok ? (
-            <AnimatedNumber value={value.differenceNok} />
-          ) : (
-            value.differenceLabel
+          {savings && savings > 0 && (
+            <div className="mt-5 rounded-2xl bg-white/10 p-4">
+              <p className="text-[0.78rem] text-white/60">Du kan spare ytterligere</p>
+              <p className="text-[2rem] font-black mt-1">
+                <AnimatedNumber value={savings} /> kr
+              </p>
+              <p className="text-[0.78rem] text-white/60 mt-0.5">denne uken med Pro</p>
+            </div>
           )}
-        </p>
-      </div>
-    </Card>
-  );
-}
+        </div>
 
-function ComparisonColumn({
-  label,
-  tone = "neutral",
-  value,
-  valueNok
-}: {
-  label: string;
-  tone?: "neutral" | "saving";
-  value: string;
-  valueNok?: number;
-}) {
-  return (
-    <div className="rounded-lg border border-border-subtle bg-surface p-app-3">
-      <p className="text-caption text-text-tertiary">{label}</p>
-      <p className={tone === "saving" ? "mt-app-2 text-headline text-saving" : "mt-app-2 text-headline text-text-primary"}>
-        {valueNok ? <AnimatedNumber pulse={tone === "saving"} value={valueNok} /> : value}
-      </p>
+        {/* Features */}
+        <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden mb-4">
+          {features.map((f, i) => (
+            <div key={f} className={`flex items-center gap-3.5 px-5 py-4 ${i > 0 ? "border-t border-border-subtle" : ""}`}>
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-saving-bg">
+                <Check size={15} strokeWidth={3} className="text-saving" />
+              </div>
+              <p className="text-[0.875rem] font-semibold text-text-primary">{f}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Pricing */}
+        <div className="rounded-2xl bg-surface border border-border shadow-card p-5 text-center mb-4">
+          <p className="text-[2rem] font-black text-text-primary">{monthlyPriceNok} kr</p>
+          <p className="text-[0.875rem] text-text-secondary">per måned · ca. 1,60 kr per dag</p>
+        </div>
+
+        {/* Trial note */}
+        <div className="rounded-2xl bg-[#EBF5EF] border border-saving-border px-4 py-3 text-center text-[0.82rem] font-bold text-brand mb-4">
+          7 dager gratis · Ingen bindingstid
+        </div>
+
+        {/* CTA */}
+        <Button
+          className="w-full bg-[#D4A017] text-white border-[#D4A017] hover:bg-[#C08F10]"
+          onClick={() => setPressed(true)}
+          size="lg"
+          type="button"
+        >
+          {pressed ? "Klar! ✓" : "Prøv gratis i 7 dager"}
+        </Button>
+
+        <div className="mt-3 space-y-1 text-center text-[0.75rem] text-text-tertiary">
+          <p>Avslutt når som helst i App Store</p>
+          <p>Ingen skjulte kostnader</p>
+        </div>
+      </div>
     </div>
   );
 }
-
-function PaywallValueBullets({ value }: { value: PaywallValue }) {
-  const valueBullets = [
-    "Finn billigste butikk for hver vare",
-    value.hasDynamicData
-      ? `Estimert sparepotensial på ${value.weeklySavingsLabel} denne uken`
-      : "Realistisk spareområde før live priser er klare",
-    "Automatisk optimalisert handleliste",
-    "Smarte bytteforslag som kutter kostnader"
-  ];
-
-  return (
-    <Card className="p-app-4" variant="surface">
-      <div className="space-y-app-3">
-        {valueBullets.map((bullet) => (
-          <div className="flex items-center gap-app-3 text-body-sm font-bold text-text-secondary" key={bullet}>
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-saving-bg text-saving">
-              <Check size={15} strokeWidth={3} />
-            </span>
-            <span>{bullet}</span>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-function PaywallPricing() {
-  return (
-    <Card className="p-app-4 text-center" variant="default">
-      <p className="text-title text-text-primary">{monthlyPriceNok} kr / måned</p>
-      <p className="mt-app-1 text-body-sm font-bold text-text-secondary">ca. 1,60 kr per dag</p>
-    </Card>
-  );
-}
-
-const getPaywallValue = (plan?: WeeklyPlan, preference?: BudgetPreference): PaywallValue => {
-  if (plan && preference) {
-    const preview = createPremiumOptimizationPreview(plan, preference, true);
-    const optimizedTotal = Math.max(0, plan.summary.weeklyTotalNok - preview.estimatedExtraSavingsNok);
-    const monthlySavings = preview.estimatedExtraSavingsNok * 4;
-
-    return {
-      comparisonLabel: "Avrundet estimat fra ukeplanen din",
-      differenceNok: preview.estimatedExtraSavingsNok,
-      differenceLabel: formatCompactNok(preview.estimatedExtraSavingsNok),
-      hasDynamicData: true,
-      monthlyLabel: `Det er over ${formatCompactNok(Math.floor(monthlySavings / 10) * 10)} per måned`,
-      optimizedTotalNok: optimizedTotal,
-      optimizedTotalLabel: formatCompactNok(optimizedTotal),
-      originalTotalNok: plan.summary.weeklyTotalNok,
-      originalTotalLabel: formatCompactNok(plan.summary.weeklyTotalNok),
-      weeklySavingsNok: preview.estimatedExtraSavingsNok,
-      weeklySavingsLabel: formatCompactNok(preview.estimatedExtraSavingsNok)
-    };
-  }
-
-  return {
-    comparisonLabel: "Estimert spareområde",
-    differenceLabel: "200-400 kr",
-    hasDynamicData: false,
-    monthlyLabel: "Det er anslagsvis 800-1600 kr per måned",
-    optimizedTotalLabel: "lavere ukehandel",
-    originalTotalLabel: "ordinær ukehandel",
-    weeklySavingsLabel: "200-400 kr"
-  };
-};

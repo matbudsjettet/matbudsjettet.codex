@@ -1,95 +1,96 @@
-import type { HouseholdSize, PlannedMeal } from "@/types/domain";
-import { AnimatePresence, motion } from "framer-motion";
-import { Clock3, X } from "lucide-react";
-import { buttonTap, modalBackdropVariants, modalSheetVariants, pageTransition } from "@/lib/design/animations";
+import { X, Clock3, ChefHat } from "lucide-react";
 import { getRecipeDefinition } from "@/lib/data/recipes";
+import type { HouseholdSize, PlannedMeal } from "@/types/domain";
 
-type MealRecipeSheetProps = {
-  meal: PlannedMeal;
-  householdSize: HouseholdSize;
-  onClose: () => void;
-};
+type Props = { householdSize: HouseholdSize; meal: PlannedMeal; onClose: () => void; };
 
-export function MealRecipeSheet({ meal, householdSize, onClose }: MealRecipeSheetProps) {
+export function MealRecipeSheet({ householdSize, meal, onClose }: Props) {
   const recipe = getRecipeDefinition(meal, householdSize);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        animate="animate"
-        className="fixed inset-0 z-50 flex items-end bg-text-primary/30 px-app-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-        exit="exit"
-        initial="initial"
-        onClick={onClose}
-        transition={pageTransition}
-        variants={modalBackdropVariants}
+    <div className="fixed inset-0 z-40 flex flex-col bg-black/40" onClick={onClose}>
+      <div
+        className="mt-auto max-h-[88vh] overflow-y-auto rounded-t-3xl bg-background"
+        onClick={e => e.stopPropagation()}
       >
-        <motion.div
-          animate="animate"
-          className="mx-auto w-full max-w-md rounded-2xl border border-border bg-surface p-app-5 shadow-app"
-          exit="exit"
-          initial="initial"
-          onClick={(event) => event.stopPropagation()}
-          transition={pageTransition}
-          variants={modalSheetVariants}
-        >
-          <div className="flex items-start justify-between gap-app-3">
-            <div>
-              <p className="text-body-sm font-black text-text-secondary">Oppskrift</p>
-              <h2 className="mt-1 text-title text-text-primary">{recipe.title}</h2>
-            </div>
-            <motion.button
-              aria-label="Lukk oppskrift"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-border bg-surface text-text-secondary shadow-app"
-              onClick={onClose}
-              type="button"
-              {...buttonTap}
-            >
-              <X size={18} />
-            </motion.button>
-          </div>
+        {/* Handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="h-1 w-10 rounded-full bg-border" />
+        </div>
 
-          <div className="mt-app-4 inline-flex items-center gap-2 rounded-full border border-border bg-bg-elevated px-app-3 py-app-2 text-body-sm font-semibold text-text-secondary">
-            <Clock3 size={16} />
-            {recipe.timeMinutes} min
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pb-3 pt-2">
+          <div>
+            <p className="text-[0.72rem] font-semibold text-text-tertiary">Oppskrift</p>
+            <h2 className="text-[1.25rem] font-black tracking-tight text-text-primary">{meal.name}</h2>
           </div>
+          <button
+            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface"
+            onClick={onClose}
+            type="button"
+          >
+            <X size={17} strokeWidth={2} className="text-text-secondary" />
+          </button>
+        </div>
 
-          <div className="mt-app-6">
-            <h3 className="text-headline text-text-primary">Du trenger</h3>
-            <ul className="mt-app-3 space-y-app-2">
-              {recipe.ingredients.slice(0, 7).map((ingredient) => (
-                <li className="rounded-xl bg-bg-elevated px-app-4 py-app-3 text-body-sm text-text-primary" key={ingredient}>
-                  {ingredient}
-                </li>
-              ))}
-            </ul>
+        {/* Info pills */}
+        <div className="flex gap-2 px-5 pb-4">
+          <div className="flex items-center gap-1.5 rounded-xl bg-surface-soft px-3 py-1.5 text-[0.78rem] font-semibold text-text-secondary">
+            <Clock3 size={13} />{recipe.timeMinutes} min
           </div>
-
-          <div className="mt-app-6">
-            <h3 className="text-headline text-text-primary">Slik gjør du</h3>
-            <ol className="mt-app-3 space-y-app-2">
-              {recipe.steps.slice(0, 5).map((step, index) => (
-                <li className="flex items-start gap-app-3 rounded-xl bg-bg-elevated px-app-4 py-app-3" key={step}>
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-surface text-caption font-black text-text-primary shadow-app">
-                    {index + 1}
-                  </span>
-                  <span className="text-body-sm text-text-primary">{step}</span>
-                </li>
-              ))}
-            </ol>
+          <div className="flex items-center gap-1.5 rounded-xl bg-surface-soft px-3 py-1.5 text-[0.78rem] font-semibold text-text-secondary">
+            <ChefHat size={13} />{meal.difficulty === "easy" ? "Enkel" : "Middels"}
           </div>
+          <div className="flex items-center gap-1.5 rounded-xl bg-surface-soft px-3 py-1.5 text-[0.78rem] font-semibold text-text-secondary">
+            👥 {householdSize} pers.
+          </div>
+        </div>
 
-          {recipe.notes?.length ? (
-            <div className="mt-app-4">
-              {recipe.notes.map((note) => (
-                <p className="text-body-sm text-text-secondary" key={note}>
-                  {note}
-                </p>
+        <div className="px-5 pb-8 space-y-6">
+          {/* Ingredients */}
+          <section>
+            <h3 className="text-[0.875rem] font-black text-text-primary mb-3">Ingredienser</h3>
+            <div className="rounded-2xl bg-surface border border-border shadow-card overflow-hidden">
+              {recipe.ingredients.map((ing: string, i: number) => (
+                <div
+                  key={i}
+                  className={`flex items-center px-4 py-3 ${i > 0 ? "border-t border-border-subtle" : ""}`}
+                >
+                  <div className="h-1.5 w-1.5 rounded-full bg-brand mr-3 shrink-0" />
+                  <p className="text-[0.875rem] text-text-primary">{ing}</p>
+                </div>
               ))}
             </div>
-          ) : null}
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+          </section>
+
+          {/* Steps */}
+          <section>
+            <h3 className="text-[0.875rem] font-black text-text-primary mb-3">Fremgangsmåte</h3>
+            <div className="space-y-3">
+              {recipe.steps.map((step: string, i: number) => (
+                <div key={i} className="flex gap-3">
+                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-white text-[0.72rem] font-black">
+                    {i + 1}
+                  </div>
+                  <p className="flex-1 text-[0.875rem] text-text-secondary leading-relaxed pt-0.5">{step}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Notes */}
+          {recipe.notes && recipe.notes.length > 0 && (
+            <section>
+              <h3 className="text-[0.875rem] font-black text-text-primary mb-2">Tips</h3>
+              <div className="rounded-2xl bg-[#EBF5EF] border border-saving-border p-4 space-y-2">
+                {recipe.notes.map((note: string, i: number) => (
+                  <p key={i} className="text-[0.82rem] text-brand">💡 {note}</p>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

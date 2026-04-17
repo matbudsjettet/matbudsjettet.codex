@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppShell } from "@/components/app/AppShell";
-import { SplashScreen } from "@/components/app/SplashScreen";
 import { BudgetSummary } from "@/features/budget/BudgetSummary";
 import { MealDetailScreen } from "@/features/meals/MealDetailScreen";
 import { MealPlan } from "@/features/meals/MealPlan";
 import { MealRecipeSheet } from "@/features/meals/MealRecipeSheet";
 import { OnboardingFlow } from "@/features/onboarding/OnboardingFlow";
 import type { OnboardingState } from "@/features/onboarding/OnboardingFlow";
-import WeeklyOverview from "@/features/overview/WeeklyOverview";
+import { WeeklyOverview } from "@/features/overview/WeeklyOverview";
 import { PaywallScreen } from "@/features/premium/PaywallScreen";
 import { PremiumOptimization } from "@/features/premium/PremiumOptimization";
 import { ResultScreen } from "@/features/result/ResultScreen";
@@ -28,6 +27,7 @@ import { buildShoppingList } from "@/lib/engines/shoppingListEngine";
 import { usePersistentState } from "@/lib/hooks/usePersistentState";
 import {
   createWeeklyHistoryEntry,
+  defaultWeeklyRoutineState,
   loadWeeklyRoutineState,
   saveWeeklyRoutineState
 } from "@/lib/storage/weeklyRoutineStorage";
@@ -36,7 +36,7 @@ import type { BudgetPreference, HouseholdSize, MealSwapAlternative, PlanMode, Pl
 import type { AppView } from "@/types/navigation";
 
 const viewTitles: Record<AppView, string> = {
-  overview: "Uken din",
+  overview: "Oversikt",
   meals: "Ukeplan",
   "meal-detail": "Bytt rett",
   shopping: "Handleliste",
@@ -45,27 +45,7 @@ const viewTitles: Record<AppView, string> = {
   settings: "Innstillinger"
 };
 
-const SPLASH_STORAGE_KEY = "matbudsjettet:lastOpenedAt";
-const COLD_OPEN_THRESHOLD_MS = 10 * 60 * 1000;
-const SPLASH_DURATION_MS = 950;
-
-function shouldShowSplashOnColdOpen() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  const lastOpenedAt = Number(window.localStorage.getItem(SPLASH_STORAGE_KEY));
-
-  if (!Number.isFinite(lastOpenedAt)) {
-    return true;
-  }
-
-  return Date.now() - lastOpenedAt > COLD_OPEN_THRESHOLD_MS;
-}
-
 export function App() {
-  const [showSplash, setShowSplash] = useState(() => shouldShowSplashOnColdOpen());
-  const [isLoading, setIsLoading] = useState(() => shouldShowSplashOnColdOpen());
   const [routine, setRoutine] = usePersistentState(loadWeeklyRoutineState, saveWeeklyRoutineState);
   const savedPreference = routine.savedPreference;
   const [selectedStore, setSelectedStore] = useState<StoreId>(savedPreference?.preferredStore ?? defaultPreference.preferredStore);
@@ -133,22 +113,6 @@ export function App() {
   }, [preference, routine.mealPreferences, selectedStore, weeklyPlan.summary.weeklyTotalNok]);
 
   const planShapeKey = `${selectedStore}-${householdSize}-${planMode}-${weeklyBudgetNok}`;
-
-  useEffect(() => {
-    window.localStorage.setItem(SPLASH_STORAGE_KEY, String(Date.now()));
-
-    if (!showSplash) {
-      setIsLoading(false);
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setShowSplash(false);
-      setIsLoading(false);
-    }, SPLASH_DURATION_MS);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [showSplash]);
 
   useEffect(() => {
     pantryIngredientIdsRef.current = pantryIngredientIds;
@@ -309,6 +273,31 @@ export function App() {
     saveCurrentPreference({ ...preference, weeklyBudgetNok: nextBudgetNok });
   };
 
+  const toggleMealId = (mealId: string, key: keyof typeof defaultWeeklyRoutineState.mealPreferences) => {
+    setRoutine((current) => {
+      const currentIds = current.mealPreferences[key];
+      const nextIds = currentIds.includes(mealId) ? currentIds.filter((id) => id !== mealId) : [...currentIds, mealId];
+      const nextMealPreferences = {
+        ...current.mealPreferences,
+        [key]: nextIds
+      };
+
+      if (key === "favoriteMealIds" && nextIds.includes(mealId)) {
+        nextMealPreferences.dislikedMealIds = nextMealPreferences.dislikedMealIds.filter((id) => id !== mealId);
+      }
+
+      if (key === "dislikedMealIds" && nextIds.includes(mealId)) {
+        nextMealPreferences.favoriteMealIds = nextMealPreferences.favoriteMealIds.filter((id) => id !== mealId);
+        nextMealPreferences.repeatCheapMealIds = nextMealPreferences.repeatCheapMealIds.filter((id) => id !== mealId);
+      }
+
+      return {
+        ...current,
+        mealPreferences: nextMealPreferences
+      };
+    });
+  };
+
   const handleRefreshWeek = () => {
     const refreshedPlan = refreshWeeklyPlan(meals, ingredients, preference, routine.mealPreferences);
 
@@ -392,7 +381,15 @@ export function App() {
   };
 
   const renderMealPlan = () => (
-    <MealPlan meals={weeklyPlan.meals} onOpenRecipe={openRecipe} />
+    <MealPlan
+      mealPreferences={routine.mealPreferences}
+      meals={weeklyPlan.meals}
+      onOpenRecipe={openRecipe}
+      onSwapMeal={openMealDetail}
+      onToggleDislikedMeal={(mealId) => toggleMealId(mealId, "dislikedMealIds")}
+      onToggleFavoriteMeal={(mealId) => toggleMealId(mealId, "favoriteMealIds")}
+      onToggleRepeatCheapMeal={(mealId) => toggleMealId(mealId, "repeatCheapMealIds")}
+    />
   );
 
   const renderActiveView = () => {
@@ -448,10 +445,6 @@ export function App() {
     }
   };
 
-  if (isLoading && showSplash) {
-    return <SplashScreen />;
-  }
-
   if (!onboardingComplete) {
     return (
       <OnboardingFlow
@@ -506,7 +499,7 @@ function FloatingSavingsFeedback({ amountNok }: { amountNok: number }) {
   return (
     <motion.div
       animate={{ opacity: [0, 1, 1, 0], scale: [0.98, 1.04, 1, 0.98], y: [0, -8, -14, -22] }}
-      className="pointer-events-none fixed left-1/2 top-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] z-50 -translate-x-1/2 rounded-full bg-saving px-app-4 py-app-2 text-body-sm font-black text-white shadow-app"
+      className="pointer-events-none fixed left-1/2 top-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] z-50 -translate-x-1/2 rounded-full bg-brand px-5 py-2 text-[0.875rem] font-bold text-white shadow-saving"
       exit={{ opacity: 0, y: -24 }}
       initial={{ opacity: 0, scale: 0.98, y: 0 }}
       transition={{ duration: 1, ease: "easeOut" }}
