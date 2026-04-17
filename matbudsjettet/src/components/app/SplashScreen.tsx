@@ -3,7 +3,7 @@ import logo from "../../../assets/matbudjettet_logo.svg";
 
 export function SplashScreen() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F5F0E8]">
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
       <motion.img
         alt="Matbudsjettet"
         animate={{ opacity: [0, 1, 1, 0], scale: [0.98, 1, 1, 0.985] }}
