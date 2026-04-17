@@ -2,7 +2,6 @@ import { ChevronRight, Clock3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import type { PlannedMeal } from "@/types/domain";
 import { getMealImage } from "@/lib/design/mealImages";
 const weekdayLabels = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -14,23 +13,15 @@ type MealPlanProps = {
 
 export function MealPlan({ meals, onOpenRecipe }: MealPlanProps) {
   return (
-    <Section
-      action={
-        <Button className="min-h-[42px] px-4 py-2 text-[0.82rem]" variant="secondary">
-          Hele planen
-        </Button>
-      }
-      eyebrow="Middager"
-      title="Denne uken"
-    >
+    <Section title="Denne uken">
       <motion.div
         animate={{ opacity: 1 }}
-        className="space-y-2.5"
+        className="space-y-1.5"
         initial={{ opacity: 0 }}
       >
         {meals.map((meal, index) => (
           <button
-            className="flex w-full items-center gap-3 overflow-hidden rounded-[1.25rem] bg-white p-3 text-left shadow-[0_10px_22px_rgba(33,25,16,0.06)]"
+            className="flex w-full items-center gap-3 rounded-[1.1rem] border border-[#ebe5dc] bg-white/72 p-3 text-left shadow-[0_6px_16px_rgba(33,25,16,0.03)]"
             key={meal.id}
             onClick={() => onOpenRecipe(meal)}
             type="button"
@@ -57,11 +48,8 @@ export function MealPlan({ meals, onOpenRecipe }: MealPlanProps) {
                 {meal.categorySignals.budget && (
                   <Badge tone="saving">Billig</Badge>
                 )}
-                {meal.prepTimeMinutes <= 25 && (
+                {!meal.categorySignals.budget && meal.prepTimeMinutes <= 25 && (
                   <Badge tone="premium">Rask</Badge>
-                )}
-                {meal.categorySignals.family && (
-                  <Badge tone="warm">Populær</Badge>
                 )}
               </div>
             </div>

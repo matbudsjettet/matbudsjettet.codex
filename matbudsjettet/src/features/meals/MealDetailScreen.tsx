@@ -27,30 +27,31 @@ export function MealDetailScreen({ alternatives, meal, onSelectAlternative }: Me
               <Badge tone={meal.mealTag === "Budsjett" ? "saving" : meal.mealTag === "Premium" ? "neutral" : "warm"}>
                 {meal.mealTag}
               </Badge>
-              <span className="rounded-full bg-white/15 px-2.5 py-1 text-[0.72rem] font-semibold text-white backdrop-blur-sm">
-                {meal.weekday}
-              </span>
             </div>
             <h2 className="text-[1.7rem] font-black leading-tight text-white">{meal.name}</h2>
             <p className="mt-2 max-w-[18rem] text-[0.92rem] leading-relaxed text-white/84">{meal.savingsNote}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 p-4">
-          <div className="rounded-[1rem] bg-[#faf7f1] p-3">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Pris</p>
-            <p className="mt-1 font-black text-text-primary">{formatCompactNok(meal.totalPriceNok)}</p>
+        <div className="space-y-3 p-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Pris</p>
+              <p className="mt-1 font-black text-text-primary">{formatCompactNok(meal.totalPriceNok)}</p>
+            </div>
+            <div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Tid</p>
+              <p className="mt-1 font-black text-text-primary">{meal.prepTimeMinutes} min</p>
+            </div>
           </div>
-          <div className="rounded-[1rem] bg-[#faf7f1] p-3">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Tid</p>
-            <p className="mt-1 font-black text-text-primary">{meal.prepTimeMinutes} min</p>
-          </div>
-          <div className="rounded-[1rem] bg-[#faf7f1] p-3">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Per porsjon</p>
-            <p className="mt-1 font-black text-text-primary">{formatNok(meal.costPerServingNok)}</p>
-          </div>
-          <div className="rounded-[1rem] bg-[#faf7f1] p-3">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Planmodus</p>
-            <p className="mt-1 font-black text-text-primary">{meal.baseCostReference}</p>
+          <div className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-3">
+            <div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Per porsjon</p>
+              <p className="mt-1 font-black text-text-primary">{formatNok(meal.costPerServingNok)}</p>
+            </div>
+            <div>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">Planmodus</p>
+              <p className="mt-1 font-black text-text-primary">{meal.baseCostReference}</p>
+            </div>
           </div>
         </div>
       </Card>
@@ -95,17 +96,6 @@ function AlternativeCard({ alternative, onSelect }: { alternative: MealSwapAlter
               <p className="text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-text-tertiary">{alternative.title}</p>
               <h3 className="mt-1 text-[1.05rem] font-bold leading-snug text-text-primary">{alternative.meal.name}</h3>
             </div>
-            <Badge
-              tone={
-                alternative.meal.mealTag === "Budsjett"
-                  ? "saving"
-                  : alternative.meal.mealTag === "Premium"
-                    ? "neutral"
-                    : "warm"
-              }
-            >
-              {alternative.meal.mealTag}
-            </Badge>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-body-sm font-bold text-text-secondary">
             <span>{formatCompactNok(alternative.meal.totalPriceNok)}</span>
@@ -128,7 +118,6 @@ function AlternativeCard({ alternative, onSelect }: { alternative: MealSwapAlter
           <Button className="w-full" onClick={onSelect} type="button" variant="secondary">
             Velg denne
           </Button>
-          {isSaving ? <p className="text-[0.78rem] font-semibold text-saving">Spar {formatCompactNok(Math.abs(alternative.priceDifferenceNok))}</p> : null}
         </div>
       </div>
     </Card>

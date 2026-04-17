@@ -83,7 +83,7 @@ export function ShoppingList({
   }, [selectedStore, sortMode, visibleGroups]);
   const activeHelperText =
     sortMode === "flow"
-      ? "Sorter varene i en mer naturlig rekkefølge gjennom butikken"
+      ? "Sorter varene i en mer naturlig rekkefølge gjennom butikken."
       : "Sorter varene etter vanlige matgrupper.";
   const itemIds = useMemo(
     () => groupedForDisplay.flatMap((group) => group.items.map((item) => item.ingredientId)),
@@ -124,7 +124,7 @@ export function ShoppingList({
   };
 
   return (
-    <Section eyebrow="Handleliste" title="Dette må du handle nå">
+    <Section title="Dette må du handle nå">
       {totalCount === 0 ? (
         <div className="space-y-4">
           <ShoppingListControls
@@ -141,7 +141,7 @@ export function ShoppingList({
           <EmptyShoppingList />
         </div>
       ) : (
-        <div className="space-y-app-4">
+        <div className="space-y-4">
           <ShoppingListControls
             helperText={activeHelperText}
             displayedTotal={displayedTotal}
@@ -155,25 +155,23 @@ export function ShoppingList({
 
           <PantryEditor pantryIngredientIds={pantryIngredientIds} togglePantryItem={togglePantryItem} />
 
-          <Card className="p-4" variant={allChecked ? "saving" : "surface"}>
-            <div className="flex items-center justify-between gap-app-3">
-              <div>
-                <p className="font-black">{allChecked ? "Alt er handlet" : "Klar for butikken"}</p>
-                <p className="text-body-sm text-text-secondary">
-                  {allChecked ? "Handlelisten er ferdig krysset av." : `${checkedCount} av ${totalCount} varer er krysset av.`}
-                </p>
-              </div>
-              <div className="grid h-11 w-11 place-items-center rounded-full bg-surface text-saving">
-                {allChecked ? <Check size={20} /> : <ShoppingBasket size={20} />}
-              </div>
+          <div className={cn("flex items-center justify-between gap-3 rounded-[1rem] px-4 py-3", allChecked ? "bg-[rgba(35,111,73,0.08)]" : "bg-[#f4f0e8]")}>
+            <div>
+              <p className="font-black">{allChecked ? "Alt er handlet" : "Klar for butikken"}</p>
+              <p className="text-body-sm text-text-secondary">
+                {allChecked ? "Handlelisten er ferdig krysset av." : `${checkedCount} av ${totalCount} varer er krysset av.`}
+              </p>
             </div>
-          </Card>
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white text-saving">
+              {allChecked ? <Check size={18} /> : <ShoppingBasket size={18} />}
+            </div>
+          </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {groupedForDisplay.map((group) => (
-              <Card className="overflow-hidden p-0" key={group.group} variant="surface">
-                <div className="border-b border-border-subtle bg-[#fbf8f2] px-4 py-3">
-                  <h3 className="text-[1rem] font-bold text-text-primary">{group.group}</h3>
+              <div className="overflow-hidden rounded-[1.05rem] border border-border-subtle bg-white/78" key={group.group}>
+                <div className="px-4 py-3">
+                  <h3 className="text-[0.98rem] font-bold text-text-primary">{group.group}</h3>
                 </div>
                 {group.items.map((item, index) => {
                   const store = stores.find((entry) => entry.id === item.bestStore);
@@ -182,8 +180,8 @@ export function ShoppingList({
                   return (
                     <button
                       className={cn(
-                        "flex w-full items-center gap-app-3 px-4 py-3.5 text-left transition-[background-color,opacity] duration-200 active:bg-neutral-200",
-                        index === group.items.length - 1 ? "" : "border-b border-border-subtle"
+                        "flex w-full items-center gap-3 px-4 py-3 text-left transition-[background-color,opacity] duration-200 active:bg-neutral-200",
+                        index === group.items.length - 1 ? "" : "border-t border-border-subtle"
                       )}
                       key={item.ingredientId}
                       onClick={() => toggleItem(item.ingredientId)}
@@ -191,26 +189,23 @@ export function ShoppingList({
                     >
                       <span
                         className={cn(
-                          "grid h-7 w-7 shrink-0 place-items-center rounded-full border",
+                          "grid h-6 w-6 shrink-0 place-items-center rounded-full border",
                           checked ? "border-saving bg-saving text-white" : "border-border bg-surface text-transparent"
                         )}
                       >
-                        <Check size={16} strokeWidth={3} />
+                        <Check size={14} strokeWidth={3} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="flex items-center gap-app-2">
-                          <span
-                            className={cn(
-                              "truncate font-black text-text-primary",
-                              checked ? "text-text-tertiary line-through" : ""
-                            )}
-                          >
-                            {item.name}
-                          </span>
-                          {item.alreadyHave ? <Badge tone="saving">Har hjemme</Badge> : null}
+                        <span
+                          className={cn(
+                            "block truncate font-black text-text-primary",
+                            checked ? "text-text-tertiary line-through" : ""
+                          )}
+                        >
+                          {item.name}
                         </span>
-                        <span className="block text-body-sm font-semibold text-text-secondary">
-                          {item.displayQuantity} · {item.alreadyHave ? "ligger i skapet" : store?.name}
+                        <span className="block text-body-sm text-text-secondary">
+                          {item.displayQuantity} · {store?.name}
                         </span>
                       </span>
                       <span className="shrink-0 text-body-sm font-black text-text-primary">
@@ -219,7 +214,7 @@ export function ShoppingList({
                     </button>
                   );
                 })}
-              </Card>
+              </div>
             ))}
           </div>
 
@@ -250,34 +245,34 @@ function ShoppingListControls({
   sortMode: ShoppingSortMode;
 }) {
   return (
-    <Card className="space-y-4 p-4" variant="default">
+    <div className="space-y-3">
       <div>
-        <p className="text-[1.55rem] font-black tracking-tight text-text-primary">{formatCompactNok(displayedTotal)}</p>
-        <p className="mt-1 text-[0.75rem] text-text-tertiary">
-          Inkluderer hele pakker. Middagskostnaden er {formatCompactNok(planWeeklyTotalNok)}.
-        </p>
-        <p className="mt-1 text-[0.88rem] text-text-secondary">
+        <p className="text-[1.4rem] font-black tracking-tight text-text-primary">{formatCompactNok(displayedTotal)}</p>
+        <p className="mt-1 text-[0.84rem] text-text-secondary">
           {shoppingList.totalItemsToBuy} av {shoppingList.totalItems} varer må kjøpes
         </p>
+        <p className="mt-1 text-[0.78rem] text-text-tertiary">
+          Middagskostnaden er {formatCompactNok(planWeeklyTotalNok)}.
+        </p>
         {pantrySavingsNok > 0 ? (
-          <p className="mt-2 text-[0.84rem] font-semibold text-saving">Du sparer {formatCompactNok(pantrySavingsNok)} fra det du allerede har hjemme</p>
+          <p className="mt-2 text-[0.82rem] font-semibold text-saving">Du sparer {formatCompactNok(pantrySavingsNok)} fra det du allerede har hjemme</p>
         ) : null}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 rounded-[1rem] bg-[#f4f0e8] p-3">
         <SegmentedControl
           items={[
-            { label: "Sorter etter kategori", value: "category" },
+            { label: "Kategori", value: "category" },
             { label: "Butikkflyt", value: "flow" }
           ]}
           onChange={(value) => onSortModeChange(value as ShoppingSortMode)}
           value={sortMode}
         />
-        <p className="text-[0.84rem] text-text-secondary">
+        <p className="text-[0.8rem] text-text-secondary">
           {helperText}
           {sortMode === "flow" ? ` Gjelder typisk handlemønster hos ${getStoreName(selectedStore)}.` : ""}
         </p>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -325,29 +320,29 @@ function PantryEditor({
   togglePantryItem: (id: string) => void;
 }) {
   return (
-    <Card className="p-4" variant="surface">
-      <div className="flex items-start gap-app-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#faf7f1] text-text-secondary">
-          <Home size={18} />
+    <div className="space-y-2">
+      <div className="flex items-start gap-3">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#f4f0e8] text-text-secondary">
+          <Home size={17} />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-headline text-text-primary">Basisvarer hjemme</h3>
+          <h3 className="text-[1rem] font-black text-text-primary">Basisvarer hjemme</h3>
           <p className="mt-1 text-body-sm text-text-secondary">
-            Trykk av og på. Dette endrer handlekurven, ikke ukens middagskostnad.
+            Påvirker handlelisten, ikke middagskostnaden.
           </p>
         </div>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {pantryOptions.map((item) => {
           const selected = pantryIngredientIds.includes(item.id);
 
           return (
             <button
               className={cn(
-                "rounded-full border px-3 py-2 text-[0.74rem] font-semibold transition",
+                "rounded-full px-3 py-2 text-[0.74rem] font-semibold transition",
                 selected
-                  ? "border-saving-border bg-saving-bg text-saving"
-                  : "border-border-subtle bg-white text-text-secondary"
+                  ? "bg-saving-bg text-saving"
+                  : "bg-white text-text-secondary shadow-[0_4px_12px_rgba(33,25,16,0.03)]"
               )}
               key={item.id}
               onClick={() => togglePantryItem(item.id)}
@@ -358,7 +353,7 @@ function PantryEditor({
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -384,35 +379,35 @@ function ShoppingListProCard() {
   ];
 
   return (
-    <Card className="p-app-5" variant="premium">
-      <div className="flex items-start justify-between gap-app-4">
+    <Card className="p-4" variant="premium">
+      <div className="flex items-start justify-between gap-4">
         <div>
           <Badge tone="premium">Pro</Badge>
-          <h3 className="mt-app-3 text-title text-text-primary">Prisjakt med Matbudsjettet Pro</h3>
-          <p className="mt-app-2 text-body-sm text-text-secondary">Se billigste butikk per vare og spar enda mer</p>
+          <h3 className="mt-3 text-[1.12rem] font-black text-text-primary">Prisjakt med Matbudsjettet Pro</h3>
+          <p className="mt-1.5 text-body-sm text-text-secondary">Se billigste butikk per vare og spar enda mer</p>
         </div>
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-surface text-premium">
-          <Crown size={22} strokeWidth={2.5} />
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface text-premium">
+          <Crown size={20} strokeWidth={2.3} />
         </div>
       </div>
 
-      <div className="mt-app-4 space-y-app-2">
+      <div className="mt-4 space-y-2">
         {bullets.map((bullet) => (
-          <div className="flex items-center gap-app-2 text-body-sm font-bold text-text-primary" key={bullet}>
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-surface text-premium">
-              <Sparkles size={15} />
+          <div className="flex items-center gap-2 text-body-sm font-semibold text-text-primary" key={bullet}>
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-surface text-premium">
+              <Sparkles size={13} />
             </span>
             <span>{bullet}</span>
           </div>
         ))}
       </div>
 
-      <div className="mt-app-4 flex items-center gap-app-3 rounded-lg border border-premium-border bg-surface p-app-3">
-        <LockKeyhole className="shrink-0 text-premium" size={18} />
-        <p className="text-body-sm font-semibold text-text-secondary">Klar for live prisdata når Pro åpner.</p>
+      <div className="mt-4 flex items-center gap-3 rounded-[0.95rem] bg-surface p-3">
+        <LockKeyhole className="shrink-0 text-premium" size={17} />
+        <p className="text-body-sm text-text-secondary">Klar for live prisdata når Pro åpner.</p>
       </div>
 
-      <Button className="mt-app-6 w-full justify-between" type="button" variant="premium">
+      <Button className="mt-5 w-full justify-between" type="button" variant="premium">
         Få tidlig tilgang
         <ChevronRight size={18} />
       </Button>
